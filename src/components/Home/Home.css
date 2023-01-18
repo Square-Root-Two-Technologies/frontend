@@ -1,0 +1,712 @@
+.firstRow {
+  justify-content: center;
+  min-height: 50vh;
+}
+.cloudContainerContainer {
+  height: 50vh;
+  width: 33vh;
+}
+.earthContainerContainer {
+  height: 50vh;
+  width: 33vh;
+}
+.rocketContainerContainer {
+  height: 50vh;
+  width: 33vh;
+}
+@media (max-width: 100px) {
+  .firstRow {
+    justify-content: space-around;
+  }
+  cloudContainerContainer {
+    min-width: 100vh;
+    border: #0c55ad;
+    border: 3px;
+  }
+  earthContainerContainer {
+    min-width: 100vh;
+  }
+  rocketContainerContainer {
+    min-width: 100vh;
+  }
+}
+.cloudContainer {
+  background: #3c5ecd;
+  position: relative;
+  height: 100%;
+  width: 100%;
+  border-radius: 10%;
+}
+.earthContainer {
+  background: #3c5ecd;
+  position: relative;
+  height: 100%;
+  width: 100%;
+  border-radius: 10%;
+}
+.rocketContainer {
+  background: #132664;
+  position: relative;
+  height: 100%;
+  width: 100%;
+  border-radius: 10%;
+}
+.cloud {
+  position: relative;
+  top: 8%;
+  left: 10%;
+  width: 83%;
+  height: 47%;
+}
+.rain {
+  top: -10%;
+  position: relative;
+  left: 1%;
+  display: flex;
+  justify-content: space-between;
+  z-index: 1;
+  padding: 10% 25%;
+}
+.drop1 {
+  position: relative;
+  width: 5px;
+  height: 10px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 50%;
+  animation: animate 5s linear infinite;
+  animation-duration: calc(15s / 11);
+  transform-origin: bottom;
+}
+
+.drop2 {
+  position: relative;
+  width: 5px;
+  margin: 40%;
+  height: 10px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 50%;
+  animation: animate 5s linear infinite;
+  animation-duration: calc(15s / 19);
+  transform-origin: bottom;
+}
+
+.drop3 {
+  position: relative;
+  width: 5px;
+  margin: 40%;
+  height: 10px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 50%;
+  animation: animate 5s linear infinite;
+  animation-duration: calc(15s / 15);
+  transform-origin: bottom;
+}
+.drop4 {
+  position: relative;
+  width: 5px;
+  margin: 40%;
+  height: 10px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 50%;
+  animation: animate 5s linear infinite;
+  animation-duration: calc(15s / 21);
+  transform-origin: bottom;
+}
+.drop5 {
+  position: relative;
+  width: 5px;
+  margin: 40%;
+  height: 10px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 50%;
+  animation: animate 5s linear infinite;
+  animation-duration: calc(15s / 18);
+  transform-origin: bottom;
+}
+.drop6 {
+  position: relative;
+  width: 5px;
+  margin: 40%;
+  height: 10px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 50%;
+  animation: animate 5s linear infinite;
+  animation-duration: calc(15s / 15);
+  transform-origin: bottom;
+}
+.drop7 {
+  position: relative;
+  margin: 40%;
+  width: 5px;
+  height: 10px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 50%;
+  animation: animate 5s linear infinite;
+  animation-duration: calc(15s / 11);
+  transform-origin: bottom;
+}
+.drop8 {
+  position: relative;
+  width: 5px;
+  height: 10px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 50%;
+  animation: animate 5s linear infinite;
+  animation-duration: calc(15s / 21);
+  transform-origin: bottom;
+}
+.drop9 {
+  position: relative;
+  width: 5px;
+  height: 10px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 50%;
+  animation: animate 5s linear infinite;
+  animation-duration: calc(15s / 10);
+  transform-origin: bottom;
+}
+.drop10 {
+  position: relative;
+  width: 5px;
+  height: 10px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 50%;
+  animation: animate 5s linear infinite;
+  animation-duration: calc(15s / 15);
+  transform-origin: bottom;
+}
+.drop11 {
+  position: relative;
+  width: 5px;
+  height: 10px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 50%;
+  animation: animate 5s linear infinite;
+  animation-duration: calc(15s / 27);
+  transform-origin: bottom;
+}
+.drop12 {
+  position: relative;
+  width: 5px;
+  height: 10px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 50%;
+  animation: animate 5s linear infinite;
+  animation-duration: calc(15s / 21);
+  transform-origin: bottom;
+}
+.drop13 {
+  position: relative;
+  width: 5px;
+  height: 10px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 50%;
+  animation: animate 5s linear infinite;
+  animation-duration: calc(15s / 11);
+  transform-origin: bottom;
+}
+.drop14 {
+  position: relative;
+  width: 5px;
+  height: 10px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 50%;
+  animation: animate 5s linear infinite;
+  animation-duration: calc(15s / 16);
+  transform-origin: bottom;
+}
+.drop15 {
+  position: relative;
+  width: 5px;
+  height: 10px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 50%;
+  animation: animate 5s linear infinite;
+  animation-duration: calc(15s / 17);
+  transform-origin: bottom;
+}
+.drop16 {
+  position: relative;
+  width: 5px;
+  height: 10px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 50%;
+  animation: animate 5s linear infinite;
+  animation-duration: calc(15s / 25);
+  transform-origin: bottom;
+}
+.drop17 {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 50%;
+  animation: animate 5s linear infinite;
+  animation-duration: calc(15s / 10);
+  transform-origin: bottom;
+}
+.drop18 {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 50%;
+  animation: animate 5s linear infinite;
+  animation-duration: calc(15s / 21);
+  transform-origin: bottom;
+}
+.drop19 {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 50%;
+  animation: animate 5s linear infinite;
+  animation-duration: calc(15s / 13);
+  transform-origin: bottom;
+}
+
+@keyframes animate {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  70% {
+    transform: translateY(200px) scale(1);
+  }
+  100% {
+    transform: translateY(200px) scale(0);
+  }
+}
+
+.earth {
+  position: relative;
+  left: 25%;
+  top: 24%;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: url("images/world.jpg");
+  background-size: 545px;
+  background-position: center;
+  background-color: #0c55ad;
+  box-shadow: inset -20px 20px 40px rgba(235, 225, 52, 0.3),
+    inset 20px -20px 40px rgba(2, 16, 31, 0.5),
+    inset 10px -10px 10px rgba(2, 16, 31, 0.5);
+  transform-style: preserve-3d;
+  transform: rotate(15deg);
+  animation: rotate 10s linear infinite;
+}
+
+@keyframes rotate {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 545px 0;
+  }
+}
+
+.stars {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  z-index: 10;
+  padding: 0 20px;
+}
+.star1 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+  z-index: 2;
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 17);
+  transform-origin: bottom;
+}
+.star2 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+  z-index: 2;
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 15);
+  transform-origin: bottom;
+}
+.star3 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+  z-index: 2;
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 31);
+  transform-origin: bottom;
+}
+.star4 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+  z-index: 2;
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 14);
+  transform-origin: bottom;
+}
+.star5 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+  z-index: 2;
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 5);
+  transform-origin: bottom;
+}
+.star6 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+  z-index: 2;
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 6);
+  transform-origin: bottom;
+}
+.star7 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+  z-index: 2;
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 17);
+  transform-origin: bottom;
+}
+.star8 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+  z-index: 2;
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 18);
+  transform-origin: bottom;
+}
+.star9 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+  z-index: 2;
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 19);
+  transform-origin: bottom;
+}
+.star10 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 10);
+  transform-origin: bottom;
+}
+.star11 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 11);
+  transform-origin: bottom;
+}
+.star12 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 12);
+  transform-origin: bottom;
+}
+.star13 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 13);
+  transform-origin: bottom;
+}
+.star14 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 17);
+  transform-origin: bottom;
+}
+.star15 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 15);
+  transform-origin: bottom;
+}
+.star16 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 10);
+  transform-origin: bottom;
+}
+.star17 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 19);
+  transform-origin: bottom;
+}
+.star18 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 25);
+  transform-origin: bottom;
+}
+.star19 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 20);
+  transform-origin: bottom;
+}
+.star20 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 11);
+  transform-origin: bottom;
+}
+.star21 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 15);
+  transform-origin: bottom;
+}
+.star22 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 9);
+  transform-origin: bottom;
+}
+.star23 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 34);
+  transform-origin: bottom;
+}
+.star24 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 17);
+  transform-origin: bottom;
+}
+.star25 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 7);
+  transform-origin: bottom;
+}
+.star1 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 17);
+  transform-origin: bottom;
+}
+.star1 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 17);
+  transform-origin: bottom;
+}
+.star1 {
+  position: relative;
+  width: 5px;
+  height: 35px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 25%;
+
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 17);
+  transform-origin: bottom;
+}
+.star1 {
+  position: relative;
+  width: 5px;
+  height: 20px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 30%;
+
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 17);
+  transform-origin: bottom;
+}
+.star1 {
+  position: relative;
+  width: 5px;
+  height: 20px;
+  background: #fff;
+  margin: 0 2px;
+  border-radius: 30%;
+
+  animation: animatestar 5s linear infinite;
+  animation-duration: calc(15s / 17);
+  transform-origin: bottom;
+}
+@keyframes animatestar {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  70% {
+    transform: translateY(298px) scale(1);
+  }
+  100% {
+    transform: translateY(400px) scale(1);
+  }
+}
+.spacecraft {
+  position: absolute;
+  top: 34%;
+  left: 36%;
+  height: 200px;
+  z-index: 100;
+}

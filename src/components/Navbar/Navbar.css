@@ -1,0 +1,7 @@
+.navbarLeft {
+  float: left;
+}
+.navbarRight {
+  display: flex;
+  float: right;
+}
