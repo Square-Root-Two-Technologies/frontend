@@ -201,7 +201,7 @@ function HomeRootTwo() {
       <footer>
         <div className="container flex footer-container">
           <Link to="/" className="company-logo">
-            <img src={asset1} alt="company logo" />
+            Square Root Two Technologies
           </Link>
           <div className="link-column flex">
             <h4>Product</h4>
@@ -248,7 +248,7 @@ function HomeRootTwo() {
               Pricing
             </Link>
             <Link to="/" className="hover-link">
-              Usability Hub
+              Square Root Two Technologies
             </Link>
             <Link to="/" className="hover-link">
               Customers Page
