@@ -1,6 +1,7 @@
 import "./App.css";
-import NavbarNav from "./components/Navbar/Navbar.js";
-import Home from "./components/Home/Home.js";
+//import NavbarNav from "./components/Navbar/Navbar.js";
+//import Home from "./components/Home/Home.js";
+import Navbar_2 from "./components/Navbar_2/Navbar.js";
 import About from "./components/About";
 import NoteState from "./context/notes/NoteState";
 import Signup from "./components/Signup";
@@ -14,6 +15,7 @@ function App() {
   return (
     <>
       <NoteState>
+        <Navbar_2 />
         <Routes>
           <Route path="/" element={<HomeRootTwo />} />
           <Route path="/about" element={<About />} />

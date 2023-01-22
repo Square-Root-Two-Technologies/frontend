@@ -24,55 +24,6 @@ import two from "./assets/two.svg";
 function HomeRootTwo() {
   return (
     <div className="container_main">
-      <nav>
-        <div className="main-nav flex">
-          <Link to="/" className="company-logo">
-            <div className="companyLogoNav">
-              <h2>√2</h2>
-            </div>
-          </Link>
-          <div className="nav-links flex" id="nav-links">
-            <ul className="flex">
-              <li>
-                <Link to="/" className="hover-link">
-                  Products
-                </Link>
-              </li>
-              <li>
-                <Link to="/" className="hover-link">
-                  Customer
-                </Link>
-              </li>
-              <li>
-                <Link to="/" className="hover-link">
-                  Pricing
-                </Link>
-              </li>
-              <li>
-                <Link to="/" className="hover-link">
-                  Resources
-                </Link>
-              </li>
-            </ul>
-            <ul className="signupinflex">
-              <li className="signin">
-                <Link to="/" className="hover-link secondary-button">
-                  Sign in
-                </Link>
-              </li>
-              <li className="signup">
-                <Link to="/" className="hover-link primary-button">
-                  Sign up
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <Link to="/" className="nav-toggle hover-link" id="nav-toggle">
-            <i className="fa-solid fa-bars"></i>
-          </Link>
-        </div>
-      </nav>
-
       <header>
         <div className="container header-section flex">
           <div className="header-left">
