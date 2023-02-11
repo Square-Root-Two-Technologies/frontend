@@ -4736,10 +4736,24 @@
     "no-case" "^3.0.4"
     "tslib" "^2.0.3"
 
+"dotenv-defaults@^2.0.2":
+  "integrity" "sha512-iOIzovWfsUHU91L5i8bJce3NYK5JXeAwH50Jh6+ARUdLiiGlYWfGw6UkzsYqaXZH/hjE/eCd/PlfM/qqyK0AMg=="
+  "resolved" "https://registry.npmjs.org/dotenv-defaults/-/dotenv-defaults-2.0.2.tgz"
+  "version" "2.0.2"
+  dependencies:
+    "dotenv" "^8.2.0"
+
 "dotenv-expand@^5.1.0":
   "integrity" "sha512-YXQl1DSa4/PQyRfgrv6aoNjhasp/p4qs9FjJ4q4cQk+8m4r6k4ZSiEyytKG8f8W9gi8WsQtIObNmKd+tMzNTmA=="
   "resolved" "https://registry.npmjs.org/dotenv-expand/-/dotenv-expand-5.1.0.tgz"
   "version" "5.1.0"
+
+"dotenv-webpack@^8.0.1":
+  "integrity" "sha512-CdrgfhZOnx4uB18SgaoP9XHRN2v48BbjuXQsZY5ixs5A8579NxQkmMxRtI7aTwSiSQcM2ao12Fdu+L3ZS3bG4w=="
+  "resolved" "https://registry.npmjs.org/dotenv-webpack/-/dotenv-webpack-8.0.1.tgz"
+  "version" "8.0.1"
+  dependencies:
+    "dotenv-defaults" "^2.0.2"
 
 "dotenv@^10.0.0":
   "integrity" "sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q=="
@@ -4750,6 +4764,11 @@
   "integrity" "sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ=="
   "resolved" "https://registry.npmjs.org/dotenv/-/dotenv-16.0.3.tgz"
   "version" "16.0.3"
+
+"dotenv@^8.2.0":
+  "integrity" "sha512-IrPdXQsk2BbzvCBGBOTmmSH5SodmqZNt4ERAZDmW4CT+tL8VtvinqywuANaFu4bOMWki16nqf0e4oC0QIaDr/g=="
+  "resolved" "https://registry.npmjs.org/dotenv/-/dotenv-8.6.0.tgz"
+  "version" "8.6.0"
 
 "duplexer@^0.1.2":
   "integrity" "sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg=="
@@ -7671,6 +7690,11 @@
     "type-check" "^0.4.0"
     "word-wrap" "^1.2.3"
 
+"os-browserify@^0.3.0":
+  "integrity" "sha512-gjcpUc3clBf9+210TRaDWbf+rZZZEshZ+DlXMRCeAjp0xhTrnQsKHypIy1J3d5hKdUzj69t708EHtU8P6bUn0A=="
+  "resolved" "https://registry.npmjs.org/os-browserify/-/os-browserify-0.3.0.tgz"
+  "version" "0.3.0"
+
 "p-limit@^2.0.0":
   "integrity" "sha512-//88mFWSJx8lxCzwdAABTJL2MyWB12+eIY7MDL2SqLmAkeKU9qxRvWuSyTjm3FUmpBEMuFfckAIqEaVGUDxb6w=="
   "resolved" "https://registry.npmjs.org/p-limit/-/p-limit-2.3.0.tgz"
@@ -7768,6 +7792,11 @@
   dependencies:
     "no-case" "^3.0.4"
     "tslib" "^2.0.3"
+
+"path-browserify@^1.0.1":
+  "integrity" "sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g=="
+  "resolved" "https://registry.npmjs.org/path-browserify/-/path-browserify-1.0.1.tgz"
+  "version" "1.0.1"
 
 "path-exists@^3.0.0":
   "integrity" "sha512-bpC7GYwiDYQ4wYLe+FA8lhRjhQCMcQGuSgGGqDkg/QerRWw9CmGRT0iSOVRSZJ29NMLZgIzqaljJ63oaL4NIJQ=="
@@ -10240,7 +10269,7 @@
   "resolved" "https://registry.npmjs.org/webpack-sources/-/webpack-sources-3.2.3.tgz"
   "version" "3.2.3"
 
-"webpack@^4.0.0 || ^5.0.0", "webpack@^4.37.0 || ^5.0.0", "webpack@^4.4.0 || ^5.9.0", "webpack@^4.44.2 || ^5.47.0", "webpack@^5.0.0", "webpack@^5.1.0", "webpack@^5.20.0", "webpack@^5.64.4", "webpack@>= 4", "webpack@>=2", "webpack@>=4.43.0 <6.0.0":
+"webpack@^4 || ^5", "webpack@^4.0.0 || ^5.0.0", "webpack@^4.37.0 || ^5.0.0", "webpack@^4.4.0 || ^5.9.0", "webpack@^4.44.2 || ^5.47.0", "webpack@^5.0.0", "webpack@^5.1.0", "webpack@^5.20.0", "webpack@^5.64.4", "webpack@>= 4", "webpack@>=2", "webpack@>=4.43.0 <6.0.0":
   "integrity" "sha512-piaIaoVJlqMsPtX/+3KTTO6jfvrSYgauFVdt8cr9LTHKmcq/AMd4mhzsiP7ZF/PGRNPGA8336jldh9l2Kt2ogQ=="
   "resolved" "https://registry.npmjs.org/webpack/-/webpack-5.75.0.tgz"
   "version" "5.75.0"
