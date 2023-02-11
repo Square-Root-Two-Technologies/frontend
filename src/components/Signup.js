@@ -1,8 +1,9 @@
+import { body } from "express-validator";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Signup() {
-  const backendURI = process.env.REACT_APP_BACKEND;
+  const backendURI = `${process.env.REACT_APP_BACKEND}/api/auth/createuser`;
   const [credentials, setCredentials] = useState({
     name: "",
     email: "",
@@ -20,6 +21,7 @@ function Signup() {
       },
       body: JSON.stringify({ name, email, password }),
     });
+    console.log(response);
     console.log(backendURI);
     const json = await response.json();
     console.log(json);

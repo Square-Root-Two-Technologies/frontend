@@ -5,9 +5,11 @@ const Login = (props) => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   let navigate = useNavigate();
 
+  const backendURI = `${process.env.REACT_APP_BACKEND}/api/auth/login`;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:5000/api/auth/login", {
+    const response = await fetch(backendURI, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
