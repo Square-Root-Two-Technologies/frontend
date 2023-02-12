@@ -32,6 +32,9 @@ h2 {
 h3 {
   font-size: 1.5rem;
 }
+h5 {
+  font-size: 1rem;
+}
 
 p {
   font-family: "Roboto", sans-serif;
@@ -125,6 +128,10 @@ ul {
   margin-top: 20px;
   justify-content: space-between;
   background-color: white;
+}
+
+.company-logo {
+  color: black;
 }
 
 .company-logo img {
