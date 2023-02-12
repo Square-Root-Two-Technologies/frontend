@@ -5,7 +5,7 @@ import AddNote from "./AddNote";
 
 const Notes = () => {
   const context = useContext(noteContext);
-  const { notes, getNotes, editNote } = context;
+  const { notes, getNotes, editNote, allNotes, getAllNotes } = context;
   useEffect(() => {
     getNotes();
     // eslint-disable-next-line
@@ -90,7 +90,7 @@ const Notes = () => {
                 </div>
                 <div className="mb-3">
                   <label htmlFor="description" className="form-label">
-                    Description
+                    body
                   </label>
                   <input
                     type="text"
@@ -143,7 +143,7 @@ const Notes = () => {
       </div>
 
       <div className="row my-3">
-        <h2>You Notes</h2>
+        <h2>Your Notes</h2>
         <div className="container mx-2">
           {notes.length === 0 && "No notes to display"}
         </div>

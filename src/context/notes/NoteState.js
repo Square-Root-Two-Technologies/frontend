@@ -7,15 +7,21 @@ const NoteState = (props) => {
   const notesInitial = [];
   const [notes, setNotes] = useState(notesInitial);
 
-  //get all notes
+  // get all notes irrespective of user
+  const allNotesInitial = [];
+  const [allNotes, setAllNotes] = useState(allNotesInitial);
   const getAllNotes = async () => {
     // API Call
     const response = await fetch(`${host}/api/notes/fetchNotesIrrespective`, {
       method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
     const json = await response.json();
-    setNotes(json);
+    setAllNotes(json);
   };
+
   // Get all Notes
   const getNotes = async () => {
     // API Call
@@ -93,7 +99,15 @@ const NoteState = (props) => {
 
   return (
     <NoteContext.Provider
-      value={{ notes, addNote, deleteNote, editNote, getNotes, getAllNotes }}
+      value={{
+        notes,
+        addNote,
+        deleteNote,
+        editNote,
+        getNotes,
+        allNotes,
+        getAllNotes,
+      }}
     >
       {props.children}
     </NoteContext.Provider>
