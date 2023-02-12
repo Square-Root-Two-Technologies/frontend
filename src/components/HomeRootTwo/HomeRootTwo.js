@@ -7,9 +7,9 @@ import asset13 from "./assets/cloud.svg";
 import asset15 from "./assets/automation.svg";
 import asset16 from "./assets/society.svg";
 import asset17 from "./assets/life.svg";
-import asset18 from "./assets/asset 18.png";
-import asset21 from "./assets/asset 21.png";
-import asset24 from "./assets/asset 24.png";
+import asset18 from "./assets/asset18a.png";
+import asset21 from "./assets/asset21b.png";
+import asset24 from "./assets/asset24a.png";
 import asset3 from "./assets/asset 3.png";
 import asset4 from "./assets/asset 4.png";
 import asset5 from "./assets/asset 5.png";
@@ -107,7 +107,7 @@ function HomeRootTwo() {
       <section className="big-feature-section">
         <div className="container flex big-feature-container">
           <div className="feature-img">
-            <img src={asset18} alt="" />
+            <img src={asset21} alt="" />
           </div>
           <div className="feature-desc flex">
             <h4>JavaScript</h4>
@@ -127,7 +127,7 @@ function HomeRootTwo() {
           id="second-big-feature"
         >
           <div className="feature-img">
-            <img src={asset21} alt="" />
+            <img src={asset18} alt="" />
           </div>
           <div className="feature-desc flex">
             <h4>Salesforce</h4>
@@ -135,7 +135,8 @@ function HomeRootTwo() {
             <br></br>
             <p>
               Unlock the Power of Salesforce Sales Cloud with Lightning Web
-              Components: Boost Your Business and Development!
+              Components: Boost Your Business and Development. We look forward
+              to working with you and helping you achieve your goals!
             </p>
           </div>
         </div>
@@ -165,24 +166,30 @@ function HomeRootTwo() {
           </div>
           <div className="examples-area flex">
             <Link to="/" className="examples-card">
-              <h3 className="card-text">
-                Can user complete a task in my software interface?
-              </h3>
+              <div className="card-text">
+                <h5>Raisa Islam</h5>
+                <h5>Department of Sociology</h5>
+                <h5>Amsterdam Business School</h5>
+              </div>
             </Link>
             <Link className="examples-card" to="/">
-              <h3 className="card-text">
-                Can users find important pages on my website?
-              </h3>
+              <div className="card-text">
+                <h5>Rasik Islam</h5>
+                <h5>Consultant,</h5>
+                <h5>Data Engineering</h5>
+              </div>
             </Link>
             <Link className="examples-card" to="/">
-              <h3 className="card-text">
-                Is my website’s intended audience clear?{" "}
-              </h3>
+              <div className="card-text">
+                <h5>Farhan Gazi</h5>
+                <h5>Philosopher, Engineer</h5>
+              </div>
             </Link>
             <Link className="examples-card" to="/">
-              <h3 className="card-text">
-                Do visitors understand what a page is about?
-              </h3>
+              <div className="card-text">
+                <h5>Tanvir Raihan Islam</h5>
+                <h5>Problem Solver</h5>
+              </div>
             </Link>
           </div>
         </div>
@@ -190,8 +197,19 @@ function HomeRootTwo() {
 
       <section className="cta-section">
         <div className="container flex cta-section-container">
-          <h2>Start testing today</h2>
-          <p>Take the guesswork out of design decisions</p>
+          <h2>Get Started Today</h2>
+          <p>
+            Unlock your potential with our multi-faceted platform. Whether
+            you're looking to enhance your JavaScript skills, explore the
+            fascinating world of Salesforce, or immerse yourself in exciting
+            games and automation, we've got you covered. But that's not all -
+            our expert team also brings you thought-provoking insights on
+            sociology, life, history, and philosophy. With our comprehensive
+            resources and unparalleled expertise, you'll gain the knowledge and
+            tools you need to succeed in all aspects of your personal and
+            professional life. Join our community today and unleash your full
+            potential!
+          </p>
           <Link to="/" className="primary-button">
             Get Started
           </Link>
@@ -204,33 +222,15 @@ function HomeRootTwo() {
             Square Root Two Technologies
           </Link>
           <div className="link-column flex">
-            <h4>Product</h4>
+            <h4>Services</h4>
             <Link to="/" className="hover-link">
-              Overview
+              Blogs
             </Link>
             <Link to="/" className="hover-link">
-              Pricing
+              Games
             </Link>
             <Link to="/" className="hover-link">
-              Usability Hub
-            </Link>
-            <Link to="/" className="hover-link">
-              Customers Page
-            </Link>
-            <Link to="/" className="hover-link">
-              Status Page
-            </Link>
-          </div>
-          <div className="link-column flex">
-            <h4>Methodology</h4>
-            <Link to="/" className="hover-link">
-              Overview
-            </Link>
-            <Link to="/" className="hover-link">
-              Pricing
-            </Link>
-            <Link to="/" className="hover-link">
-              Usability Hub
+              Jobs
             </Link>
             <Link to="/" className="hover-link">
               Customers Page
@@ -239,13 +239,14 @@ function HomeRootTwo() {
               Status Page
             </Link>
           </div>
+
           <div className="link-column flex">
             <h4>Resources</h4>
             <Link to="/" className="hover-link">
-              Overview
+              Blogs
             </Link>
             <Link to="/" className="hover-link">
-              Pricing
+              Games
             </Link>
             <Link to="/" className="hover-link">
               Square Root Two Technologies
@@ -267,15 +268,6 @@ function HomeRootTwo() {
           </Link>
           <Link className="hover-link" to="/">
             Terms & Condition
-          </Link>
-          <Link className="hover-link" to="/">
-            Security Information
-          </Link>
-          <Link className="hover-link" to="/">
-            <i className="fa-brands fa-facebook"></i>
-          </Link>
-          <Link className="hover-link" to="/">
-            <i className="fa-brands fa-twitter"></i>
           </Link>
         </div>
       </div>

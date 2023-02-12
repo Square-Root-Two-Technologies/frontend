@@ -1,4 +1,11 @@
 .allBlogs {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
+}
+
+.Card {
+  width: 100%;
+  max-width: 300px;
+  margin: 10px;
 }
