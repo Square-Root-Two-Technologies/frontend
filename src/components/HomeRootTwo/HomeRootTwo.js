@@ -106,7 +106,7 @@ function HomeRootTwo() {
 
       <section className="big-feature-section">
         <div className="container flex big-feature-container">
-          <div className="feature-img">
+          <div className="feature-img-asset21">
             <img src={asset21} alt="" />
           </div>
           <div className="feature-desc flex">
