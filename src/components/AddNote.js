@@ -1,9 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import noteContext from "../context/notes/noteContext";
+import JoditEditor from "jodit-react";
 
 const AddNote = () => {
   const context = useContext(noteContext);
   const { addNote } = context;
+  const editor = useRef(null);
 
   const [note, setNote] = useState({
     title: "",
@@ -41,22 +43,6 @@ const AddNote = () => {
           />
         </div>
         <div className="mb-3">
-          <label htmlFor="description" className="form-label">
-            Body
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            id="description"
-            name="description"
-            value={note.description}
-            onChange={onChange}
-            minLength={5}
-            required
-            style={{ height: "300px" }}
-          />
-        </div>
-        <div className="mb-3">
           <label htmlFor="tag" className="form-label">
             Tag
           </label>
@@ -69,6 +55,22 @@ const AddNote = () => {
             onChange={onChange}
             minLength={5}
             required
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="description" className="form-label">
+            Body
+          </label>
+          <JoditEditor
+            ref={editor}
+            name="description"
+            value={note.description}
+            onChange={(value) => {
+              setNote({
+                ...note,
+                description: value, // Note: the name of the field is 'description'
+              });
+            }}
           />
         </div>
 

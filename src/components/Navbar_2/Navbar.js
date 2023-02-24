@@ -25,10 +25,9 @@ function Navbar_2() {
     <Navbar
       collapseOnSelect
       expand="lg"
-      bg="light"
-      variant="light"
-      className="sticky-top"
+      className="sticky-top navbar-light"
       expanded={expanded}
+      style={{ backgroundColor: "white" }}
     >
       <Container>
         <Navbar.Brand href="#home"> √2</Navbar.Brand>

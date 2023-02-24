@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import React from "react";
 import "./style.css";
 import asset1 from "./assets/asset 1.png";
 import asset2 from "./assets/asset 2.png";
@@ -18,7 +19,7 @@ import asset7 from "./assets/asset 7.png";
 import asset8 from "./assets/asset 8.svg";
 import asset9 from "./assets/asset 9.png";
 import asset14 from "./assets/games.svg";
-import earth from "./assets/earth.png";
+import earth from "./assets/earth3.png";
 import two from "./assets/two.svg";
 
 function HomeRootTwo() {

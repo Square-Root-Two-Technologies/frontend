@@ -1,5 +1,6 @@
 import NoteContext from "./noteContext";
 import { useState } from "react";
+import React from "react";
 
 const NoteState = (props) => {
   //const host = "https://localhost:5000";
@@ -7,6 +8,15 @@ const NoteState = (props) => {
   const notesInitial = [];
   const [notes, setNotes] = useState(notesInitial);
 
+  //get note by id
+  const getNote = async (id) => {
+    const response = await fetch(`${host}/api/notes/fetchNotesIrrespective`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  };
   // get all notes irrespective of user
   const allNotesInitial = [];
   const [allNotes, setAllNotes] = useState(allNotesInitial);
