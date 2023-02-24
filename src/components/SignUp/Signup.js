@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import rocket from "./assets/building_rockets_preview_rev_1.png";
 
 function Signup() {
-  const backendURI = `http://localhost:5000/api/auth/createuser`;
-  //const backendURI = `${process.env.REACT_APP_BACKEND}/api/auth/createuser`;
+  //const backendURI = `http://localhost:5000/api/auth/createuser`;
+  const backendURI = `${process.env.REACT_APP_BACKEND}/api/auth/createuser`;
   const [credentials, setCredentials] = useState({
     name: "",
     email: "",
