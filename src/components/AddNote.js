@@ -11,12 +11,14 @@ const AddNote = () => {
     title: "",
     description: "",
     tag: "",
+    type: "JavaScript",
   });
 
   const handleClick = (e) => {
     e.preventDefault();
-    addNote(note.title, note.description, note.tag);
-    setNote({ title: "", description: "", tag: "" });
+    console.log(note);
+    addNote(note.title, note.description, note.tag, note.type);
+    setNote({ title: "", description: "", tag: "", type: "JavaScript" });
   };
 
   const onChange = (e) => {

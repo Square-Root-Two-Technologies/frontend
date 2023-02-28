@@ -52,11 +52,11 @@ function Navbar_2() {
             <Nav.Item>
               <Link
                 className={`nav-link ${
-                  location.pathname === "/blogspace" ? "active" : ""
+                  location.pathname === "/manageblogs" ? "active" : ""
                 }`}
                 onClick={handleClick}
                 aria-current="page"
-                to={!localStorage.getItem("token") ? "/login" : "/blogspace"}
+                to={!localStorage.getItem("token") ? "/login" : "/manageblogs"}
               >
                 Write
               </Link>
@@ -64,11 +64,11 @@ function Navbar_2() {
             <Nav.Item>
               <Link
                 className={`nav-link ${
-                  location.pathname === "/blogs" ? "active" : ""
+                  location.pathname === "/blogspace" ? "active" : ""
                 }`}
                 onClick={handleClick}
                 aria-current="page"
-                to={"/blogs"}
+                to={"/blogspace"}
               >
                 Read
               </Link>

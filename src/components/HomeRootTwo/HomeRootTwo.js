@@ -19,7 +19,8 @@ import asset7 from "./assets/asset 7.png";
 import asset8 from "./assets/asset 8.svg";
 import asset9 from "./assets/asset 9.png";
 import asset14 from "./assets/games.svg";
-import earth from "./assets/earth3.png";
+//import earth from "./assets/earth3.png";
+import earth from "./assets/earth2.png";
 import two from "./assets/two.svg";
 
 function HomeRootTwo() {

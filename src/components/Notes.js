@@ -8,6 +8,9 @@ const Notes = () => {
   const { notes, getNotes, editNote, allNotes, getAllNotes } = context;
   useEffect(() => {
     getNotes();
+    console.log(notes);
+    //console.log(localStorage.getItem("token"));
+
     // eslint-disable-next-line
   }, []);
   const ref = useRef(null);
