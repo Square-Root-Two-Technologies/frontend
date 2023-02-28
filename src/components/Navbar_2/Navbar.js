@@ -25,10 +25,9 @@ function Navbar_2() {
     <Navbar
       collapseOnSelect
       expand="lg"
-      bg="light"
-      variant="light"
-      className="sticky-top"
+      className="sticky-top navbar-light"
       expanded={expanded}
+      style={{ backgroundColor: "white" }}
     >
       <Container>
         <Navbar.Brand href="#home"> √2</Navbar.Brand>
@@ -53,11 +52,11 @@ function Navbar_2() {
             <Nav.Item>
               <Link
                 className={`nav-link ${
-                  location.pathname === "/blogspace" ? "active" : ""
+                  location.pathname === "/manageblogs" ? "active" : ""
                 }`}
                 onClick={handleClick}
                 aria-current="page"
-                to={!localStorage.getItem("token") ? "/login" : "/blogspace"}
+                to={!localStorage.getItem("token") ? "/login" : "/manageblogs"}
               >
                 Write
               </Link>
@@ -65,11 +64,11 @@ function Navbar_2() {
             <Nav.Item>
               <Link
                 className={`nav-link ${
-                  location.pathname === "/blogs" ? "active" : ""
+                  location.pathname === "/blogspace" ? "active" : ""
                 }`}
                 onClick={handleClick}
                 aria-current="page"
-                to={"/blogs"}
+                to={"/blogspace"}
               >
                 Read
               </Link>

@@ -1,27 +1,88 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import noteContext from "../../context/notes/noteContext";
-import Card from "./Card.js";
+import { useNavigate } from "react-router-dom";
+import coder from "./assets/coder.png";
 import "./Blogs.css";
 
-function Blogs() {
+function Blogs({ selectedOption }) {
+  //const host = "http://localhost:5000";
+  const host = process.env.REACT_APP_BACKEND;
+  // add selectedOption as a prop
   const context = useContext(noteContext);
   const { allNotes, getAllNotes } = context;
+  const [notesByFilter, setNotesByFilter] = useState([]); // initialize notesByFilter state
+  const navigate = useNavigate();
 
   useEffect(() => {
-    getAllNotes();
-  }, []);
+    if (selectedOption) {
+      getNotesByType(selectedOption); // call getNotesByType if selectedOption is present
+    } else {
+      getAllNotes();
+    }
+  }, [selectedOption]);
+
+  //get note by type
+  const getNotesByType = async (type) => {
+    try {
+      const response = await fetch(
+        `${host}/api/notes/fetchNotesIrrespectiveByType/${type}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const note = await response.json();
+      setNotesByFilter(note); // update notesByFilter state with fetched notes
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // handle click on Read button
+  const handleReadClick = (id) => {
+    navigate(`/blog/${id}`);
+  };
+
+  // render notes based on selected option or all notes
+  const renderNotes = () => {
+    const notes = selectedOption ? notesByFilter : allNotes;
+    if (notes.length === 0) {
+      return <div>No blogs to display</div>;
+    } else {
+      return (
+        <div className="allBlogs">
+          {notes.map((note, i) => {
+            return (
+              <div className="card" style={{ width: "18rem" }} key={i}>
+                <img className="card-img-top" src={coder} alt="Card cap" />
+                <div className="card-body">
+                  <h5 className="card-title">{note.title}</h5>
+                  <button
+                    type="button"
+                    className="btn btn-primary my-3"
+                    onClick={() => handleReadClick(note._id)}
+                  >
+                    Read
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+  };
+
   return (
-    <div className="container-fluid">
-      <h2>Blogs</h2>
-      <div className="container mx-2">
-        {allNotes.length === 0 && "No notes to display"}
+    <>
+      <div className="container-fluid">
+        <h2>Blogs</h2>
+        <div className="container mx-2">{renderNotes()}</div>
       </div>
-      <div className="allBlogs">
-        {allNotes.map((note, i) => {
-          return <Card data={note} key={i} />;
-        })}
-      </div>
-    </div>
+    </>
   );
 }
 
