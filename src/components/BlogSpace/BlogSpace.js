@@ -27,7 +27,13 @@ function BlogSpace() {
         <Dropdown.Item eventKey="other">Other</Dropdown.Item>
       </DropdownButton>
       <p>You selected: {selectedOption}</p>
-      <Suspense>
+      <Suspense
+        fallback={
+          <div>
+            <h1>Loading, please wait :)</h1>
+          </div>
+        }
+      >
         <Blogs selectedOption={selectedOption} />
       </Suspense>
     </>

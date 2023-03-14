@@ -42,9 +42,14 @@ function Blogs({ selectedOption }) {
     navigate(`/blog/${id}`);
   };
 
+  const [searchTerm, setSearchTerm] = useState("");
+
   // render notes based on selected option or all notes
   const renderNotes = () => {
-    const notes = notesByFilter;
+    const notes = notesByFilter.filter((note) =>
+      note.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     if (notes.length === 0) {
       return <div>No blogs to display</div>;
     } else {
@@ -73,12 +78,28 @@ function Blogs({ selectedOption }) {
   };
 
   return (
-    <>
-      <div className="container-fluid">
-        <h2>Blogs</h2>
-        <div className="container mx-2">{renderNotes()}</div>
+    <div className="container-fluid">
+      <div className="row align-items-center justify-content-end">
+        <div className="col-md-6">
+          <h2 className="mb-3">Blogs</h2>
+        </div>
+        <div className="col-md-6">
+          <div className="input-group mb-3">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Search blogs"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button className="btn btn-outline-secondary" type="button">
+              Search
+            </button>
+          </div>
+        </div>
       </div>
-    </>
+      <div className="row">{renderNotes()}</div>
+    </div>
   );
 }
 
