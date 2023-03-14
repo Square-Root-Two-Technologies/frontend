@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 //import Blogs from "./Blogs";
 import "./BlogSpace.css";
 import { Dropdown, DropdownButton } from "react-bootstrap";
@@ -27,7 +27,9 @@ function BlogSpace() {
         <Dropdown.Item eventKey="other">Other</Dropdown.Item>
       </DropdownButton>
       <p>You selected: {selectedOption}</p>
-      <Blogs selectedOption={selectedOption} />
+      <Suspense>
+        <Blogs selectedOption={selectedOption} />
+      </Suspense>
     </>
   );
 }
