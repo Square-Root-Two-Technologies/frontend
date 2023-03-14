@@ -9,16 +9,12 @@ function Blogs({ selectedOption }) {
   const host = process.env.REACT_APP_BACKEND;
   // add selectedOption as a prop
   const context = useContext(noteContext);
-  const { allNotes, getAllNotes } = context;
   const [notesByFilter, setNotesByFilter] = useState([]); // initialize notesByFilter state
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (selectedOption) {
-      getNotesByType(selectedOption); // call getNotesByType if selectedOption is present
-    } else {
-      getAllNotes();
-    }
+    console.log("selectedOption: ", selectedOption);
+    getNotesByType(selectedOption);
   }, [selectedOption]);
 
   //get note by type
@@ -48,7 +44,7 @@ function Blogs({ selectedOption }) {
 
   // render notes based on selected option or all notes
   const renderNotes = () => {
-    const notes = selectedOption ? notesByFilter : allNotes;
+    const notes = notesByFilter;
     if (notes.length === 0) {
       return <div>No blogs to display</div>;
     } else {

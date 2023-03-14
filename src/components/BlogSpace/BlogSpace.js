@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import Blogs from "./Blogs";
+//import Blogs from "./Blogs";
 import "./BlogSpace.css";
 import { Dropdown, DropdownButton } from "react-bootstrap";
+
+const Blogs = React.lazy(() => import("./Blogs"));
 
 function BlogSpace() {
   const [selectedOption, setSelectedOption] = useState("all");
@@ -18,6 +20,7 @@ function BlogSpace() {
         style={{ padding: "10px", margin: "20px" }}
         onSelect={handleSelect}
       >
+        <Dropdown.Item eventKey="all">All Topics</Dropdown.Item>
         <Dropdown.Item eventKey="JavaScript">JavaScript</Dropdown.Item>
         <Dropdown.Item eventKey="Salesforce">Salesforce</Dropdown.Item>
         <Dropdown.Item eventKey="Sociology">Sociology</Dropdown.Item>
