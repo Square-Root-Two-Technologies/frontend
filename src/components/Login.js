@@ -1,14 +1,17 @@
 import React, { useState } from "react";
+import { Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 const Login = (props) => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
   let navigate = useNavigate();
 
   const backendURI = `${process.env.REACT_APP_BACKEND}/api/auth/login`;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const response = await fetch(backendURI, {
       method: "POST",
       headers: {
@@ -22,10 +25,12 @@ const Login = (props) => {
     const json = await response.json();
     console.log(json);
     if (json.success) {
+      setLoading(false);
       // Save the auth token and redirect
       localStorage.setItem("token", json.authtoken);
       navigate("/");
     } else {
+      setLoading(false);
       alert("Invalid credentials");
     }
   };
@@ -65,8 +70,8 @@ const Login = (props) => {
           />
         </div>
 
-        <button type="submit" className="btn btn-primary">
-          Submit
+        <button type="submit" className="btn btn-primary" disabled={loading}>
+        {loading ? <><Spinner size="sm" animation="border" variant="light" /> Loading...</> : 'Submit'}
         </button>
       </form>
     </div>
