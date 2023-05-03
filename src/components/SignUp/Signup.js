@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 //import rocket from "./assets/building_rockets.png";
 import rocket from "./assets/building_rockets_preview_rev_1.png";
+import { Spinner } from "react-bootstrap";
 
 function Signup() {
   //const backendURI = `http://localhost:5000/api/auth/createuser`;
@@ -16,9 +17,11 @@ function Signup() {
     city: "",
     about: "",
   });
+  const [loading, setLoading] = useState(false);
   let navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const { name, email, password, country, city } = credentials;
     const response = await fetch(backendURI, {
       method: "POST",
@@ -33,10 +36,12 @@ function Signup() {
     console.log(json);
     if (json.success) {
       // Save the auth token and redirect
+      setLoading(false);
       localStorage.setItem("token", json.authtoken);
       navigate("/");
     } else {
       alert("Invalid credentials");
+      setLoading(false);
     }
   };
   const onChange = (e) => {
@@ -152,8 +157,9 @@ function Signup() {
                           <button
                             type="submit"
                             className="btn btn-primary my-3"
+                            disabled={loading}
                           >
-                            Submit
+                            {loading ? <><Spinner size="sm" animation="border" variant="light" /> Loading...</> : 'Submit'}
                           </button>
                         </div>
                       </form>
