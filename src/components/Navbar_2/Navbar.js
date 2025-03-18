@@ -4,6 +4,7 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
+import "./Navbar.css";
 
 function Navbar_2() {
   let location = useLocation();
@@ -27,10 +28,9 @@ function Navbar_2() {
       expand="lg"
       className="sticky-top navbar-light"
       expanded={expanded}
-      style={{ backgroundColor: "white" }}
     >
       <Container>
-        <Navbar.Brand href="#home"> √2</Navbar.Brand>
+        <Navbar.Brand href="/"> √2</Navbar.Brand>
         <Navbar.Toggle
           onClick={handleToggle}
           aria-controls="responsive-navbar-nav"

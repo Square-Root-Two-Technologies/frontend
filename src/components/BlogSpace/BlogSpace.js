@@ -1,42 +1,67 @@
 import React, { useState, Suspense } from "react";
-//import Blogs from "./Blogs";
+import { Container, Row, Col, Dropdown } from "react-bootstrap";
 import "./BlogSpace.css";
-import { Dropdown, DropdownButton } from "react-bootstrap";
 
 const Blogs = React.lazy(() => import("./Blogs"));
 
 function BlogSpace() {
   const [selectedOption, setSelectedOption] = useState("all");
 
-  function handleSelect(eventKey) {
+  const handleSelect = (eventKey) => {
     setSelectedOption(eventKey);
-  }
+  };
+
+  const dropdownOptions = [
+    { key: "all", label: "All Topics" },
+    { key: "JavaScript", label: "JavaScript" },
+    { key: "Salesforce", label: "Salesforce" },
+    { key: "Sociology", label: "Sociology" },
+    { key: "Other Topics", label: "Other" },
+  ];
 
   return (
-    <>
-      <DropdownButton
-        variant="primary"
-        title="Select an option"
-        style={{ padding: "10px", margin: "20px" }}
-        onSelect={handleSelect}
-      >
-        <Dropdown.Item eventKey="all">All Topics</Dropdown.Item>
-        <Dropdown.Item eventKey="JavaScript">JavaScript</Dropdown.Item>
-        <Dropdown.Item eventKey="Salesforce">Salesforce</Dropdown.Item>
-        <Dropdown.Item eventKey="Sociology">Sociology</Dropdown.Item>
-        <Dropdown.Item eventKey="other">Other</Dropdown.Item>
-      </DropdownButton>
-      <p>You selected: {selectedOption}</p>
-      <Suspense
-        fallback={
-          <div>
-            <h1>Loading, please wait :)</h1>
+    <Container fluid className="blogspace-container">
+      <Row className="justify-content-center">
+        <Col xs={12} md={10} lg={8}>
+          <div className="blogspace-header">
+            <h1 className="blogspace-title">Blog Space</h1>
+            <div className="blogspace-controls">
+              <Dropdown onSelect={handleSelect}>
+                <Dropdown.Toggle className="blogspace-dropdown">
+                  {selectedOption.charAt(0).toUpperCase() +
+                    selectedOption.slice(1)}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  {dropdownOptions.map((option) => (
+                    <Dropdown.Item
+                      key={option.key}
+                      eventKey={option.key}
+                      active={selectedOption === option.key}
+                    >
+                      {option.label}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
+              <p className="blogspace-subtitle">
+                Showing:{" "}
+                {selectedOption.charAt(0).toUpperCase() +
+                  selectedOption.slice(1)}
+              </p>
+            </div>
           </div>
-        }
-      >
-        <Blogs selectedOption={selectedOption} />
-      </Suspense>
-    </>
+          <Suspense
+            fallback={
+              <div className="text-center">
+                <h2 className="text-light fw-light">Loading...</h2>
+              </div>
+            }
+          >
+            <Blogs selectedOption={selectedOption} />
+          </Suspense>
+        </Col>
+      </Row>
+    </Container>
   );
 }
 

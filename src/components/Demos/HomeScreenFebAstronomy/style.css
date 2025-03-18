@@ -1,0 +1,209 @@
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.landing-page {
+  min-height: 100vh;
+  overflow: hidden;
+  font-family: "Poppins", sans-serif;
+  color: #f4e3d3;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2b2b2b 100%);
+}
+
+/* Main Content */
+.main-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: calc(100vh - 60px);
+  padding: 20px;
+  gap: 20px;
+}
+
+.left-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.animation-window {
+  width: 90%;
+  height: 90%;
+  max-width: 600px;
+  max-height: 600px;
+  border: 2px solid #5c5c5c;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  background: rgba(43, 43, 43, 0.2);
+  position: relative; /* Ensure controls are positioned relative to this */
+}
+
+.right-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 40px;
+}
+
+.right-section h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #f4e3d3;
+  margin-bottom: 20px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.right-section p {
+  font-size: 1.2rem;
+  color: #d9b8a2;
+  margin-bottom: 30px;
+}
+
+.right-section button {
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 500;
+  background-color: #e6b98a;
+  border: none;
+  border-radius: 8px;
+  color: #1a1a1a;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.3s;
+}
+
+.right-section button:hover {
+  background-color: #d9a97a;
+  transform: translateY(-2px);
+}
+
+/* SpaceScene Controls */
+.space-scene-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.controls {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 1;
+  background: rgba(43, 43, 43, 0.9);
+  padding: 20px;
+  border-radius: 12px;
+  color: #f4e3d3;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  width: 200px;
+}
+
+.controls label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.controls input[type="range"] {
+  width: 100%;
+  cursor: pointer;
+  margin-bottom: 15px;
+  accent-color: #e6b98a;
+}
+
+.particle-controls {
+  margin-bottom: 15px;
+}
+
+.particle-controls label {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.particle-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.particle-buttons button {
+  padding: 8px 12px;
+  background: #a68a64;
+  border: none;
+  border-radius: 8px;
+  color: #1a1a1a;
+  cursor: pointer;
+  transition: background 0.3s;
+  font-size: 0.9rem;
+}
+
+.particle-buttons button:hover {
+  background: #967a54;
+}
+
+.controls .toggle-button {
+  padding: 10px;
+  background: #e6b98a;
+  border: none;
+  border-radius: 8px;
+  color: #1a1a1a;
+  cursor: pointer;
+  width: 100%;
+  font-size: 0.9rem;
+  transition: background 0.3s;
+}
+
+.controls .toggle-button:hover {
+  background: #d9a97a;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .main-content {
+    grid-template-columns: 1fr;
+    padding: 10px;
+  }
+
+  .right-section {
+    display: none;
+  }
+
+  .left-section {
+    width: 100%;
+    height: calc(100vh - 60px);
+    padding: 10px;
+  }
+
+  .animation-window {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+  }
+
+  .controls {
+    width: 180px;
+    padding: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .controls {
+    width: 160px;
+    padding: 10px;
+  }
+
+  .controls label {
+    font-size: 0.8rem;
+  }
+
+  .particle-buttons button,
+  .controls .toggle-button {
+    font-size: 0.8rem;
+    padding: 6px 10px;
+  }
+}

@@ -1,0 +1,37 @@
+/* Navbar Styles */
+.navbar {
+  background: #1a1a1a; /* Solid color matching the darker end of the homescreen */
+  padding: 10px 0; /* Optional: Adjust padding if needed */
+}
+
+.navbar-brand,
+.nav-link {
+  color: #f4e3d3 !important; /* Matches landing page text color */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Matches h1 shadow */
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: #e6b98a !important; /* Matches button color for hover/active state */
+}
+
+.navbar-toggler {
+  border-color: #5c5c5c; /* Matches animation-window border */
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23f4e3d3' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e"); /* Matches text color */
+}
+
+/* Style the buttons in the navbar */
+.navbar .btn {
+  background-color: #e6b98a;
+  color: #1a1a1a;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+}
+
+.navbar .btn:hover {
+  background-color: #d9a97a;
+}
