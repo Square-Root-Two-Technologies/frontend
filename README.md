@@ -1,25 +1,60 @@
-Contribution Guidelines:
+Sure! Here's a refined version of your contribution guidelines formatted properly for a GitHub `README.md`:  
 
-If you wish to become a collaborator, please send an email to tanvirraihanislam2025@gmail.com
+---
 
-Find a 'New Ticket' you find interesting from the Project Board, and ask to be assigned.
+# Contribution Guidelines  
 
-Once assigned, create a new branch off main named with the issue number and the ticket name formatted as follows:
+Thank you for your interest in contributing to **Square Root Two Technologies**! We maintain high standards for code quality, and contributions are thoroughly reviewed before merging.  
 
-"IssueNumber-name-of-ticket"
-Example: 14-post-request-to-database-for-articles
-Work on your branch, commit and push when necessary. Be descriptive and clear with your commit messages.
+## How to Contribute  
 
-Once finished, create a pull request to merge into the main branch. The pull request should properly fill out the PR template.
+### 1. Become a Collaborator  
+If you'd like to contribute, please send an email to:  
+📧 **tanvirraihanislam2025@gmail.com**  
 
-An admin will review your ticket, and either approve your changes, or request changes. If changes requested, checkout to your branch and make requested changes.
+### 2. Pick a Ticket  
+- Browse the **Project Board** and find a `New Ticket` that interests you.  
+- Comment on the ticket to request assignment.  
 
-Note: Code will be thoroughly reviewed - we uphold a code quality standard at NU Sci:
+### 3. Create a Feature Branch  
+Once assigned, create a new branch from `main`, following this naming convention:  
 
-You will be asked to explain your reasoning to be approved.
-You must have proper and clear formatting on all changes in the code.
-You must not have extraneous code / code not relevant to the ticket in the pull request.
-The code must be well-documented and commented.
-The code must conform to the design patterns and choices already existing in the code.
-The code must pass all tests, as well as have new tests defined for new or adjusted functionality.
-It often requires multiple rounds of review in order for a pull request to be merged.
+```
+IssueNumber-name-of-ticket
+```
+
+**Example:**  
+```
+14-post-request-to-database-for-articles
+```
+
+### 4. Work on Your Branch  
+- Commit and push changes regularly.  
+- Use **descriptive commit messages** that clearly explain your changes.  
+
+### 5. Submit a Pull Request  
+- When your work is complete, open a **pull request (PR)** to merge your branch into `main`.  
+- Fill out the PR template properly.  
+
+### 6. Code Review Process  
+- An **admin will review** your PR and either approve it or request changes.  
+- If changes are requested, switch back to your branch and update your code accordingly.  
+
+---
+
+## Code Quality Standards  
+
+We follow strict **code quality standards** at **Square Root Two Technologies**. To ensure your PR is approved, make sure:  
+
+✔️ You can **explain your reasoning** for the changes.  
+✔️ Your code is **properly formatted** and easy to read.  
+✔️ No **extraneous/unrelated code** is included in the PR.  
+✔️ Your code is **well-documented and commented**.  
+✔️ Your code follows **existing design patterns** in the project.  
+✔️ All tests **pass successfully**, and new functionality has **corresponding tests**.  
+
+🔹 **Note:** Code reviews often require multiple rounds before approval. Be prepared for feedback!  
+
+---
+
+Happy coding! 🚀  
