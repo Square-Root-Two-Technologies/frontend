@@ -6,7 +6,7 @@ Thank you for your interest in contributing to **Square Root Two Technologies**!
 
 ### 1. Become a Collaborator  
 If you'd like to contribute, please send an email to:  
-📧 **tanvirraihanislam2025@gmail.com**  
+📧 **2024.tri.squareroottwo@gmail.com**  
 
 ### 2. Pick a Ticket  
 - Browse the **Project Board** and find a `New Ticket` that interests you.  
