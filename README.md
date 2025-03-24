@@ -1,7 +1,3 @@
-Sure! Here's a refined version of your contribution guidelines formatted properly for a GitHub `README.md`:  
-
----
-
 # Contribution Guidelines  
 
 Thank you for your interest in contributing to **Square Root Two Technologies**! We maintain high standards for code quality, and contributions are thoroughly reviewed before merging.  
