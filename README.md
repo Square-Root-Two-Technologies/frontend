@@ -1,4 +1,5 @@
-Contribution Guidelines
+Contribution Guidelines:
+
 If you wish to become a collaborator, please send an email to tanvirraihanislam2025@gmail.com
 
 Find a 'New Ticket' you find interesting from the Project Board, and ask to be assigned.
