@@ -3,34 +3,32 @@ import { Modal } from "bootstrap";
 import noteContext from "../context/notes/noteContext";
 import Noteitem from "./NoteItem/NoteItem.js";
 import AddNote from "./AddNote";
+import EditNote from "./EditNote/EditNote.js";
 
 const Notes2 = () => {
   const context = useContext(noteContext);
-  const { notes, getNotes, editNote } = context;
+  const { notes, getNotes } = context;
 
   const [showAddModal, setShowAddModal] = useState(false);
   const modalRef = useRef(null);
   const addModalRef = useRef(null);
   const [modalInstance, setModalInstance] = useState(null);
   const [addModalInstance, setAddModalInstance] = useState(null);
-  const refClose = useRef(null);
 
   const [note, setNote] = useState({
     id: "",
-    etitle: "",
-    edescription: "",
-    etag: "",
+    title: "", // Changed to match EditNote
+    description: "", // Changed to match EditNote
+    tag: "", // Changed to match EditNote
   });
 
   useEffect(() => {
     getNotes();
-    // Edit modal
     const modalElement = modalRef.current;
     if (modalElement) {
       const instance = new Modal(modalElement);
       setModalInstance(instance);
     }
-    // Add modal
     const addModalElement = addModalRef.current;
     if (addModalElement) {
       const addInstance = new Modal(addModalElement);
@@ -40,32 +38,33 @@ const Notes2 = () => {
   }, []);
 
   const updateNote = (currentNote) => {
+    setNote({
+      id: currentNote._id,
+      title: currentNote.title, // Use consistent field names
+      description: currentNote.description,
+      tag: currentNote.tag || "Please select a topic",
+    });
     if (modalInstance) {
       modalInstance.show();
     }
-    setNote({
-      id: currentNote._id,
-      etitle: currentNote.title,
-      edescription: currentNote.description,
-      etag: currentNote.tag,
-    });
-  };
-
-  const handleClick = (e) => {
-    editNote(note.id, note.etitle, note.edescription, note.etag);
-    if (modalInstance) {
-      modalInstance.hide();
-    }
-  };
-
-  const onChange = (e) => {
-    setNote({ ...note, [e.target.name]: e.target.value });
   };
 
   const toggleAddModal = () => {
     if (addModalInstance) {
       showAddModal ? addModalInstance.hide() : addModalInstance.show();
       setShowAddModal(!showAddModal);
+    }
+  };
+
+  const handleSaveEdit = () => {
+    if (modalInstance) {
+      modalInstance.hide();
+    }
+  };
+
+  const handleCloseEdit = () => {
+    if (modalInstance) {
+      modalInstance.hide();
     }
   };
 
@@ -88,7 +87,7 @@ const Notes2 = () => {
                 margin: 0,
               }}
             >
-              Your Note Manager
+              Your Blog Manager
             </h1>
             <button
               className="btn"
@@ -103,7 +102,7 @@ const Notes2 = () => {
                 transition: "background-color 0.3s ease",
               }}
             >
-              Add a Note
+              Add a Blog Post
             </button>
           </div>
 
@@ -117,7 +116,7 @@ const Notes2 = () => {
                 textAlign: "center",
               }}
             >
-              Your Notes
+              Your Blog Posts
             </h2>
             <div className="row g-4">
               {notes.length === 0 ? (
@@ -133,7 +132,7 @@ const Notes2 = () => {
                       fontSize: "1.1rem",
                     }}
                   >
-                    No notes to display. Start by adding a note!
+                    No blog posts to display. Start by adding one!
                   </div>
                 </div>
               ) : (
@@ -158,7 +157,10 @@ const Notes2 = () => {
             aria-labelledby="editModalLabel"
             aria-hidden="true"
           >
-            <div className="modal-dialog modal-dialog-centered">
+            <div
+              className="modal-dialog modal-dialog-centered modal-lg"
+              style={{ maxWidth: "90vw", width: "100%" }}
+            >
               <div
                 style={{ backgroundColor: "#2b2b2b", border: "none" }}
                 className="modal-content"
@@ -168,123 +170,21 @@ const Notes2 = () => {
                   className="modal-header"
                 >
                   <h5 className="modal-title" id="editModalLabel">
-                    Edit Your Note
+                    Edit Your Blog Post
                   </h5>
                   <button
                     type="button"
                     className="btn-close"
-                    data-bs-dismiss="modal"
+                    onClick={handleCloseEdit}
                     style={{ filter: "invert(1)" }}
                   ></button>
                 </div>
-                <div className="modal-body">
-                  <form className="my-3">
-                    <div className="mb-3">
-                      <label
-                        htmlFor="etitle"
-                        style={{ color: "#f4e3d3" }}
-                        className="form-label"
-                      >
-                        Title
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="etitle"
-                        name="etitle"
-                        value={note.etitle}
-                        onChange={onChange}
-                        minLength={5}
-                        required
-                        style={{
-                          backgroundColor: "#3c3c3c",
-                          color: "#f4e3d3",
-                          border: "none",
-                        }}
-                      />
-                    </div>
-                    <div className="mb-3">
-                      <label
-                        htmlFor="etag"
-                        style={{ color: "#f4e3d3" }}
-                        className="form-label"
-                      >
-                        Tag (Optional)
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="etag"
-                        name="etag"
-                        value={note.etag}
-                        onChange={onChange}
-                        style={{
-                          backgroundColor: "#3c3c3c",
-                          color: "#f4e3d3",
-                          border: "none",
-                        }}
-                      />
-                    </div>
-                    <div className="mb-3">
-                      <label
-                        htmlFor="edescription"
-                        style={{ color: "#f4e3d3" }}
-                        className="form-label"
-                      >
-                        Body
-                      </label>
-                      <textarea
-                        className="form-control"
-                        id="edescription"
-                        name="edescription"
-                        value={note.edescription}
-                        onChange={onChange}
-                        minLength={5}
-                        required
-                        rows="4"
-                        style={{
-                          backgroundColor: "#3c3c3c",
-                          color: "#f4e3d3",
-                          border: "none",
-                          resize: "vertical",
-                        }}
-                      />
-                    </div>
-                  </form>
-                </div>
-                <div className="modal-footer">
-                  <button
-                    ref={refClose}
-                    type="button"
-                    className="btn"
-                    data-bs-dismiss="modal"
-                    style={{
-                      backgroundColor: "#6c757d",
-                      color: "#ffffff",
-                      border: "none",
-                      padding: "5px 15px",
-                      borderRadius: "5px",
-                    }}
-                  >
-                    Close
-                  </button>
-                  <button
-                    disabled={
-                      note.etitle.length < 5 || note.edescription.length < 5
-                    }
-                    onClick={handleClick}
-                    type="button"
-                    className="btn"
-                    style={{
-                      backgroundColor: "#a68a64",
-                      color: "#ffffff",
-                      border: "none",
-                      padding: "5px 15px",
-                      borderRadius: "5px",
-                    }}
-                  >
-                    Update Note
-                  </button>
+                <div className="modal-body" style={{ padding: "1.5rem" }}>
+                  <EditNote
+                    note={note}
+                    onSave={handleSaveEdit}
+                    onClose={handleCloseEdit}
+                  />
                 </div>
               </div>
             </div>
@@ -299,7 +199,10 @@ const Notes2 = () => {
             aria-labelledby="addModalLabel"
             aria-hidden="true"
           >
-            <div className="modal-dialog modal-dialog-centered">
+            <div
+              className="modal-dialog modal-dialog-centered modal-lg"
+              style={{ maxWidth: "90vw", width: "100%" }}
+            >
               <div
                 style={{ backgroundColor: "#2b2b2b", border: "none" }}
                 className="modal-content"
@@ -309,7 +212,7 @@ const Notes2 = () => {
                   className="modal-header"
                 >
                   <h5 className="modal-title" id="addModalLabel">
-                    Create a New Note
+                    Create a New Blog Post
                   </h5>
                   <button
                     type="button"
@@ -318,21 +221,14 @@ const Notes2 = () => {
                     style={{ filter: "invert(1)" }}
                   ></button>
                 </div>
-                <div className="modal-body">
-                  <AddNote />
+                <div className="modal-body" style={{ padding: "1.5rem" }}>
+                  <AddNote toggleAddModal={toggleAddModal} />
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <footer
-        className="text-center py-3"
-        style={{ backgroundColor: "#1a1a1a", color: "#ffffff", flexShrink: 0 }}
-      >
-        <p style={{ margin: 0 }}>© {new Date().getFullYear()} Note Manager</p>
-      </footer>
     </div>
   );
 };

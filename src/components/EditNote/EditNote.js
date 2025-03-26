@@ -1,13 +1,20 @@
-import React, { useContext, useState, useRef, useCallback } from "react";
+import React, {
+  useContext,
+  useState,
+  useRef,
+  useCallback,
+  useEffect,
+} from "react";
 import PropTypes from "prop-types";
-import noteContext from "../context/notes/noteContext";
+import noteContext from "../../context/notes/noteContext";
 import JoditEditor from "jodit-react";
 
-const AddNote = ({ toggleAddModal }) => {
+const EditNote = ({ note: initialNote, onSave, onClose }) => {
   const context = useContext(noteContext);
-  const { addNote } = context;
+  const { editNote } = context;
 
   const [note, setNote] = useState({
+    id: "",
     title: "",
     description: "",
     tag: "Please select a topic",
@@ -16,19 +23,24 @@ const AddNote = ({ toggleAddModal }) => {
 
   const editorRef = useRef(null);
 
-  const handleClick = useCallback(
+  // Sync internal state with incoming note prop whenever it changes
+  useEffect(() => {
+    setNote({
+      id: initialNote.id || "",
+      title: initialNote.etitle || initialNote.title || "",
+      description: initialNote.edescription || initialNote.description || "",
+      tag: initialNote.etag || initialNote.tag || "Please select a topic",
+      type: "JavaScript", // Adjust if type is dynamic
+    });
+  }, [initialNote]);
+
+  const handleSave = useCallback(
     (e) => {
       e.preventDefault();
-      addNote(note.title, note.description, note.tag, note.type);
-      setNote({
-        title: "",
-        description: "",
-        tag: "Please select a topic",
-        type: "JavaScript",
-      });
-      if (toggleAddModal) toggleAddModal();
+      editNote(note.id, note.title, note.description, note.tag);
+      onSave();
     },
-    [addNote, note, toggleAddModal],
+    [editNote, note, onSave],
   );
 
   const onChange = (e) => {
@@ -45,12 +57,11 @@ const AddNote = ({ toggleAddModal }) => {
     }));
   };
 
-  // Jodit Editor configuration optimized for blog editing
   const editorConfig = {
-    height: 500, // Increased height for blog content
+    height: 500,
     theme: "dark",
-    toolbarSticky: true, // Sticky toolbar for better usability
-    placeholder: "Write your blog post here...",
+    toolbarSticky: true,
+    placeholder: "Edit your blog post here...",
     style: {
       backgroundColor: "#3c3c3c",
       color: "#f4e3d3",
@@ -62,8 +73,8 @@ const AddNote = ({ toggleAddModal }) => {
       "underline",
       "strikethrough",
       "|",
-      "fontsize", // Added for text size changes
-      "font", // Added for font family selection
+      "fontsize",
+      "font",
       "|",
       "ul",
       "ol",
@@ -71,6 +82,8 @@ const AddNote = ({ toggleAddModal }) => {
       "outdent",
       "|",
       "link",
+      "image",
+      "video",
       "|",
       "align",
       "undo",
@@ -78,20 +91,20 @@ const AddNote = ({ toggleAddModal }) => {
       "|",
       "hr",
       "table",
-      "source", // Added for HTML source editing
+      "source",
     ],
     extraButtons: [
       {
         name: "fullsize",
         tooltip: "Full Screen",
       },
-    ], // Fullscreen option for better editing
+    ],
   };
 
   return (
     <div className="container my-3" style={{ maxWidth: "100%" }}>
-      <h2 style={{ color: "#ffffff", fontSize: "1.75rem" }}>Add a Blog Post</h2>
-      <form className="my-3" onSubmit={handleClick}>
+      <h2 style={{ color: "#ffffff", fontSize: "1.75rem" }}>Edit Blog Post</h2>
+      <form className="my-3" onSubmit={handleSave}>
         <div className="mb-3">
           <label
             htmlFor="title"
@@ -165,32 +178,59 @@ const AddNote = ({ toggleAddModal }) => {
             tabIndex={1}
           />
         </div>
-        <button
-          type="submit"
-          className="btn"
-          disabled={
-            note.title.length < 5 ||
-            note.description.length < 5 ||
-            note.tag === "Please select a topic"
-          }
-          style={{
-            backgroundColor: "#a68a64",
-            color: "#ffffff",
-            border: "none",
-            padding: "8px 20px",
-            borderRadius: "5px",
-            fontSize: "1rem",
-          }}
-        >
-          Publish Blog Post
-        </button>
+        <div className="d-flex justify-content-end gap-2">
+          <button
+            type="button"
+            className="btn"
+            onClick={onClose}
+            style={{
+              backgroundColor: "#6c757d",
+              color: "#ffffff",
+              border: "none",
+              padding: "8px 20px",
+              borderRadius: "5px",
+              fontSize: "1rem",
+            }}
+          >
+            Close
+          </button>
+          <button
+            type="submit"
+            className="btn"
+            disabled={
+              note.title.length < 5 ||
+              note.description.length < 5 ||
+              note.tag === "Please select a topic"
+            }
+            style={{
+              backgroundColor: "#a68a64",
+              color: "#ffffff",
+              border: "none",
+              padding: "8px 20px",
+              borderRadius: "5px",
+              fontSize: "1rem",
+            }}
+          >
+            Update Blog Post
+          </button>
+        </div>
       </form>
     </div>
   );
 };
 
-AddNote.propTypes = {
-  toggleAddModal: PropTypes.func,
+EditNote.propTypes = {
+  note: PropTypes.shape({
+    id: PropTypes.string,
+    etitle: PropTypes.string,
+    edescription: PropTypes.string,
+    etag: PropTypes.string,
+    title: PropTypes.string, // Added for compatibility
+    description: PropTypes.string, // Added for compatibility
+    tag: PropTypes.string, // Added for compatibility
+  }).isRequired,
+  onSave: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
-export default AddNote;
+export default EditNote;
