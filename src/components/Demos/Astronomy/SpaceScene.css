@@ -1,0 +1,148 @@
+/* SpaceScene.css */
+
+/* Container for the entire SpaceScene */
+.space-scene-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Controls container (collapsed state) */
+.controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background-color: #1a1a1a; /* Dark gray background */
+  border-radius: 25px; /* Rounded button */
+  width: 90px; /* Button width */
+  height: 30px; /* Button height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease; /* Smooth transition */
+  cursor: pointer;
+}
+
+/* Controls button (visible in collapsed state) */
+.controls-button {
+  background-color: #a68a64; /* Muted tan */
+  color: #ffffff; /* White text */
+  border: none;
+  border-radius: 10px;
+  width: 90px;
+  height: 30px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  text-align: center;
+}
+
+/* Hide controls content in collapsed state */
+.controls-content {
+  display: none;
+}
+
+/* Desktop hover behavior */
+@media (min-width: 768px) and (hover: hover) {
+  .controls:hover {
+    width: 250px;
+    height: 300px; /* Let content dictate height */
+    border-radius: 10px;
+    padding: 10px; /* Reduced for compactness */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .controls:hover .controls-button {
+    display: none; /* Hide the "Controls" button when expanded */
+  }
+
+  .controls:hover .controls-content {
+    display: block; /* Show the full control tab */
+    color: #f4e3d3; /* Soft cream text */
+  }
+}
+
+/* Mobile click behavior */
+.controls.expanded {
+  width: 250px;
+  height: auto; /* Let content dictate height */
+  border-radius: 10px;
+  padding: 10px; /* Reduced for compactness */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.controls.expanded .controls-button {
+  display: none; /* Hide the "Controls" button when expanded */
+}
+
+.controls.expanded .controls-content {
+  display: block; /* Show the full control tab */
+  color: #f4e3d3; /* Soft cream text */
+}
+
+/* Styles for the expanded control tab (matches original layout) */
+.controls-content label {
+  font-size: 0.875rem;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.controls-content input[type="range"] {
+  width: 100%;
+  background: #d9b8a2; /* Muted peach */
+  border: none;
+  height: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 5px 0; /* Reduced for compactness */
+}
+
+.controls-content input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  background: #a68a64; /* Muted tan */
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.controls-content .particle-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 5px 0; /* Reduced for compactness */
+}
+
+.controls-content .particle-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.controls-content .particle-buttons button {
+  background-color: #a68a64; /* Muted tan */
+  color: #ffffff; /* White text */
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.controls-content .particle-buttons button:hover {
+  background-color: #d9b8a2; /* Lighter peach on hover */
+}
+
+.controls-content .toggle-button {
+  background-color: #a68a64; /* Muted tan */
+  color: #ffffff; /* White text */
+  border: none;
+  border-radius: 5px;
+  padding: 5px 15px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  margin-top: 5px; /* Reduced for compactness */
+}
+
+.controls-content .toggle-button:hover {
+  background-color: #d9b8a2; /* Lighter peach on hover */
+}
