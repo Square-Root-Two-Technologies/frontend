@@ -1,10 +1,11 @@
 import "./App.css";
 import React from "react";
 import Navbar_2 from "./components/Navbar_2/Navbar.js";
+//import Navbar_1 from "./components/Navbar/Navbar.js";
 import About from "./components/About";
 import NoteState from "./context/notes/NoteState";
 import Signup from "./components/SignUp/Signup.js";
-import Login from "./components/Login";
+import Login from "./components/Login/Login.js";
 import HomeRootTwo from "./components/HomeRootTwo/HomeRootTwo.js";
 import { Route, Routes } from "react-router-dom";
 import BlogSpace from "./components/BlogSpace/BlogSpace.js";

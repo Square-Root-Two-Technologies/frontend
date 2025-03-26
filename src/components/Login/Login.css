@@ -1,0 +1,32 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.login-container {
+  width: 100vw; /* Full viewport width */
+  height: 100vh; /* Full viewport height */
+  background-color: #1a1a1a;
+  color: #f4e3d3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Rest of your CSS remains unchanged */
+.login-form-container {
+  background-color: #1a1a1a;
+  max-width: 400px;
+  width: 100%;
+  border: 1px solid #a68a64;
+  padding: 1.5rem;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* ... (rest of your existing styles) */

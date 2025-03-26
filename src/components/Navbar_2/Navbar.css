@@ -1,38 +1,133 @@
 /* Navbar Styles */
 .navbar {
-  background: #1a1a1a; /* Solid color matching the darker end of the homescreen */
-  padding: 10px 0; /* Optional: Adjust padding if needed */
+  background: #1a1a1a; /* Dark charcoal background - unchanged */
+  padding: 10px 0;
 }
 
 .navbar-brand,
 .nav-link {
-  color: #f4e3d3 !important; /* Matches landing page text color */
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Matches h1 shadow */
+  color: #f4e3d3 !important; /* Light beige text - unchanged */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow - unchanged */
 }
 
 .nav-link:hover,
 .nav-link.active {
-  color: #e6b98a !important; /* Matches button color for hover/active state */
+  color: #e6b98a !important; /* Warm tan for hover/active - unchanged */
 }
 
 .navbar-toggler {
-  border-color: #f4e3d3; /* Brighter border */
+  border-color: #f4e3d3; /* Light beige border - unchanged */
 }
 
 .navbar-toggler-icon {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23e6b98a' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e"); /* Brighter icon */
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23e6b98a' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
   filter: invert(100%);
 }
 
 /* Style the buttons in the navbar */
 .navbar .btn {
-  background-color: #e6b98a;
-  color: #1a1a1a;
+  background-color: #e6b98a; /* Warm tan - unchanged */
+  color: #1a1a1a; /* Dark charcoal text - unchanged */
   border: none;
   border-radius: 8px;
   padding: 8px 16px;
+  transition: background-color 0.3s ease; /* Added transition for smooth hover - BEST PRACTICE */
 }
 
 .navbar .btn:hover {
-  background-color: #d9a97a;
+  background-color: #d9a97a; /* Slightly darker tan - unchanged */
+}
+
+/* Modal Styles */
+.modal-content {
+  background-color: #2b2b2b; /* CHANGED: Slightly lighter than navbar (#1a1a1a) for distinction */
+  color: #2b2b2b; /* Light beige text - unchanged */
+  border: 1px solid #4a4a4a; /* CHANGED: Added subtle gray border for definition */
+  border-radius: 8px;
+}
+
+.modal-header {
+  background-color: #2b2b2b; /* CHANGED: Matches modal content background */
+  border-bottom: 1px solid #4a4a4a; /* CHANGED: Gray border for contrast */
+  padding: 15px 20px; /* BEST PRACTICE: Consistent padding */
+}
+
+.modal-title {
+  color: #f4e3d3; /* Light beige - unchanged */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow - unchanged */
+  font-size: 1.25rem; /* BEST PRACTICE: Readable size */
+}
+
+.modal-body {
+  padding: 20px; /* Unchanged - consistent spacing */
+}
+
+/* Form inputs styling */
+.form-control {
+  background-color: #3c3c3c; /* CHANGED: Darker gray for better contrast against modal bg */
+  border: 1px solid #f4e3d3; /* Light beige border - unchanged */
+  color: #f4e3d3; /* Light beige text - unchanged */
+  border-radius: 8px;
+  padding: 10px; /* BEST PRACTICE: Adequate padding for touch targets */
+}
+
+.form-control::placeholder {
+  color: #b0a292; /* CHANGED: Muted beige for better distinction from input text */
+  opacity: 1; /* BEST PRACTICE: Ensure placeholder is visible (override Bootstrap default) */
+}
+
+.form-control:focus {
+  background-color: #4a4a4a; /* CHANGED: Slightly lighter gray for focus state */
+  border-color: #e6b98a; /* Warm tan - unchanged */
+  color: #f4e3d3; /* Light beige - unchanged */
+  box-shadow: 0 0 0 0.2rem rgba(230, 185, 138, 0.25); /* Warm tan glow - unchanged */
+}
+
+/* Form labels */
+.form-label {
+  color: #f4e3d3; /* Light beige - unchanged */
+  font-weight: 500; /* BEST PRACTICE: Slightly bolder for readability */
+}
+
+/* Modal button styling */
+.modal .btn-primary {
+  background-color: #e6b98a; /* Warm tan - unchanged */
+  color: #1a1a1a; /* Dark charcoal - unchanged */
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px; /* BEST PRACTICE: Increased padding for better touch target */
+  width: 100%;
+  transition: background-color 0.3s ease; /* BEST PRACTICE: Smooth transition */
+}
+
+.modal .btn-primary:hover {
+  background-color: #d9a97a; /* Slightly darker tan - unchanged */
+}
+
+.modal .btn-primary:disabled {
+  background-color: #e6b98a;
+  opacity: 0.6; /* CHANGED: Slightly more pronounced fade for disabled state */
+  cursor: not-allowed; /* BEST PRACTICE: Clear indication of disabled state */
+}
+
+/* Close button styling */
+.btn-close {
+  filter: invert(90%) sepia(10%) saturate(200%) hue-rotate(330deg); /* CHANGED: Adjusted to approximate #f4e3d3 */
+  opacity: 0.8;
+  transition: opacity 0.2s ease; /* BEST PRACTICE: Smooth transition */
+}
+
+.btn-close:hover {
+  opacity: 1;
+}
+
+/* Spinner styling */
+.spinner-border {
+  color: #1a1a1a; /* Dark charcoal - unchanged */
+}
+
+/* Modal width */
+.modal-90w {
+  max-width: 400px;
+  margin: 0 auto;
 }
