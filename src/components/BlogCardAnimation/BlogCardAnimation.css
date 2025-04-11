@@ -1,0 +1,177 @@
+/* FILE: src/index.css or src/components/BlogCardAnimation/BlogCardAnimation.css */
+
+/* Add these color utility classes */
+/* You'll need to add one set for each color defined in typeToColorMap */
+
+/* Example for Blue (Technology) */
+.type-blue-600-fill {
+  @apply fill-blue-600;
+}
+.type-blue-600-stroke {
+  @apply stroke-blue-600;
+}
+.type-blue-600-text {
+  @apply text-blue-600;
+}
+.type-blue-600-bg-light {
+  @apply bg-blue-100;
+}
+.dark .type-blue-600-bg-light {
+  @apply bg-blue-900;
+} /* Dark mode background for fallback */
+
+/* Example for Purple (Creative) */
+.type-purple-600-fill {
+  @apply fill-purple-600;
+}
+.type-purple-600-stroke {
+  @apply stroke-purple-600;
+}
+.type-purple-600-text {
+  @apply text-purple-600;
+}
+.type-purple-600-bg-light {
+  @apply bg-purple-100;
+}
+.dark .type-purple-600-bg-light {
+  @apply bg-purple-900;
+}
+
+/* Example for Green (Tutorial) */
+.type-green-600-fill {
+  @apply fill-green-600;
+}
+.type-green-600-stroke {
+  @apply stroke-green-600;
+}
+.type-green-600-text {
+  @apply text-green-600;
+}
+.type-green-600-bg-light {
+  @apply bg-green-100;
+}
+.dark .type-green-600-bg-light {
+  @apply bg-green-900;
+}
+
+/* ... Add similar blocks for ALL colors in typeToColorMap ... */
+/* (pink, red, yellow, cyan, indigo, teal, gray) */
+
+.type-pink-600-fill {
+  @apply fill-pink-600;
+}
+.type-pink-600-stroke {
+  @apply stroke-pink-600;
+}
+.type-pink-600-text {
+  @apply text-pink-600;
+}
+.type-pink-600-bg-light {
+  @apply bg-pink-100;
+}
+.dark .type-pink-600-bg-light {
+  @apply bg-pink-900;
+}
+
+.type-red-600-fill {
+  @apply fill-red-600;
+}
+.type-red-600-stroke {
+  @apply stroke-red-600;
+}
+.type-red-600-text {
+  @apply text-red-600;
+}
+.type-red-600-bg-light {
+  @apply bg-red-100;
+}
+.dark .type-red-600-bg-light {
+  @apply bg-red-900;
+}
+
+.type-yellow-600-fill {
+  @apply fill-yellow-600;
+}
+.type-yellow-600-stroke {
+  @apply stroke-yellow-600;
+}
+.type-yellow-600-text {
+  @apply text-yellow-600;
+}
+.type-yellow-600-bg-light {
+  @apply bg-yellow-100;
+}
+.dark .type-yellow-600-bg-light {
+  @apply bg-yellow-900;
+}
+
+.type-cyan-600-fill {
+  @apply fill-cyan-600;
+}
+.type-cyan-600-stroke {
+  @apply stroke-cyan-600;
+}
+.type-cyan-600-text {
+  @apply text-cyan-600;
+}
+.type-cyan-600-bg-light {
+  @apply bg-cyan-100;
+}
+.dark .type-cyan-600-bg-light {
+  @apply bg-cyan-900;
+}
+
+.type-indigo-600-fill {
+  @apply fill-indigo-600;
+}
+.type-indigo-600-stroke {
+  @apply stroke-indigo-600;
+}
+.type-indigo-600-text {
+  @apply text-indigo-600;
+}
+.type-indigo-600-bg-light {
+  @apply bg-indigo-100;
+}
+.dark .type-indigo-600-bg-light {
+  @apply bg-indigo-900;
+}
+
+.type-teal-600-fill {
+  @apply fill-teal-600;
+}
+.type-teal-600-stroke {
+  @apply stroke-teal-600;
+}
+.type-teal-600-text {
+  @apply text-teal-600;
+}
+.type-teal-600-bg-light {
+  @apply bg-teal-100;
+}
+.dark .type-teal-600-bg-light {
+  @apply bg-teal-900;
+}
+
+.type-gray-500-fill {
+  @apply fill-gray-500;
+}
+.type-gray-500-stroke {
+  @apply stroke-gray-500;
+}
+.type-gray-500-text {
+  @apply text-gray-500;
+}
+.type-gray-500-bg-light {
+  @apply bg-gray-100;
+}
+.dark .type-gray-500-bg-light {
+  @apply bg-gray-700;
+} /* Adjusted dark default */
+
+/* Ensure SVG pointer events are off if needed (already in original css) */
+svg {
+  pointer-events: none;
+}
+/* Remove framer-motion specific drop shadow if it was only for that */
+/* .dark svg { ... } */

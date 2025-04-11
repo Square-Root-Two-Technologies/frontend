@@ -1,47 +1,91 @@
-import "./App.css";
 import React from "react";
-import Navbar_2 from "./components/Navbar_2/Navbar.js";
-//import Navbar_1 from "./components/Navbar/Navbar.js";
-import About from "./components/About";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Navbar from "./components/Navbar/Navbar";
+import HomeScreen from "./components/HomeScreen/HomeScreen";
+import BlogSpace from "./components/BlogSpace/BlogSpace";
+import SingleBlogPage from "./components/SingleBlogPage/SingleBlogPage";
+import Login from "./components/Login/Login";
+import Signup from "./components/Signup/Signup";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import MyNotesPage from "./components/MyNotesPage/MyNotesPage";
 import NoteState from "./context/notes/NoteState";
-import Signup from "./components/SignUp/Signup.js";
-import Login from "./components/Login/Login.js";
-import HomeRootTwo from "./components/HomeRootTwo/HomeRootTwo.js";
-import { Route, Routes } from "react-router-dom";
-import BlogSpace from "./components/BlogSpace/BlogSpace.js";
-import Blogs from "./components/BlogSpace/Blogs";
-import ManageBlogs from "./components/BlogSpace/Write/ManageBlogs.js";
-import Blog from "./components/BlogSpace/Blog/Blog.js";
-import SpaceScene from "./components/Demos/Astronomy/SpaceScene.js";
-import HomeScreenFebAstronomy from "./components/Demos/HomeScreenFebAstronomy/HomeScreenFebAstronomy.js";
-import HomeScreenFinalBoss from "./components/Demos/HomeScreenFinalBoss/HomeScreenFinalBoss.js";
-import HomeScreenWithAnimation from "./components/Demos/HomeScreenWithAnimation/HomeScreenWithAnimation.js";
-import HomeScreenJp from "./components/Demos/JapaneseWebDesign/HomeScreenJp.js";
+import UserState from "./context/user/UserState"; // Correct import path
+import ThemeProvider from "./context/ThemeProvider/ThemeProvider";
+import AddNote from "./components/AddNote/AddNote";
+import EditNote from "./components/EditNote/EditNote";
+import UserProfile from "./components/UserProfile/UserProfile";
+import EditProfile from "./components/EditProfile/EditProfile";
 
 function App() {
   return (
-    <>
-      <NoteState>
-        <Navbar_2 />
-        <Routes>
-          <Route path="/" element={<HomeScreenFinalBoss />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/blogspace" element={<BlogSpace />} />
-          <Route path="/blogs" element={<Blogs />} />
-          <Route path="/manageblogs" element={<ManageBlogs />} />
-          <Route path="/blog/:id" element={<Blog />} />
-          <Route path="/demo/scene/" element={<SpaceScene />} />
-          <Route path="/demo/homescreenjp/" element={<HomeScreenJp />} />
-          {/* <Route path="/home" element={<HomeScreenFinalBoss />} /> */}
-          <Route
-            path="/HomeScreenWithAnimation"
-            element={<HomeScreenWithAnimation />}
-          />
-        </Routes>
-      </NoteState>
-    </>
+    <ThemeProvider>
+      <UserState>
+        <NoteState>
+          <Router>
+            <div className="flex flex-col min-h-screen">
+              <Navbar />
+              <main className="flex-grow container mx-auto px-4 py-8">
+                <Routes>
+                  <Route path="/" element={<HomeScreen />} />
+                  <Route path="/blogspace" element={<BlogSpace />} />
+                  <Route path="/blog/:id" element={<SingleBlogPage />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Signup />} />
+                  <Route
+                    path="/my-notes"
+                    element={
+                      <ProtectedRoute>
+                        <MyNotesPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/add-note"
+                    element={
+                      <ProtectedRoute>
+                        <AddNote />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/edit-note/:id"
+                    element={
+                      <ProtectedRoute>
+                        <EditNote />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/profile"
+                    element={
+                      <ProtectedRoute>
+                        <UserProfile />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/edit-profile"
+                    element={
+                      <ProtectedRoute>
+                        <EditProfile />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="*"
+                    element={
+                      <div className="p-6 text-center text-xl text-error">
+                        404 - Page Not Found
+                      </div>
+                    }
+                  />
+                </Routes>
+              </main>
+            </div>
+          </Router>
+        </NoteState>
+      </UserState>
+    </ThemeProvider>
   );
 }
 

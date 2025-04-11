@@ -1,56 +1,70 @@
-# Contribution Guidelines  
+# Getting Started with Create React App
 
-Thank you for your interest in contributing to **Square Root Two Technologies**! We maintain high standards for code quality, and contributions are thoroughly reviewed before merging.  
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## How to Contribute  
+## Available Scripts
 
-### 1. Become a Collaborator  
-If you'd like to contribute, please send an email to:  
-📧 **2024.tri.squareroottwo@gmail.com**  
+In the project directory, you can run:
 
-### 2. Pick a Ticket  
-- Browse the **Project Board** and find a `New Ticket` that interests you.  
-- Comment on the ticket to request assignment.  
+### `npm start`
 
-### 3. Create a Feature Branch  
-Once assigned, create a new branch from `main`, following this naming convention:  
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-```
-IssueNumber-name-of-ticket
-```
+The page will reload when you make changes.\
+You may also see any lint errors in the console.
 
-**Example:**  
-```
-14-post-request-to-database-for-articles
-```
+### `npm test`
 
-### 4. Work on Your Branch  
-- Commit and push changes regularly.  
-- Use **descriptive commit messages** that clearly explain your changes.  
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### 5. Submit a Pull Request  
-- When your work is complete, open a **pull request (PR)** to merge your branch into `main`.  
-- Fill out the PR template properly.  
+### `npm run build`
 
-### 6. Code Review Process  
-- An **admin will review** your PR and either approve it or request changes.  
-- If changes are requested, switch back to your branch and update your code accordingly.  
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
----
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
 
-## Code Quality Standards  
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-We follow strict **code quality standards** at **Square Root Two Technologies**. To ensure your PR is approved, make sure:  
+### `npm run eject`
 
-✔️ You can **explain your reasoning** for the changes.  
-✔️ Your code is **properly formatted** and easy to read.  
-✔️ No **extraneous/unrelated code** is included in the PR.  
-✔️ Your code is **well-documented and commented**.  
-✔️ Your code follows **existing design patterns** in the project.  
-✔️ All tests **pass successfully**, and new functionality has **corresponding tests**.  
+**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-🔹 **Note:** Code reviews often require multiple rounds before approval. Be prepared for feedback!  
+If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
----
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-Happy coding! 🚀  
+You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+
+## Learn More
+
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
+
+### Code Splitting
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+
+### Analyzing the Bundle Size
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+
+### Making a Progressive Web App
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+
+### Advanced Configuration
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+
+### Deployment
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+
+### `npm run build` fails to minify
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

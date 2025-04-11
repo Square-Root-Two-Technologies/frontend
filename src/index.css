@@ -1,17 +1,150 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* src/index.css */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans antialiased bg-background dark:bg-dark text-neutral dark:text-gray-200 leading-relaxed;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold text-gray-900 dark:text-white;
+  }
+
+  /* --- Added Tiptap/ProseMirror Base Styles --- */
+  .ProseMirror {
+    /* Base styles - adjust min-height in component props if needed */
+    min-height: 250px; /* Or adjust as needed */
+    @apply bg-white dark:bg-gray-800 text-neutral dark:text-gray-200; /* Ensure background/text color */
+  }
+
+  .ProseMirror:focus {
+    outline: none; /* Remove default outline */
+  }
+
+  /* General content styling using Tailwind's typography plugin is preferred */
+  /* Add these specific overrides or additions if prose plugin isn't enough */
+  .ProseMirror p {
+    @apply my-2 leading-relaxed; /* Adjust paragraph margin and line height */
+  }
+
+  .ProseMirror h2,
+  .ProseMirror h3,
+  .ProseMirror h4 {
+    /* Ensure heading styles are applied inside editor */
+    @apply mt-6 mb-3 font-semibold text-gray-900 dark:text-white;
+  }
+  .ProseMirror h2 {
+    @apply text-xl;
+  } /* Example sizing */
+  .ProseMirror h3 {
+    @apply text-lg;
+  } /* Example sizing */
+  .ProseMirror h4 {
+    @apply text-base;
+  } /* Example sizing */
+
+  .ProseMirror ul,
+  .ProseMirror ol {
+    @apply my-4 pl-6;
+    list-style-position: outside; /* Ensure bullets/numbers are outside */
+  }
+  .ProseMirror ul {
+    @apply list-disc;
+  }
+  .ProseMirror ol {
+    @apply list-decimal;
+  }
+
+  .ProseMirror li > p {
+    @apply my-1; /* Adjust margin for paragraphs inside list items */
+  }
+  .ProseMirror li {
+    @apply my-1;
+  }
+
+  .ProseMirror blockquote {
+    @apply border-l-4 border-gray-300 dark:border-gray-600 pl-4 italic my-4 text-gray-600 dark:text-gray-400;
+  }
+
+  .ProseMirror pre {
+    @apply bg-gray-100 dark:bg-gray-900 text-neutral dark:text-gray-200 font-mono text-sm p-4 rounded overflow-x-auto my-4 whitespace-pre-wrap; /* Added whitespace-pre-wrap */
+  }
+  .ProseMirror code {
+    @apply bg-gray-200 dark:bg-gray-700 text-red-600 dark:text-red-400 px-1 py-0.5 rounded text-sm font-mono;
+  }
+  /* Remove background/padding for code inside pre tags to let pre handle it */
+  .ProseMirror pre code {
+    background: none !important;
+    color: inherit !important;
+    padding: 0 !important;
+    font-size: inherit !important;
+    border-radius: 0 !important; /* Remove rounded corners if any */
+  }
+
+  .ProseMirror a {
+    @apply text-blue-600 dark:text-blue-400 hover:underline cursor-pointer;
+  }
+
+  .ProseMirror img {
+    @apply max-w-full h-auto my-4 rounded;
+    /* Add display block if needed to prevent extra space below */
+    display: block;
+  }
+  /* Optional: Style for selected image */
+  .ProseMirror img.ProseMirror-selectednode {
+    @apply ring-2 ring-blue-500 outline-none;
+  }
+
+  /* Tiptap Placeholder Styles */
+  .ProseMirror p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    color: #adb5bd; /* Placeholder text color - Light mode */
+    pointer-events: none;
+    height: 0;
+    @apply text-base; /* Match base paragraph size */
+  }
+  /* Dark mode placeholder */
+  .dark .ProseMirror p.is-editor-empty:first-child::before {
+    color: #6b7280; /* Placeholder text color - Dark mode */
+  }
+  /* --- End Tiptap/ProseMirror Base Styles --- */
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
-}
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-primary hover:bg-blue-900 rounded-lg shadow-soft focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition duration-200 ease-in-out;
+  }
 
-i {
-  cursor: pointer;
+  .btn-secondary {
+    @apply inline-flex items-center px-4 py-2.5 text-sm font-medium text-neutral bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg shadow-soft focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition duration-200 ease-in-out;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-neutral dark:text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-150 ease-in-out;
+    /* Optional: Apply base prose size if needed for consistency */
+    /* @apply prose-sm; */
+  }
+
+  .card {
+    @apply bg-white dark:bg-gray-900 rounded-lg shadow-soft-lg border border-gray-100 dark:border-gray-800 p-6;
+  }
+
+  .text-heading {
+    @apply text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white tracking-tight;
+  }
+
+  .text-subtle {
+    @apply text-sm text-secondary dark:text-gray-400;
+  }
 }
