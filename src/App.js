@@ -5,7 +5,7 @@ import HomeScreen from "./components/HomeScreen/HomeScreen";
 import BlogSpace from "./components/BlogSpace/BlogSpace";
 import SingleBlogPage from "./components/SingleBlogPage/SingleBlogPage";
 import Login from "./components/Login/Login";
-import Signup from "./components/Signup/Signup";
+import signup from "./components/Signup/Signup";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import MyNotesPage from "./components/MyNotesPage/MyNotesPage";
 import NoteState from "./context/notes/NoteState";
@@ -30,7 +30,7 @@ function App() {
                   <Route path="/blogspace" element={<BlogSpace />} />
                   <Route path="/blog/:id" element={<SingleBlogPage />} />
                   <Route path="/login" element={<Login />} />
-                  <Route path="/signup" element={<Signup />} />
+                  <Route path="/signup" element={<signup />} />
                   <Route
                     path="/my-notes"
                     element={
