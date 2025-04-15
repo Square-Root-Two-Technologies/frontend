@@ -1,5 +1,5 @@
 # Structure
-{"package.json":true,"postcss.config.js":true,"public":{"index.html":true},"src":{"App.css":true,"App.js":true,"App.test.js":true,"components":{"AddNote":{"AddNote.js":true},"BlogCard":{"BlogCard.js":true},"BlogCardAnimation":{"BlogCardAnimation.css":true,"BlogCardAnimation.js":true},"BlogSpace":{"BlogSpace.js":true},"EditNote":{"EditNote.js":true},"EditorToolbar":{"MenuBar.js":true},"EditProfile":{"EditProfile.js":true},"EmptySpace":{"EmptySpace.js":true},"FeaturedPosts":{"FeaturedPosts.js":true},"HomeScreen":{"HomeScreen.js":true},"LoadingMoreBlogs":{"LoadingMoreBlogs.js":true},"LoadingSpinner":{"LoadingSpinner.js":true},"Login":{"Login.js":true},"MyNotesPage":{"MyNotesPage.js":true},"Navbar":{"Navbar.js":true},"NotesGrid":{"NotesGrid.js":true},"ProtectedRoute":{"ProtectedRoute.js":true},"Sidebar":{"Sidebar.js":true},"Signup":{"Signup.js":true},"SingleBlogPage":{"SingleBlogPage.js":true},"Tabs":{"Tabs.js":true},"UserProfile":{"UserProfile.js":true}},"context":{"notes":{"NoteContext.js":true,"NoteState.js":true},"ThemeProvider":{"ThemeProvider.js":true},"user":{"UserContext.js":true,"UserState.js":true}},"index.css":true,"index.js":true,"reportWebVitals.js":true,"setupTests.js":true,"utils":{"typeColors.js":true}},"tailwind.config.js":true}
+{"package.json":true,"postcss.config.js":true,"public":{"index.html":true},"src":{"App.css":true,"App.js":true,"App.test.js":true,"components":{"AddNote":{"AddNote.js":true},"BlogCard":{"BlogCard.js":true},"BlogCardAnimation":{"BlogCardAnimation.css":true,"BlogCardAnimation.js":true},"BlogSpace":{"BlogSpace.js":true},"EditNote":{"EditNote.js":true},"EditorToolbar":{"MenuBar.js":true},"EditProfile":{"EditProfile.js":true},"EmptySpace":{"EmptySpace.js":true},"FeaturedPosts":{"FeaturedPosts.js":true},"HomeScreen":{"HomeScreen.js":true},"LoadingMoreBlogs":{"LoadingMoreBlogs.js":true},"LoadingSpinner":{"LoadingSpinner.js":true},"Login":{"Login.js":true},"MyNotesPage":{"MyNotesPage.js":true},"Navbar":{"Navbar.js":true},"NotesGrid":{"NotesGrid.js":true},"ProtectedRoute":{"ProtectedRoute.js":true},"Sidebar":{"Sidebar.js":true},"Signup":{"Signup.js":true},"SingleBlogPage":{"SingleBlogPage.js":true},"Tabs":{"Tabs.js":true},"UserProfile":{"UserProfile.js":true}},"context":{"Notes":{"NoteContext.js":true,"NoteState.js":true},"ThemeProvider":{"ThemeProvider.js":true},"user":{"UserContext.js":true,"UserState.js":true}},"index.css":true,"index.js":true,"reportWebVitals.js":true,"setupTests.js":true,"utils":{"typeColors.js":true}},"tailwind.config.js":true}
 
 # Code
 
@@ -28,7 +28,7 @@ import Login from "./components/Login/Login";
 import Signup from "./components/Signup/Signup";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import MyNotesPage from "./components/MyNotesPage/MyNotesPage";
-import NoteState from "./context/notes/NoteState";
+import NoteState from "./context/Notes/NoteState";
 import UserState from "./context/user/UserState"; 
 import ThemeProvider from "./context/ThemeProvider/ThemeProvider";
 import AddNote from "./components/AddNote/AddNote";
@@ -121,7 +121,7 @@ test('renders learn react link', () => {
 # src/components/AddNote/AddNote.js
 import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import NoteContext from "../../context/notes/NoteContext";
+import NoteContext from "../../context/Notes/NoteContext";
 import UserContext from "../../context/user/UserContext";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import { useEditor, EditorContent } from "@tiptap/react";
@@ -673,7 +673,7 @@ export default BlogSpace;
 # src/components/EditNote/EditNote.js
 import React, { useState, useContext, useEffect } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
-import NoteContext from "../../context/notes/NoteContext";
+import NoteContext from "../../context/Notes/NoteContext";
 import UserContext from "../../context/user/UserContext"; 
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 const noteTypes = [
@@ -1325,7 +1325,7 @@ export default EmptyState;
 
 # src/components/FeaturedPosts/FeaturedPosts.js
 import React, { useContext, useRef, useCallback } from "react";
-import NoteContext from "../../context/notes/NoteContext";
+import NoteContext from "../../context/Notes/NoteContext";
 import BlogCard from "../BlogCard/BlogCard";
 const FeaturedPosts = () => {
   const {
@@ -1422,9 +1422,7 @@ export default FeaturedPosts;
 
 # src/components/HomeScreen/HomeScreen.js
 import React, { useContext, useState, useRef, useEffect } from "react"; 
-import NoteContext from "../../context/notes/NoteContext";
-import BlogCard from "../BlogCard/BlogCard";
-import EmptyState from "../EmptySpace/EmptySpace";
+import NoteContext from "../../context/Notes/NoteContext";
 import Sidebar from "../Sidebar/Sidebar";
 import Tabs from "../Tabs/Tabs";
 import FeaturedPosts from "../FeaturedPosts/FeaturedPosts";
@@ -1669,7 +1667,7 @@ export default Login;
 # src/components/MyNotesPage/MyNotesPage.js
 import React, { useContext, useEffect } from "react"; 
 import { useNavigate } from "react-router-dom";
-import NoteContext from "../../context/notes/NoteContext";
+import NoteContext from "../../context/Notes/NoteContext";
 import UserContext from "../../context/user/UserContext"; 
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import EmptyState from "../EmptySpace/EmptySpace"; 
@@ -2617,7 +2615,7 @@ export default Signup;
 # src/components/SingleBlogPage/SingleBlogPage.js
 import React, { useEffect, useContext } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom"; 
-import NoteContext from "../../context/notes/NoteContext";
+import NoteContext from "../../context/Notes/NoteContext";
 import UserContext from "../../context/user/UserContext"; 
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import { getTypeColor } from "../../utils/typeColors";
@@ -2928,39 +2926,13 @@ const UserProfile = () => {
 };
 export default UserProfile;
 
-# src/context/ThemeProvider/ThemeProvider.js
-import React, { createContext, useState, useEffect } from "react";
-export const ThemeContext = createContext();
-const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) return savedTheme;
-    return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
-  });
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", theme === "dark");
-    localStorage.setItem("theme", theme);
-  }, [theme]);
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
-  };
-  return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  );
-};
-export default ThemeProvider;
-
-# src/context/notes/NoteContext.js
+# src/context/Notes/NoteContext.js
 import { createContext } from "react";
 import React from "react";
 const NoteContext = createContext();
 export default NoteContext;
 
-# src/context/notes/NoteState.js
+# src/context/Notes/NoteState.js
 import NoteContext from "./NoteContext";
 import React, {
   useState,
@@ -3455,6 +3427,32 @@ const NoteState = (props) => {
   );
 };
 export default NoteState;
+
+# src/context/ThemeProvider/ThemeProvider.js
+import React, { createContext, useState, useEffect } from "react";
+export const ThemeContext = createContext();
+const ThemeProvider = ({ children }) => {
+  const [theme, setTheme] = useState(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) return savedTheme;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  });
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", theme === "dark");
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+  };
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+};
+export default ThemeProvider;
 
 # src/context/user/UserContext.js
 import { createContext } from "react";

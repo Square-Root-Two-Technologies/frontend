@@ -21,7 +21,6 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    62090670;
 
     setIsLoading(true);
     setError("");
