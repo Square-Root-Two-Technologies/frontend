@@ -1,8 +1,6 @@
 // src/components/HomeScreen/HomeScreen.js
 import React, { useContext, useState, useRef, useEffect } from "react"; // <-- Import useRef, useEffect
 import NoteContext from "../../context/notes/NoteContext";
-import BlogCard from "../BlogCard/BlogCard";
-import EmptyState from "../EmptySpace/EmptySpace";
 import Sidebar from "../Sidebar/Sidebar";
 import Tabs from "../Tabs/Tabs";
 import FeaturedPosts from "../FeaturedPosts/FeaturedPosts";
