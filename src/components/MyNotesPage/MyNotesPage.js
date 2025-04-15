@@ -1,7 +1,7 @@
 // FILE: src/components/MyNotesPage/MyNotesPage.js
 import React, { useContext, useEffect } from "react"; // Removed useState if not used locally
 import { useNavigate } from "react-router-dom";
-import NoteContext from "../../context/notes/NoteContext";
+import NoteContext from "../../context/Notes/NoteContext";
 import UserContext from "../../context/user/UserContext"; // <-- Import UserContext
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import EmptyState from "../EmptySpace/EmptySpace"; // Assuming this component exists

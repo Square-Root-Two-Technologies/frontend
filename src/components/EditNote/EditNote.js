@@ -1,7 +1,7 @@
 // FILE: src/components/EditNote/EditNote.js
 import React, { useState, useContext, useEffect } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
-import NoteContext from "../../context/notes/NoteContext";
+import NoteContext from "../../context/Notes/NoteContext";
 import UserContext from "../../context/user/UserContext"; // <-- Import UserContext
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 

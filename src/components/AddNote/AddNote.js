@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import NoteContext from "../../context/notes/NoteContext";
+import NoteContext from "../../context/Notes/NoteContext";
 import UserContext from "../../context/user/UserContext";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 

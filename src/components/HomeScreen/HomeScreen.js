@@ -1,6 +1,6 @@
 // src/components/HomeScreen/HomeScreen.js
 import React, { useContext, useState, useRef, useEffect } from "react"; // <-- Import useRef, useEffect
-import NoteContext from "../../context/notes/NoteContext";
+import NoteContext from "../../context/Notes/NoteContext";
 import Sidebar from "../Sidebar/Sidebar";
 import Tabs from "../Tabs/Tabs";
 import FeaturedPosts from "../FeaturedPosts/FeaturedPosts";
