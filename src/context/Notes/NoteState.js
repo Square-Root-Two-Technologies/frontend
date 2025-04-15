@@ -9,7 +9,8 @@ import React, {
 } from "react";
 
 const NoteState = (props) => {
-  const host = "http://localhost:5000"; // Your backend host
+  //const host = "http://localhost:5000"; // Your backend host
+  const host = process.env.REACT_APP_BACKEND;
 
   // State Variables
   const [notes, setNotes] = useState([]); // User-specific notes
