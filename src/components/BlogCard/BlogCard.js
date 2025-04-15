@@ -1,4 +1,3 @@
-// src/components/BlogCard/BlogCard.js
 import React from "react";
 import { Link } from "react-router-dom";
 import { getTypeColor } from "../../utils/typeColors";
@@ -10,7 +9,8 @@ const BlogCard = React.forwardRef(
       return (
         <article
           ref={ref}
-          className="group bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden w-full max-w-sm mx-auto flex flex-col border-t-4 border-gray-300 dark:border-gray-700 animate-pulse"
+          // Added fixed height h-[450px]
+          className="group bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden w-full max-w-sm mx-auto flex flex-col border-t-4 border-gray-300 dark:border-gray-700 animate-pulse h-[450px]"
         >
           <div className="w-full h-36 bg-gray-300 dark:bg-gray-700"></div>
           <div className="p-5 flex flex-col gap-3 flex-grow">
@@ -37,21 +37,27 @@ const BlogCard = React.forwardRef(
     const authorName = user?.name || "Unknown Author";
     const authorAvatarUrl = user?.avatarUrl;
     const postDate = date ? new Date(date).toLocaleDateString() : "No date";
-    const typeColorClass = getTypeColor(type || tag);
+
+    // Use the type primarily, fallback to tag if type is missing
+    const effectiveType = type || tag || "default";
+    const typeColorClass = getTypeColor(effectiveType);
 
     return (
       <article
         ref={ref}
-        className={`group bg-white dark:bg-gray-900 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden w-full max-w-sm mx-auto flex flex-col border-t-4 ${typeColorClass}`}
+        // Added fixed height h-[450px]
+        className={`group bg-white dark:bg-gray-900 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden w-full max-w-sm mx-auto flex flex-col border-t-4 ${typeColorClass} h-[450px]`}
       >
-        <div className="w-full h-36">
-          <BlogCardAnimation type={type || tag} noteId={_id} />
+        <div className="w-full h-36 flex-shrink-0">
+          {" "}
+          {/* Added flex-shrink-0 */}
+          <BlogCardAnimation type={effectiveType} noteId={_id} />
         </div>
         <div className="p-5 flex flex-col gap-3 flex-grow">
           <h2
             className={`font-bold text-gray-900 dark:text-gray-100 ${
               isFeatured ? "text-xl" : "text-lg"
-            } line-clamp-2`}
+            } line-clamp-2`} // Title can span 2 lines
           >
             <Link
               to={`/blog/${_id}`}
@@ -81,19 +87,35 @@ const BlogCard = React.forwardRef(
               </>
             )}
           </div>
+          {/* Description takes remaining space, clamps to 3 lines */}
           <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-3 flex-grow">
-            {description || "No description available."}
+            {/* Simple check for HTML or plain text */}
+            {description && description.includes("<") ? (
+              <span
+                dangerouslySetInnerHTML={{
+                  __html:
+                    description.replace(/<[^>]+>/g, "").substring(0, 150) +
+                    (description.length > 150 ? "..." : ""),
+                }}
+              />
+            ) : (
+              description || "No description available."
+            )}
           </p>
-          <div className="flex justify-between items-center mt-auto pt-2">
+          <div className="flex justify-between items-center mt-auto pt-2 border-t border-gray-100 dark:border-gray-800">
+            {" "}
+            {/* Added border-t */}
             <Link
               to={`/blog/${_id}`}
               className="text-blue-600 dark:text-blue-400 hover:underline font-medium text-sm"
             >
               Read More →
             </Link>
-            {(tag || type) && (
-              <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium rounded-full">
-                {type || tag}
+            {(type || tag) && (
+              <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium rounded-full capitalize">
+                {" "}
+                {/* Added capitalize */}
+                {effectiveType}
               </span>
             )}
           </div>

@@ -1,70 +1,150 @@
-# Getting Started with Create React App
+# √2 Technologies - Blog Platform
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[![React](https://img.shields.io/badge/React-18.2.0-blue?logo=react)](https://reactjs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1.3-38B2AC?logo=tailwind-css)](https://tailwindcss.com/)
+[![React Router](https://img.shields.io/badge/React_Router-6.30.0-CA4245?logo=react-router)](https://reactrouter.com/)
+[![Tiptap Editor](https://img.shields.io/badge/Tiptap-2.11.7-black?logo=tiptap)](https://tiptap.dev/)
+[![Framer Motion](https://img.shields.io/badge/Framer_Motion-12.6.3-purple?logo=framer)](https://www.framer.com/motion/)
+A modern, feature-rich blogging application built with React, Tailwind CSS, and
+Tiptap. It allows users to read, create, manage posts, and interact with a
+dynamic user interface featuring animations and a dark/light theme toggle.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## Table of Contents
 
-### `npm start`
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Screenshots](#screenshots) (Add Your Own!)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Environment Variables](#environment-variables)
+- [Running the Application](#running-the-application)
+  - [Development Mode](#development-mode)
+  - [Production Build](#production-build)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [License](#license)
+- [Acknowledgements](#acknowledgements)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Overview
 
-### `npm test`
+This application serves as a platform for users to read blog posts on various
+topics like Technology, Salesforce, JavaScript, Life, etc. Authenticated users
+can create, edit, and delete their own posts using a rich text editor. It
+features infinite scrolling for Browse posts, a dedicated section for featured
+content, user profile management, and admin capabilities.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## Key Features
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **User Authentication:** Secure Login and Signup functionality.
+- **CRUD Operations:** Create, Read, Update, and Delete blog posts (notes).
+- **Rich Text Editor:** Utilizes Tiptap for a WYSIWYG editing experience (bold,
+  italics, lists, code blocks, links, images).
+- **Post Categorization:** Posts are organized by 'Type' (e.g., JavaScript,
+  Technology).
+- **Featured Posts:** Horizontally scrolling section showcasing highlighted
+  posts.
+- **Infinite Scrolling:** Seamlessly loads more posts as the user scrolls down
+  the main feed.
+- **Responsive Design:** Adapts to various screen sizes using Tailwind CSS.
+- **Dark/Light Mode:** Theme toggling with persistence via `localStorage`.
+- **User Profiles:** View and edit user profile information (name, email).
+- **Admin Role:** Admins have additional privileges, such as marking posts as
+  featured and potentially managing all users' posts.
+- **Protected Routes:** Ensures only authenticated users can access certain
+  pages (e.g., My Notes, Add/Edit Note, Profile).
+- **Blog Card Animations:** Subtle, type-specific background animations on blog
+  cards using Framer Motion.
+- **Search Functionality:** Navbar includes a search input (Note: Backend search
+  implementation details not fully visible in provided frontend code).
+- **State Management:** Uses React Context API for managing Notes, User, and
+  Theme state globally.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Screenshots
 
-### `npm run eject`
+_(**Note:** Please add screenshots of your application here!)_
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+| _Example:_                                            | Home Page (Light) | Single Post Page (Dark) | Add Note Page |     |
+| :---------------------------------------------------- | ----------------- | ----------------------- | ------------- | --- |
+| :---------------------------------------------------  |
+| :---------------------------------------------------- |                   |
+| ![Home Page Light](link/to/your/screenshot_home.png)  |
+| ![Single Post Dark](link/to/your/screenshot_post.png) |
+| ![Add Note Page](link/to/your/screenshot_addnote.png) |
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Tech Stack
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- **Frontend:**
+  - [React](https://reactjs.org/) (v18.2.0) - UI Library
+  - [React Router DOM](https://reactrouter.com/) (v6.30.0) - Routing
+  - [Tailwind CSS](https://tailwindcss.com/) (v4.1.3) - Utility-First CSS
+    Framework
+  - [Tiptap](https://tiptap.dev/) (v2.11.7) - Headless Rich Text Editor
+    Framework
+  - [Framer Motion](https://www.framer.com/motion/) (v12.6.3) - Animation
+    Library
+  - [React Icons](https://react-icons.github.io/react-icons/) (v5.5.0) - Icon
+    Library
+  - [React Context API](https://reactjs.org/docs/context.html) - State
+    Management
+- **Build Tool:**
+  [Create React App (react-scripts v5.0.1)](https://create-react-app.dev/)
+- **Testing:**
+  [@testing-library/react](https://testing-library.com/docs/react-testing-library/intro/)
+- **Backend:** (Assumed based on context code) - Likely Node.js/Express with
+  MongoDB (or similar NoSQL DB) based on API call structure (`/api/notes/...`,
+  `/api/auth/...`).
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Getting Started
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Follow these instructions to get a copy of the project up and running on your
+local machine for development and testing purposes.
 
-### Code Splitting
+### Prerequisites
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- [Node.js](https://nodejs.org/) (LTS version recommended - e.g., v18 or v20)
+- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
+- **A running instance of the backend server.** This frontend requires a backend
+  API to function correctly. The context files (`NoteState.js`, `UserState.js`)
+  point towards API endpoints like `/api/auth/login`, `/api/notes/addnote`,
+  etc., hosted at the URL specified in the environment variables (see below).
 
-### Analyzing the Bundle Size
+### Installation
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+1.  **Clone the repository:**
 
-### Making a Progressive Web App
+    ```bash
+    git clone <your-repository-url>
+    cd squareroottwotechnologies
+    ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+2.  **Install dependencies:** Using npm:
+    ```bash
+    npm install
+    ```
+    Or using yarn:
+    ```bash
+    yarn install
+    ```
 
-### Advanced Configuration
+### Environment Variables
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+This project requires a connection to a backend API. Create a `.env` file in the
+root of the project directory and add the following variable:
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```env
+REACT_APP_BACKEND=http://localhost:5000
+```

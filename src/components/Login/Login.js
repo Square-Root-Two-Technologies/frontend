@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react"; // Import useEffect
+import React, { useState, useContext, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import UserContext from "../../context/user/UserContext";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
@@ -8,24 +8,19 @@ const Login = () => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [infoMessage, setInfoMessage] = useState(""); // State for the informational message
+  const [infoMessage, setInfoMessage] = useState("");
   const navigate = useNavigate();
-  const location = useLocation(); // Get location object
+  const location = useLocation();
 
-  // Check location state when component mounts or state changes
   useEffect(() => {
     if (location.state?.from?.pathname === "/my-notes") {
       setInfoMessage("Please log in to manage your notes.");
-      // Optional: Clear the state after showing the message once,
-      // so it doesn't reappear if the user navigates away and back
-      // navigate(location.pathname, { replace: true, state: {} });
     } else if (location.state?.from) {
-      // Generic message for other protected routes if you add more later
       setInfoMessage(
         `Please log in to access ${location.state.from.pathname}.`,
       );
     }
-  }, [location.state, location.pathname, navigate]);
+  }, [location.state]); // Removed location.pathname and navigate as dependencies
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,14 +29,16 @@ const Login = () => {
     try {
       const result = await login(credentials.email, credentials.password);
       if (result.success) {
-        // Redirect to intended page or home after login
         const from = location.state?.from?.pathname || "/";
         navigate(from, { replace: true });
       } else {
-        setError(result.message || "Invalid credentials");
+        // Use error message from context/API if available
+        setError(result.message || "Invalid email or password.");
       }
     } catch (error) {
-      setError("An unexpected error occurred. Please try again.");
+      setError(
+        error.message || "An unexpected error occurred. Please try again.",
+      );
       console.error("Login error:", error);
     } finally {
       setIsLoading(false);
@@ -53,35 +50,41 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
-      <div className="w-full max-w-md p-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">
-          Login
+    // Added more vertical padding (py-12 sm:py-16)
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 px-4 py-12 sm:py-16">
+      {/* Increased padding (p-10 md:p-12), added border, increased shadow, added top border */}
+      <div className="w-full max-w-md p-10 md:p-12 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 border-t-4 border-indigo-500">
+        <h2 className="text-2xl lg:text-3xl font-bold text-center text-gray-900 dark:text-white mb-8">
+          {" "}
+          {/* Increased margin-bottom */}
+          Login to Your Account
         </h2>
 
-        {/* Display informational message */}
         {infoMessage && (
-          <div className="mb-4 p-3 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-200 rounded text-center">
+          <div className="mb-4 p-3 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-200 rounded text-center text-sm">
             {infoMessage}
           </div>
         )}
 
-        {/* Display error message */}
         {error && (
-          <div className="mb-4 p-3 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 rounded">
+          <div className="mb-4 p-3 bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-200 rounded text-sm">
+            {" "}
+            {/* Adjusted dark bg */}
             {error}
           </div>
         )}
 
-        {/* Login Form (unchanged) */}
-        <form onSubmit={handleSubmit}>
-          {/* Email Input */}
-          <div className="mb-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {" "}
+          {/* Added space-y-6 */}
+          <div>
+            {" "}
+            {/* Wrapped input in div for spacing */}
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" // Added margin-bottom
             >
-              Email
+              Email Address
             </label>
             <input
               type="email"
@@ -89,17 +92,19 @@ const Login = () => {
               name="email"
               value={credentials.email}
               onChange={onChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
-              placeholder="Enter your email"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white sm:text-sm" // Added sm:text-sm
+              placeholder="you@example.com"
               required
+              autoComplete="email"
               disabled={isLoading || isUserLoading}
             />
           </div>
-          {/* Password Input */}
-          <div className="mb-6">
+          <div>
+            {" "}
+            {/* Wrapped input in div for spacing */}
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" // Added margin-bottom
             >
               Password
             </label>
@@ -109,34 +114,35 @@ const Login = () => {
               name="password"
               value={credentials.password}
               onChange={onChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white sm:text-sm" // Added sm:text-sm
               placeholder="Enter your password"
               required
+              autoComplete="current-password"
               disabled={isLoading || isUserLoading}
             />
           </div>
-          {/* Submit Button */}
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400 dark:disabled:bg-gray-600"
+            className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed dark:focus:ring-offset-gray-800" // Adjusted padding, added disabled style
             disabled={isLoading || isUserLoading}
           >
             {isLoading || isUserLoading ? (
-              <LoadingSpinner size="sm" />
+              <LoadingSpinner size="sm" /> // Ensure LoadingSpinner takes size prop
             ) : (
               "Login"
             )}
           </button>
         </form>
 
-        {/* Signup Link (unchanged) */}
-        <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+        <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+          {" "}
+          {/* Increased margin-top */}
           Don’t have an account?{" "}
           <Link
             to="/signup"
             className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
           >
-            Sign up
+            Sign up here
           </Link>
         </p>
       </div>
