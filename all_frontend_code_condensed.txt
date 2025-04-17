@@ -374,7 +374,7 @@ const BlogCard = React.forwardRef(
       return (
         <article
           ref={ref}
-          className="group bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden w-full max-w-sm mx-auto flex flex-col border-t-4 border-gray-300 dark:border-gray-700 animate-pulse"
+          className="group bg-white dark:bg-gray-900 rounded-xl shadow-md overflow-hidden w-full max-w-sm mx-auto flex flex-col border-t-4 border-gray-300 dark:border-gray-700 animate-pulse h-[450px]"
         >
           <div className="w-full h-36 bg-gray-300 dark:bg-gray-700"></div>
           <div className="p-5 flex flex-col gap-3 flex-grow">
@@ -399,20 +399,23 @@ const BlogCard = React.forwardRef(
     const authorName = user?.name || "Unknown Author";
     const authorAvatarUrl = user?.avatarUrl;
     const postDate = date ? new Date(date).toLocaleDateString() : "No date";
-    const typeColorClass = getTypeColor(type || tag);
+    const effectiveType = type || tag || "default";
+    const typeColorClass = getTypeColor(effectiveType);
     return (
       <article
         ref={ref}
-        className={`group bg-white dark:bg-gray-900 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden w-full max-w-sm mx-auto flex flex-col border-t-4 ${typeColorClass}`}
+        className={`group bg-white dark:bg-gray-900 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden w-full max-w-sm mx-auto flex flex-col border-t-4 ${typeColorClass} h-[450px]`}
       >
-        <div className="w-full h-36">
-          <BlogCardAnimation type={type || tag} noteId={_id} />
+        <div className="w-full h-36 flex-shrink-0">
+          {" "}
+          {}
+          <BlogCardAnimation type={effectiveType} noteId={_id} />
         </div>
         <div className="p-5 flex flex-col gap-3 flex-grow">
           <h2
             className={`font-bold text-gray-900 dark:text-gray-100 ${
               isFeatured ? "text-xl" : "text-lg"
-            } line-clamp-2`}
+            } line-clamp-2`} 
           >
             <Link
               to={`/blog/${_id}`}
@@ -442,19 +445,35 @@ const BlogCard = React.forwardRef(
               </>
             )}
           </div>
+          {}
           <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-3 flex-grow">
-            {description || "No description available."}
+            {}
+            {description && description.includes("<") ? (
+              <span
+                dangerouslySetInnerHTML={{
+                  __html:
+                    description.replace(/<[^>]+>/g, "").substring(0, 150) +
+                    (description.length > 150 ? "..." : ""),
+                }}
+              />
+            ) : (
+              description || "No description available."
+            )}
           </p>
-          <div className="flex justify-between items-center mt-auto pt-2">
+          <div className="flex justify-between items-center mt-auto pt-2 border-t border-gray-100 dark:border-gray-800">
+            {" "}
+            {}
             <Link
               to={`/blog/${_id}`}
               className="text-blue-600 dark:text-blue-400 hover:underline font-medium text-sm"
             >
               Read More →
             </Link>
-            {(tag || type) && (
-              <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium rounded-full">
-                {type || tag}
+            {(type || tag) && (
+              <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-medium rounded-full capitalize">
+                {" "}
+                {}
+                {effectiveType}
               </span>
             )}
           </div>
@@ -1532,7 +1551,7 @@ const LoadingSpinner = () => (
 export default LoadingSpinner;
 
 # src/components/Login/Login.js
-import React, { useState, useContext, useEffect } from "react"; 
+import React, { useState, useContext, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import UserContext from "../../context/user/UserContext";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
@@ -1541,9 +1560,9 @@ const Login = () => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [infoMessage, setInfoMessage] = useState(""); 
+  const [infoMessage, setInfoMessage] = useState("");
   const navigate = useNavigate();
-  const location = useLocation(); 
+  const location = useLocation();
   useEffect(() => {
     if (location.state?.from?.pathname === "/my-notes") {
       setInfoMessage("Please log in to manage your notes.");
@@ -1552,7 +1571,7 @@ const Login = () => {
         `Please log in to access ${location.state.from.pathname}.`,
       );
     }
-  }, [location.state, location.pathname, navigate]);
+  }, [location.state]); 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -1563,10 +1582,12 @@ const Login = () => {
         const from = location.state?.from?.pathname || "/";
         navigate(from, { replace: true });
       } else {
-        setError(result.message || "Invalid credentials");
+        setError(result.message || "Invalid email or password.");
       }
     } catch (error) {
-      setError("An unexpected error occurred. Please try again.");
+      setError(
+        error.message || "An unexpected error occurred. Please try again.",
+      );
       console.error("Login error:", error);
     } finally {
       setIsLoading(false);
@@ -1576,32 +1597,37 @@ const Login = () => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
-      <div className="w-full max-w-md p-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">
-          Login
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 px-4 py-12 sm:py-16">
+      {}
+      <div className="w-full max-w-md p-10 md:p-12 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 border-t-4 border-indigo-500">
+        <h2 className="text-2xl lg:text-3xl font-bold text-center text-gray-900 dark:text-white mb-8">
+          {" "}
+          {}
+          Login to Your Account
         </h2>
-        {}
         {infoMessage && (
-          <div className="mb-4 p-3 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-200 rounded text-center">
+          <div className="mb-4 p-3 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-200 rounded text-center text-sm">
             {infoMessage}
           </div>
         )}
-        {}
         {error && (
-          <div className="mb-4 p-3 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 rounded">
+          <div className="mb-4 p-3 bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-200 rounded text-sm">
+            {" "}
+            {}
             {error}
           </div>
         )}
-        {}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {" "}
           {}
-          <div className="mb-4">
+          <div>
+            {" "}
+            {}
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" 
             >
-              Email
+              Email Address
             </label>
             <input
               type="email"
@@ -1609,17 +1635,19 @@ const Login = () => {
               name="email"
               value={credentials.email}
               onChange={onChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
-              placeholder="Enter your email"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white sm:text-sm" 
+              placeholder="you@example.com"
               required
+              autoComplete="email"
               disabled={isLoading || isUserLoading}
             />
           </div>
-          {}
-          <div className="mb-6">
+          <div>
+            {" "}
+            {}
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" 
             >
               Password
             </label>
@@ -1629,33 +1657,34 @@ const Login = () => {
               name="password"
               value={credentials.password}
               onChange={onChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white sm:text-sm" 
               placeholder="Enter your password"
               required
+              autoComplete="current-password"
               disabled={isLoading || isUserLoading}
             />
           </div>
-          {}
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400 dark:disabled:bg-gray-600"
+            className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed dark:focus:ring-offset-gray-800" 
             disabled={isLoading || isUserLoading}
           >
             {isLoading || isUserLoading ? (
-              <LoadingSpinner size="sm" />
+              <LoadingSpinner size="sm" /> 
             ) : (
               "Login"
             )}
           </button>
         </form>
-        {}
-        <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+        <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+          {" "}
+          {}
           Don’t have an account?{" "}
           <Link
             to="/signup"
             className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
           >
-            Sign up
+            Sign up here
           </Link>
         </p>
       </div>
@@ -3662,7 +3691,7 @@ const UserState = (props) => {
 export default UserState;
 
 # src/index.css
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");@tailwind base;@tailwind components;@tailwind utilities;@layer base{body{@apply font-sans antialiased bg-background dark:bg-dark text-neutral dark:text-gray-200 leading-relaxed;}h1,h2,h3,h4,h5,h6{@apply font-semibold text-gray-900 dark:text-white;}.ProseMirror{min-height:250px;@apply bg-white dark:bg-gray-800 text-neutral dark:text-gray-200;}.ProseMirror:focus{outline:none;}.ProseMirror p{@apply my-2 leading-relaxed;}.ProseMirror h2,.ProseMirror h3,.ProseMirror h4{@apply mt-6 mb-3 font-semibold text-gray-900 dark:text-white;}.ProseMirror h2{@apply text-xl;}.ProseMirror h3{@apply text-lg;}.ProseMirror h4{@apply text-base;}.ProseMirror ul,.ProseMirror ol{@apply my-4 pl-6;list-style-position:outside;}.ProseMirror ul{@apply list-disc;}.ProseMirror ol{@apply list-decimal;}.ProseMirror li > p{@apply my-1;}.ProseMirror li{@apply my-1;}.ProseMirror blockquote{@apply border-l-4 border-gray-300 dark:border-gray-600 pl-4 italic my-4 text-gray-600 dark:text-gray-400;}.ProseMirror pre{@apply bg-gray-100 dark:bg-gray-900 text-neutral dark:text-gray-200 font-mono text-sm p-4 rounded overflow-x-auto my-4 whitespace-pre-wrap;}.ProseMirror code{@apply bg-gray-200 dark:bg-gray-700 text-red-600 dark:text-red-400 px-1 py-0.5 rounded text-sm font-mono;}.ProseMirror pre code{background:none !important;color:inherit !important;padding:0 !important;font-size:inherit !important;border-radius:0 !important;}.ProseMirror a{@apply text-blue-600 dark:text-blue-400 hover:underline cursor-pointer;}.ProseMirror img{@apply max-w-full h-auto my-4 rounded;display:block;}.ProseMirror img.ProseMirror-selectednode{@apply ring-2 ring-blue-500 outline-none;}.ProseMirror p.is-editor-empty:first-child::before{content:attr(data-placeholder);float:left;color:#adb5bd;pointer-events:none;height:0;@apply text-base;}.dark .ProseMirror p.is-editor-empty:first-child::before{color:#6b7280;}}@layer components{.btn-primary{@apply inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-primary hover:bg-blue-900 rounded-lg shadow-soft focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition duration-200 ease-in-out;}.btn-secondary{@apply inline-flex items-center px-4 py-2.5 text-sm font-medium text-neutral bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg shadow-soft focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition duration-200 ease-in-out;}.input-field{@apply w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-neutral dark:text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-150 ease-in-out;}.card{@apply bg-white dark:bg-gray-900 rounded-lg shadow-soft-lg border border-gray-100 dark:border-gray-800 p-6;}.text-heading{@apply text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white tracking-tight;}.text-subtle{@apply text-sm text-secondary dark:text-gray-400;}}
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");@tailwind base;@tailwind components;@tailwind utilities;@layer base{html,body,#root{height:100%;margin:0;padding:0;}body{@apply font-sans antialiased bg-background dark:bg-dark text-neutral dark:text-gray-200 leading-relaxed;min-height:100%;}#root{min-height:100%;display:flex;flex-direction:column;}h1,h2,h3,h4,h5,h6{@apply font-semibold text-gray-900 dark:text-white;}.ProseMirror{min-height:250px;@apply bg-white dark:bg-gray-800 text-neutral dark:text-gray-200;}.ProseMirror:focus{outline:none;}.ProseMirror p{@apply my-2 leading-relaxed;}.ProseMirror h2,.ProseMirror h3,.ProseMirror h4{@apply mt-6 mb-3 font-semibold text-gray-900 dark:text-white;}.ProseMirror h2{@apply text-xl;}.ProseMirror h3{@apply text-lg;}.ProseMirror h4{@apply text-base;}.ProseMirror ul,.ProseMirror ol{@apply my-4 pl-6;list-style-position:outside;}.ProseMirror ul{@apply list-disc;}.ProseMirror ol{@apply list-decimal;}.ProseMirror li > p{@apply my-1;}.ProseMirror li{@apply my-1;}.ProseMirror blockquote{@apply border-l-4 border-gray-300 dark:border-gray-600 pl-4 italic my-4 text-gray-600 dark:text-gray-400;}.ProseMirror pre{@apply bg-gray-100 dark:bg-gray-900 text-neutral dark:text-gray-200 font-mono text-sm p-4 rounded overflow-x-auto my-4 whitespace-pre-wrap;}.ProseMirror code{@apply bg-gray-200 dark:bg-gray-700 text-red-600 dark:text-red-400 px-1 py-0.5 rounded text-sm font-mono;}.ProseMirror pre code{background:none !important;color:inherit !important;padding:0 !important;font-size:inherit !important;border-radius:0 !important;}.ProseMirror a{@apply text-blue-600 dark:text-blue-400 hover:underline cursor-pointer;}.ProseMirror img{@apply max-w-full h-auto my-4 rounded;display:block;}.ProseMirror img.ProseMirror-selectednode{@apply ring-2 ring-blue-500 outline-none;}.ProseMirror p.is-editor-empty:first-child::before{content:attr(data-placeholder);float:left;color:#adb5bd;pointer-events:none;height:0;@apply text-base;}.dark .ProseMirror p.is-editor-empty:first-child::before{color:#6b7280;}}@layer components{.btn-primary{@apply inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-primary hover:bg-blue-900 rounded-lg shadow-soft focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition duration-200 ease-in-out;}.btn-secondary{@apply inline-flex items-center px-4 py-2.5 text-sm font-medium text-neutral bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg shadow-soft focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition duration-200 ease-in-out;}.input-field{@apply w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-neutral dark:text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-150 ease-in-out;}.card{@apply bg-white dark:bg-gray-900 rounded-lg shadow-soft-lg border border-gray-100 dark:border-gray-800 p-6;}.text-heading{@apply text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white tracking-tight;}.text-subtle{@apply text-sm text-secondary dark:text-gray-400;}.scrollbar-thin{scrollbar-width:thin;scrollbar-color:theme("colors.gray.400") theme("colors.gray.200");}.dark .scrollbar-thin{scrollbar-color:theme("colors.gray.600") theme("colors.gray.800");}.scrollbar-thin::-webkit-scrollbar{width:8px;height:8px;}.scrollbar-thin::-webkit-scrollbar-track{@apply bg-gray-200 dark:bg-gray-800 rounded-full;}.scrollbar-thin::-webkit-scrollbar-thumb{@apply bg-gray-400 dark:bg-gray-600 rounded-full;}.scrollbar-thin::-webkit-scrollbar-thumb:hover{@apply bg-gray-500 dark:bg-gray-500;}}
 
 # src/index.js
 import React from 'react';

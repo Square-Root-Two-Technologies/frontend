@@ -2,6 +2,9 @@
   "name": "squareroottwotechnologies",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=18.0.0" // Or specify an LTS like "20.x" or "^18.18.0 || ^20.9.0"
+  },
   "dependencies": {
     "@react-spring/web": "^9.7.5",
     "@react-three/drei": "^9.105.6",
