@@ -141,15 +141,7 @@ const UserState = (props) => {
   }, [clearCurrentUser]);
 
   // Signup function
-  const signup = async (
-    name,
-    email,
-    password,
-    country,
-    city,
-    about,
-    avatarUrl,
-  ) => {
+  const signup = async (name, email, password, country, city, about) => {
     // No need for setIsUserLoading(true) here, getUserDetails will handle it
     try {
       const response = await fetch(`${host}/api/auth/createuser`, {
@@ -164,7 +156,6 @@ const UserState = (props) => {
           country: country || "", // Send empty string if null/undefined
           city: city || "", // Send empty string if null/undefined
           about: about || "about is empty", // Default if not provided
-          avatarUrl: avatarUrl || null, // Send null if not provided
         }),
       });
       const json = await response.json();
