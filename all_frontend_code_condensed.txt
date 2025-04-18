@@ -1590,7 +1590,7 @@ const HomeScreen = () => {
           <ParticleSimulationScene />
         </div>
         {}
-        <div className="w-full lg:w-1/2 lg:h-full flex flex-col justify-center items-center p-8 lg:p-12 text-center bg-background dark:bg-gray-900">
+        <div className="w-full lg:w-1/2 lg:h-full flex flex-col justify-center items-center p-8 lg:p-12 text-center">
           <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4">
             Welcome to √2 Technologies
           </h1>
