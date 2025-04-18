@@ -471,6 +471,74 @@ const NoteState = (props) => {
     [host, blogTypes],
   );
 
+  //search implementation
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchError, setSearchError] = useState(null);
+  // --- New Search Function ---
+  const fetchSearchResults = useCallback(
+    async (query) => {
+      if (!query || query.trim() === "") {
+        setSearchResults([]);
+        setSearchError(null);
+        setIsSearching(false);
+        return;
+      }
+
+      console.log(`Searching for: "${query}"`);
+      setIsSearching(true);
+      setSearchError(null);
+      setSearchResults([]);
+
+      try {
+        const encodedQuery = encodeURIComponent(query);
+        const url = `${host}/api/notes/search?query=${encodedQuery}&limit=20`;
+        console.log("Fetching search URL:", url);
+        const response = await fetch(url, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
+
+        // Log response details
+        console.log("Response status:", response.status);
+        console.log("Response headers:", [...response.headers.entries()]);
+        const text = await response.text();
+        console.log("Raw response (first 500 chars):", text.slice(0, 500));
+
+        // Check Content-Type
+        const contentType = response.headers.get("Content-Type");
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new Error(
+            `Expected JSON, but received ${contentType}: ${text.slice(0, 100)}`,
+          );
+        }
+
+        const json = JSON.parse(text);
+
+        if (!response.ok) {
+          throw new Error(
+            json.error || `HTTP error! Status: ${response.status}`,
+          );
+        }
+
+        if (json.success && json.notes) {
+          setSearchResults(json.notes);
+          console.log("Search results fetched:", json.notes.length);
+        } else {
+          console.error("Search failed:", json.error || "No notes found");
+          setSearchResults([]);
+        }
+      } catch (error) {
+        console.error("Error fetching search results:", error);
+        setSearchError(error.message || "Failed to fetch search results.");
+        setSearchResults([]);
+      } finally {
+        setIsSearching(false);
+      }
+    },
+    [host],
+  );
+
   // --- Initial Data Load Effect ---
   useEffect(() => {
     if (!initialFetchInitiated.current) {
@@ -517,6 +585,10 @@ const NoteState = (props) => {
       fetchNoteById,
       getBlogTypes,
       getRecentPosts,
+      searchResults, // <-- Add state
+      isSearching, // <-- Add state
+      searchError, // <-- Add state
+      fetchSearchResults, // <-- Add function
     }),
     [
       // State Dependencies
@@ -532,8 +604,10 @@ const NoteState = (props) => {
       initialLoadDone,
       hasMoreFeatured,
       isInitialFeaturedLoading,
-      isFetchingMoreFeatured, // Include new loading flags
-      // Callback Dependencies (stable refs)
+      isFetchingMoreFeatured,
+      searchResults, // <-- Add state dependency
+      isSearching, // <-- Add state dependency
+      searchError, // <-- Add state dependency
       addNote,
       deleteNote,
       editNote,
