@@ -9,7 +9,7 @@ import Signup from "./components/Signup/Signup";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import MyNotesPage from "./components/MyNotesPage/MyNotesPage";
 import NoteState from "./context/Notes/NoteState";
-import UserState from "./context/user/UserState"; // Correct import path
+import UserState from "./context/user/UserState";
 import ThemeProvider from "./context/ThemeProvider/ThemeProvider";
 import AddNote from "./components/AddNote/AddNote";
 import EditNote from "./components/EditNote/EditNote";
@@ -22,9 +22,14 @@ function App() {
       <UserState>
         <NoteState>
           <Router>
-            <div className="flex flex-col min-h-screen">
+            {/* Main container */}
+            <div className="flex flex-col min-h-screen bg-background dark:bg-dark">
+              {/* Navbar is now position:fixed */}
               <Navbar />
-              <main className="flex-grow container mx-auto px-4 py-8">
+
+              {/* --- MODIFIED HERE --- */}
+              {/* Added pt-16 (padding-top: 4rem) to account for Navbar's h-16 */}
+              <main className="flex-grow w-full pt-16">
                 <Routes>
                   <Route path="/" element={<HomeScreen />} />
                   <Route path="/blogspace" element={<BlogSpace />} />
@@ -74,13 +79,17 @@ function App() {
                   <Route
                     path="*"
                     element={
-                      <div className="p-6 text-center text-xl text-error">
-                        404 - Page Not Found
+                      <div className="container mx-auto px-4 py-12">
+                        <div className="p-6 text-center text-xl text-error bg-red-100 dark:bg-red-900/20 rounded-md">
+                          404 - Page Not Found
+                        </div>
                       </div>
                     }
                   />
                 </Routes>
               </main>
+
+              {/* Optional Footer could go here */}
             </div>
           </Router>
         </NoteState>

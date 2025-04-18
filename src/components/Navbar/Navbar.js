@@ -5,20 +5,14 @@ import { ThemeContext } from "../../context/ThemeProvider/ThemeProvider";
 import { FaBars, FaTimes, FaSun, FaMoon, FaSearch } from "react-icons/fa";
 
 const Navbar = () => {
-  // --- Context ---
   const { currentUser, isUserLoading, logout } = useContext(UserContext);
   const { theme, toggleTheme } = useContext(ThemeContext);
-
-  // --- State ---
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false); // New state for mobile search
-
-  // --- Hooks ---
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const navigate = useNavigate();
 
-  // --- Handlers ---
   const handleLogout = () => {
     logout();
     setIsMobileMenuOpen(false);
@@ -32,7 +26,7 @@ const Navbar = () => {
     if (trimmedQuery) {
       navigate(`/search?q=${encodeURIComponent(trimmedQuery)}`);
       setSearchQuery("");
-      setIsMobileSearchOpen(false); // Close mobile search on submit
+      setIsMobileSearchOpen(false);
     }
   };
 
@@ -48,23 +42,23 @@ const Navbar = () => {
     setIsMobileSearchOpen(!isMobileSearchOpen);
   };
 
-  // --- Class Strings ---
   const mobileLinkBase =
     "block rounded-md px-3 py-2 text-base font-medium text-center";
   const mobileLinkInactive =
     "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white";
   const mobileLinkActive =
     "bg-indigo-50 dark:bg-gray-900 text-indigo-700 dark:text-white";
-
   const searchInputClasses =
     "px-3 py-1.5 text-sm rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-neutral dark:text-gray-200 focus:outline-none focus:ring-1 focus:ring-indigo-500";
 
-  // --- Render ---
   return (
-    <nav className="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-50">
+    // --- MODIFIED HERE ---
+    // Changed 'sticky' to 'fixed' and added 'left-0 right-0' (or 'w-full')
+    <nav className="bg-white dark:bg-gray-800 shadow-md fixed top-0 left-0 right-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Height is h-16 (4rem / 64px) */}
         <div className="flex justify-between h-16">
-          {/* Left Side: Logo & Links */}
+          {/* Left side: Logo and Links */}
           <div className="flex">
             <Link
               to="/"
@@ -104,9 +98,9 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Right Side: Search, Theme, Auth/User Menu */}
+          {/* Right side: Search, Theme, User Menu/Auth */}
           <div className="flex items-center space-x-2 sm:space-x-4">
-            {/* Desktop Search Form */}
+            {/* Desktop Search */}
             <form
               onSubmit={handleSearchSubmit}
               className="hidden sm:flex items-center relative"
@@ -127,8 +121,7 @@ const Navbar = () => {
                 <FaSearch />
               </button>
             </form>
-
-            {/* Mobile Search (Icon or Expanded) */}
+            {/* Mobile Search Icon/Input */}
             <div className="sm:hidden flex items-center">
               {isMobileSearchOpen ? (
                 <form
@@ -140,7 +133,7 @@ const Navbar = () => {
                     placeholder="Search..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className={`${searchInputClasses} w-36 pr-8 animate-expand`}
+                    className={`${searchInputClasses} w-36 pr-8 animate-expand`} // You might need to define 'animate-expand'
                     aria-label="Search posts"
                     autoFocus
                   />
@@ -162,8 +155,7 @@ const Navbar = () => {
                 </button>
               )}
             </div>
-
-            {/* Theme Toggle Button */}
+            {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
               className="p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-indigo-500"
@@ -172,7 +164,7 @@ const Navbar = () => {
               {theme === "light" ? <FaMoon size={20} /> : <FaSun size={20} />}
             </button>
 
-            {/* Desktop Auth/User Menu */}
+            {/* Desktop User Menu/Auth Links */}
             <div className="hidden sm:flex sm:items-center">
               {!isUserLoading && currentUser ? (
                 <div className="relative">
@@ -205,11 +197,11 @@ const Navbar = () => {
                       aria-orientation="vertical"
                       aria-labelledby="user-menu-button"
                       tabIndex="-1"
-                      onMouseLeave={() => setShowUserMenu(false)}
+                      onMouseLeave={() => setShowUserMenu(false)} // Close on mouse leave
                     >
                       <Link
                         to="/profile"
-                        onClick={() => setShowUserMenu(false)}
+                        onClick={() => setShowUserMenu(false)} // Close on click
                         className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
                         role="menuitem"
                         tabIndex="-1"
@@ -271,7 +263,7 @@ const Navbar = () => {
           className="sm:hidden border-t border-gray-200 dark:border-gray-600"
           id="mobile-menu"
         >
-          {/* Mobile Links */}
+          {/* Links */}
           <div className="px-2 pt-2 pb-3 space-y-1">
             <NavLink
               to="/"
@@ -296,8 +288,7 @@ const Navbar = () => {
               Write
             </NavLink>
           </div>
-
-          {/* Separator and Auth/Profile Links */}
+          {/* User Actions / Auth Links */}
           <div className="pt-3 pb-3 border-t border-gray-200 dark:border-gray-700">
             <div className="px-2 space-y-1">
               {!isUserLoading && currentUser ? (
