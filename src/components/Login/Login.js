@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import UserContext from "../../context/user/UserContext";
-import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner"; // Assuming LoadingSpinner handles its own centering/size
 
 const Login = () => {
   const { login, isUserLoading } = useContext(UserContext);
@@ -13,6 +13,7 @@ const Login = () => {
   const location = useLocation();
 
   useEffect(() => {
+    // ... (info message logic remains the same)
     if (location.state?.from?.pathname === "/my-notes") {
       setInfoMessage("Please log in to manage your notes.");
     } else if (location.state?.from) {
@@ -20,9 +21,10 @@ const Login = () => {
         `Please log in to access ${location.state.from.pathname}.`,
       );
     }
-  }, [location.state]); // Removed location.pathname and navigate as dependencies
+  }, [location.state]);
 
   const handleSubmit = async (e) => {
+    // ... (submit logic remains the same)
     e.preventDefault();
     setIsLoading(true);
     setError("");
@@ -32,7 +34,7 @@ const Login = () => {
         const from = location.state?.from?.pathname || "/";
         navigate(from, { replace: true });
       } else {
-        // Use error message from context/API if available
+        // Use result.message which might contain specific error from backend
         setError(result.message || "Invalid email or password.");
       }
     } catch (error) {
@@ -49,14 +51,13 @@ const Login = () => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
+  // This component should be centered, so we add container mx-auto here
+  // We also adjust min-height to account for the navbar height (approx 96px or 6rem/h-24)
   return (
-    // Added more vertical padding (py-12 sm:py-16)
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 px-4 py-12 sm:py-16">
-      {/* Increased padding (p-10 md:p-12), added border, increased shadow, added top border */}
+    <div className="container mx-auto px-4 py-12 flex items-center justify-center min-h-[calc(100vh-96px)]">
+      {/* The inner card remains constrained */}
       <div className="w-full max-w-md p-10 md:p-12 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 border-t-4 border-indigo-500">
         <h2 className="text-2xl lg:text-3xl font-bold text-center text-gray-900 dark:text-white mb-8">
-          {" "}
-          {/* Increased margin-bottom */}
           Login to Your Account
         </h2>
 
@@ -65,24 +66,17 @@ const Login = () => {
             {infoMessage}
           </div>
         )}
-
         {error && (
           <div className="mb-4 p-3 bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-200 rounded text-sm">
-            {" "}
-            {/* Adjusted dark bg */}
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {" "}
-          {/* Added space-y-6 */}
           <div>
-            {" "}
-            {/* Wrapped input in div for spacing */}
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" // Added margin-bottom
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
             >
               Email Address
             </label>
@@ -92,7 +86,7 @@ const Login = () => {
               name="email"
               value={credentials.email}
               onChange={onChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white sm:text-sm" // Added sm:text-sm
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white sm:text-sm"
               placeholder="you@example.com"
               required
               autoComplete="email"
@@ -100,11 +94,9 @@ const Login = () => {
             />
           </div>
           <div>
-            {" "}
-            {/* Wrapped input in div for spacing */}
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" // Added margin-bottom
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
             >
               Password
             </label>
@@ -114,7 +106,7 @@ const Login = () => {
               name="password"
               value={credentials.password}
               onChange={onChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white sm:text-sm" // Added sm:text-sm
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white sm:text-sm"
               placeholder="Enter your password"
               required
               autoComplete="current-password"
@@ -123,20 +115,17 @@ const Login = () => {
           </div>
           <button
             type="submit"
-            className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed dark:focus:ring-offset-gray-800" // Adjusted padding, added disabled style
+            className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed dark:focus:ring-offset-gray-800"
             disabled={isLoading || isUserLoading}
           >
             {isLoading || isUserLoading ? (
-              <LoadingSpinner size="sm" /> // Ensure LoadingSpinner takes size prop
+              <LoadingSpinner /> // Use the component
             ) : (
               "Login"
             )}
           </button>
         </form>
-
         <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
-          {" "}
-          {/* Increased margin-top */}
           Don’t have an account?{" "}
           <Link
             to="/signup"

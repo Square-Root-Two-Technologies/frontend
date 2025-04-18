@@ -1,8 +1,7 @@
-// src/components/Signup/Signup.js
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import UserContext from "../../context/user/UserContext";
-import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner"; // Make sure this component exists
 
 const Signup = () => {
   const { signup, isUserLoading } = useContext(UserContext);
@@ -11,9 +10,9 @@ const Signup = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    country: "", // <-- Add country state
-    city: "", // <-- Add city state
-    // You could add 'about' and 'avatarUrl' here too if you want to collect them at signup
+    country: "",
+    city: "",
+    // Removed 'about' as it wasn't used in the original form submission logic provided
   });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -21,17 +20,27 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setIsLoading(true);
     setError("");
 
+    // --- Validation Checks ---
     if (credentials.password !== credentials.confirmPassword) {
       setError("Passwords do not match");
       setIsLoading(false);
       return;
     }
-
-    // Basic frontend validation for new fields (optional but good practice)
+    // Basic checks (you might want more robust validation)
+    if (!credentials.name || credentials.name.length < 3) {
+      setError("Name must be at least 3 characters long.");
+      setIsLoading(false);
+      return;
+    }
+    if (!credentials.email) {
+      // Basic check, could add regex validation
+      setError("Please enter a valid email.");
+      setIsLoading(false);
+      return;
+    }
     if (!credentials.country || credentials.country.length < 2) {
       setError("Country must be at least 2 characters long.");
       setIsLoading(false);
@@ -42,25 +51,32 @@ const Signup = () => {
       setIsLoading(false);
       return;
     }
+    if (!credentials.password || credentials.password.length < 5) {
+      setError("Password must be at least 5 characters long.");
+      setIsLoading(false);
+      return;
+    }
+    // --- End Validation ---
 
     try {
-      // Pass all required fields from the state
       const result = await signup(
         credentials.name,
         credentials.email,
         credentials.password,
-        credentials.country, // <-- Pass country
-        credentials.city, // <-- Pass city
-        // Pass about and avatarUrl here if you added them
+        credentials.country,
+        credentials.city,
+        // Pass 'about' if you re-add it to the form state and backend
       );
-
       if (result.success) {
-        navigate("/"); // Navigate to home or dashboard after signup
+        navigate("/"); // Redirect to home on successful signup
       } else {
-        setError(result.message || "Signup failed");
+        setError(result.message || "Signup failed"); // Display error from context/backend
       }
     } catch (error) {
-      setError("An unexpected error occurred. Please try again.");
+      // Catch errors thrown by the signup function (e.g., validation errors)
+      setError(
+        error.message || "An unexpected error occurred. Please try again.",
+      );
       console.error("Signup error:", error);
     } finally {
       setIsLoading(false);
@@ -71,25 +87,36 @@ const Signup = () => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
+  // --- Tailwind Classes for Inputs (Consistent Style) ---
+  const inputBaseClasses =
+    "mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white sm:text-sm";
+  const labelBaseClasses =
+    "block text-sm font-medium text-gray-700 dark:text-gray-300";
+  const requiredMarkClasses = "text-error"; // Assumes 'error' color is defined in tailwind.config.js
+  // ---
+
+  // Apply container centering and adjust min-height for navbar
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
-      <div className="w-full max-w-md p-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+    <div className="container mx-auto px-4 py-12 flex items-center justify-center min-h-[calc(100vh-96px)]">
+      {/* Inner card for the form content */}
+      <div className="w-full max-w-md p-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
         <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">
-          Sign Up
+          Create Your Account
         </h2>
+
         {error && (
-          <div className="mb-4 p-3 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 rounded">
+          <div className="mb-4 p-3 bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-200 rounded text-sm">
             {error}
           </div>
         )}
-        <form onSubmit={handleSubmit}>
-          {/* Name Input */}
-          <div className="mb-4">
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              Name <span className="text-error">*</span>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {" "}
+          {/* Adjusted spacing */}
+          {/* Name Field */}
+          <div>
+            <label htmlFor="name" className={labelBaseClasses}>
+              Name <span className={requiredMarkClasses}>*</span>
             </label>
             <input
               type="text"
@@ -97,20 +124,17 @@ const Signup = () => {
               name="name"
               value={credentials.name}
               onChange={onChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
+              className={inputBaseClasses}
               placeholder="Enter your name"
               required
-              disabled={isLoading || isUserLoading}
               minLength="3"
+              disabled={isLoading || isUserLoading}
             />
           </div>
-          {/* Email Input */}
-          <div className="mb-4">
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              Email <span className="text-error">*</span>
+          {/* Email Field */}
+          <div>
+            <label htmlFor="email" className={labelBaseClasses}>
+              Email <span className={requiredMarkClasses}>*</span>
             </label>
             <input
               type="email"
@@ -118,20 +142,16 @@ const Signup = () => {
               name="email"
               value={credentials.email}
               onChange={onChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
+              className={inputBaseClasses}
               placeholder="Enter your email"
               required
               disabled={isLoading || isUserLoading}
             />
           </div>
-
-          {/* --- Add Country Input --- */}
-          <div className="mb-4">
-            <label
-              htmlFor="country"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              Country <span className="text-error">*</span>
+          {/* Country Field */}
+          <div>
+            <label htmlFor="country" className={labelBaseClasses}>
+              Country <span className={requiredMarkClasses}>*</span>
             </label>
             <input
               type="text"
@@ -139,21 +159,17 @@ const Signup = () => {
               name="country"
               value={credentials.country}
               onChange={onChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
+              className={inputBaseClasses}
               placeholder="Enter your country"
               required
               minLength="2"
               disabled={isLoading || isUserLoading}
             />
           </div>
-
-          {/* --- Add City Input --- */}
-          <div className="mb-4">
-            <label
-              htmlFor="city"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              City <span className="text-error">*</span>
+          {/* City Field */}
+          <div>
+            <label htmlFor="city" className={labelBaseClasses}>
+              City <span className={requiredMarkClasses}>*</span>
             </label>
             <input
               type="text"
@@ -161,21 +177,17 @@ const Signup = () => {
               name="city"
               value={credentials.city}
               onChange={onChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
+              className={inputBaseClasses}
               placeholder="Enter your city"
               required
               minLength="1"
               disabled={isLoading || isUserLoading}
             />
           </div>
-
-          {/* Password Input */}
-          <div className="mb-4">
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              Password <span className="text-error">*</span>
+          {/* Password Field */}
+          <div>
+            <label htmlFor="password" className={labelBaseClasses}>
+              Password <span className={requiredMarkClasses}>*</span>
             </label>
             <input
               type="password"
@@ -183,20 +195,19 @@ const Signup = () => {
               name="password"
               value={credentials.password}
               onChange={onChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
-              placeholder="Enter your password"
+              className={inputBaseClasses}
+              placeholder="Enter your password (min 5 chars)"
               required
               minLength="5"
               disabled={isLoading || isUserLoading}
             />
           </div>
-          {/* Confirm Password Input */}
-          <div className="mb-6">
-            <label
-              htmlFor="confirmPassword"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              Confirm Password <span className="text-error">*</span>
+          {/* Confirm Password Field */}
+          <div>
+            {" "}
+            {/* Removed mb-6, using space-y-4 on form */}
+            <label htmlFor="confirmPassword" className={labelBaseClasses}>
+              Confirm Password <span className={requiredMarkClasses}>*</span>
             </label>
             <input
               type="password"
@@ -204,28 +215,30 @@ const Signup = () => {
               name="confirmPassword"
               value={credentials.confirmPassword}
               onChange={onChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
+              className={inputBaseClasses}
               placeholder="Confirm your password"
               required
               minLength="5"
               disabled={isLoading || isUserLoading}
             />
           </div>
-
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400 dark:disabled:bg-gray-600"
+            className="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 dark:focus:ring-offset-gray-800"
             disabled={isLoading || isUserLoading}
           >
             {isLoading || isUserLoading ? (
-              <LoadingSpinner size="sm" />
+              <LoadingSpinner /> // Use the component
             ) : (
               "Sign Up"
             )}
           </button>
         </form>
-        <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+
+        <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+          {" "}
+          {/* Increased margin-top */}
           Already have an account?{" "}
           <Link
             to="/login"

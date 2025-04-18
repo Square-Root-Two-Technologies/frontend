@@ -13,30 +13,37 @@ const SingleBlogPage = () => {
 
   useEffect(() => {
     if ((!note || note._id !== id) && !isFetching) {
-      console.log(`SingleBlogPage: Fetching note with ID: ${id}`);
       fetchNoteById(id);
     }
+    // Optional: Scroll to top when component mounts or ID changes
+    window.scrollTo(0, 0);
   }, [id, fetchNoteById, note, isFetching]);
 
   const handleEdit = () => {
     navigate(`/edit-note/${id}`);
   };
 
-  // ... (loading, error, not found states remain the same)
+  // Centering Wrapper for loading/error states
+  const CenteredMessage = ({ children }) => (
+    <div className="container mx-auto px-4 py-12 flex justify-center items-center min-h-[calc(100vh-160px)]">
+      {" "}
+      {/* Adjust min-height */}
+      {children}
+    </div>
+  );
 
-  if (isFetching || isUserLoading || (!note && !error)) {
+  if (isFetching || isUserLoading || (!note && !error && !isFetching)) {
+    // Improved loading check
     return (
-      <div className="flex justify-center items-center min-h-[60vh]">
-        {" "}
-        {}
+      <CenteredMessage>
         <LoadingSpinner />
-      </div>
+      </CenteredMessage>
     );
   }
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <CenteredMessage>
         <div className="card text-center max-w-md mx-auto">
           <h2 className="text-xl font-semibold text-error mb-4">
             Error Loading Post
@@ -52,13 +59,14 @@ const SingleBlogPage = () => {
             Back to Home
           </Link>
         </div>
-      </div>
+      </CenteredMessage>
     );
   }
 
-  if (!isFetching && !note) {
+  if (!note) {
+    // Handle case where fetch finished but no note found
     return (
-      <div className="container mx-auto px-4 py-8">
+      <CenteredMessage>
         <div className="card text-center max-w-md mx-auto">
           <h2 className="text-xl font-semibold text-neutral dark:text-gray-100 mb-4">
             Post Not Found
@@ -71,10 +79,11 @@ const SingleBlogPage = () => {
             Back to Home
           </Link>
         </div>
-      </div>
+      </CenteredMessage>
     );
   }
 
+  // Destructure note details only if note exists
   const {
     title = "Untitled Post",
     description = "",
@@ -86,7 +95,6 @@ const SingleBlogPage = () => {
   } = note;
 
   const authorName = user?.name || "Unknown Author";
-  // Removed: const authorAvatarUrl = user?.avatarUrl;
   const postDate = date
     ? new Date(date).toLocaleDateString("en-US", {
         year: "numeric",
@@ -101,28 +109,26 @@ const SingleBlogPage = () => {
     user &&
     (currentUser._id === user._id || currentUser.role === "admin");
 
+  // This page's main content should be centered
   return (
+    // Add the container wrapper here
     <div className="container mx-auto px-4 py-8">
-      {}
-      <div className={`card max-w-6xl mx-auto ${typeColorClass} border-t-4`}>
-        {}
+      {/* Card remains constrained */}
+      <div className={`card max-w-4xl mx-auto ${typeColorClass} border-t-4`}>
+        {" "}
+        {/* Adjusted max-width */}
         <Link
           to="/"
           className="text-primary hover:underline mb-6 inline-block text-sm"
         >
           ← Back to All Posts
         </Link>
-        {}
         <div className="flex justify-between items-start mb-4 flex-wrap gap-4">
-          {" "}
-          {}
-          {}
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-neutral dark:text-gray-100 flex-1 mr-4 break-words">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-neutral dark:text-gray-100 flex-1 mr-4 break-wordshyphens-auto">
             {" "}
-            {}
+            {/* Added hyphens */}
             {title}
           </h1>
-          {}
           {showEditButton && (
             <button
               onClick={handleEdit}
@@ -133,13 +139,9 @@ const SingleBlogPage = () => {
             </button>
           )}
         </div>
-        {}
         <div className="text-subtle mb-8 flex flex-wrap gap-x-4 gap-y-2 items-center border-b border-gray-200 dark:border-gray-700 pb-4">
-          {}
           <div className="flex items-center space-x-2">
-            {/* Always render initials div now */}
-            <div className="h-8 w-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-sm font-medium text-neutral dark:text-gray-200">
-              {}
+            <div className="h-8 w-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-sm font-medium text-neutral dark:text-gray-200 overflow-hidden">
               {authorName
                 .split(" ")
                 .map((n) => n?.[0])
@@ -152,31 +154,25 @@ const SingleBlogPage = () => {
             </span>
           </div>
           <span>•</span>
-          {}
           <time dateTime={date ? new Date(date).toISOString() : undefined}>
             {postDate}
           </time>{" "}
-          {}
-          {}
           {readTimeMinutes && (
             <>
               <span>•</span>
               <span>{readTimeMinutes} min read</span>
             </>
           )}
-          {}
           {(type || tag) && (
             <>
               <span>•</span>
               <span className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-neutral dark:text-gray-300 text-xs font-medium rounded-full capitalize">
-                {" "}
-                {}
                 {type || tag}
               </span>
             </>
           )}
         </div>
-        {}
+        {/* Apply prose styles for typography from Tailwind Typography if installed, or use custom styles */}
         <div
           className="prose dark:prose-invert max-w-none text-neutral dark:text-gray-200 leading-relaxed"
           dangerouslySetInnerHTML={{
