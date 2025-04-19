@@ -6,6 +6,7 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
+    "@react-oauth/google": "^0.12.1",
     "@react-spring/web": "^9.7.5",
     "@react-three/drei": "^9.105.6",
     "@react-three/fiber": "^8.16.8",
