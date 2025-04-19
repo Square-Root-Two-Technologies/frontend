@@ -3,9 +3,11 @@ import React, { useState, useCallback, useMemo, useEffect } from "react";
 import UserContext from "./UserContext";
 
 const UserState = (props) => {
-  const host = "http://localhost:5000";
+  const host = process.env.REACT_APP_BACKEND;
+  //const host = "http://localhost:5000";
   const [currentUser, setCurrentUser] = useState(null);
   const [isUserLoading, setIsUserLoading] = useState(true);
+  const [isUploadingPicture, setIsUploadingPicture] = useState(false);
 
   // Fetches user details using the token from localStorage
   const getUserDetails = useCallback(async () => {
@@ -14,7 +16,7 @@ const UserState = (props) => {
       setCurrentUser(null);
       setIsUserLoading(false);
       console.log("getUserDetails: No token found, user cleared."); // Added log
-      return;
+      return null;
     }
 
     console.log("getUserDetails: Token found, fetching user..."); // Added log
@@ -88,6 +90,66 @@ const UserState = (props) => {
       }
     },
     [host],
+  );
+
+  const uploadProfilePicture = useCallback(
+    async (file) => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        return { success: false, message: "Authentication required." };
+      }
+      if (!file) {
+        return { success: false, message: "No file provided." };
+      }
+
+      setIsUploadingPicture(true); // Set specific loading state
+
+      const formData = new FormData();
+      formData.append("profilePic", file); // Key must match backend (upload.single('profilePic'))
+
+      try {
+        const response = await fetch(`${host}/api/auth/profile/picture`, {
+          method: "PUT",
+          headers: {
+            "auth-token": token,
+            // ** Important: Do NOT set 'Content-Type': 'multipart/form-data' here! **
+            // The browser will set it correctly with the boundary.
+          },
+          body: formData,
+        });
+
+        const responseData = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            responseData.error ||
+              `Image upload failed (Status: ${response.status})`,
+          );
+        }
+
+        if (responseData.success && responseData.user) {
+          // Update the currentUser state with the latest user data from backend
+          setCurrentUser(responseData.user);
+          console.log("Profile picture updated successfully in context");
+          return { success: true, user: responseData.user };
+        } else {
+          // Handle cases where backend might return success: false or no user data
+          throw new Error(
+            responseData.message ||
+              "Image upload did not return expected data.",
+          );
+        }
+      } catch (error) {
+        console.error("Error uploading profile picture:", error);
+        return {
+          success: false,
+          message: error.message || "Failed to upload image.",
+        };
+      } finally {
+        setIsUploadingPicture(false); // Reset specific loading state
+      }
+    },
+    [host], // Dependency: host
   );
 
   // Clears the current user state
@@ -209,6 +271,8 @@ const UserState = (props) => {
       login,
       logout,
       signup,
+      isUploadingPicture,
+      uploadProfilePicture,
     }),
     [
       currentUser,
@@ -219,6 +283,8 @@ const UserState = (props) => {
       login,
       logout,
       signup,
+      isUploadingPicture,
+      uploadProfilePicture,
     ],
   );
 
