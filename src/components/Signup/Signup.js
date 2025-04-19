@@ -1,10 +1,13 @@
+// src/components/Signup/Signup.js
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import UserContext from "../../context/user/UserContext";
-import LoadingSpinner from "../LoadingSpinner/LoadingSpinner"; // Make sure this component exists
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import { GoogleLogin } from "@react-oauth/google"; // Import GoogleLogin
 
 const Signup = () => {
-  const { signup, isUserLoading } = useContext(UserContext);
+  // Get googleLogin function from context
+  const { signup, isUserLoading, googleLogin } = useContext(UserContext);
   const [credentials, setCredentials] = useState({
     name: "",
     email: "",
@@ -12,31 +15,30 @@ const Signup = () => {
     confirmPassword: "",
     country: "",
     city: "",
-    // Removed 'about' as it wasn't used in the original form submission logic provided
+    // Removed 'about' as it's optional and defaulted on backend
   });
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // For email/pass signup
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false); // For Google signup
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    setIsLoading(true); // Use specific loader for email/pass
     setError("");
 
-    // --- Validation Checks ---
+    // --- Frontend Validation ---
     if (credentials.password !== credentials.confirmPassword) {
       setError("Passwords do not match");
       setIsLoading(false);
       return;
     }
-    // Basic checks (you might want more robust validation)
     if (!credentials.name || credentials.name.length < 3) {
       setError("Name must be at least 3 characters long.");
       setIsLoading(false);
       return;
     }
-    if (!credentials.email) {
-      // Basic check, could add regex validation
+    if (!credentials.email || !/\S+@\S+\.\S+/.test(credentials.email)) {
       setError("Please enter a valid email.");
       setIsLoading(false);
       return;
@@ -56,7 +58,7 @@ const Signup = () => {
       setIsLoading(false);
       return;
     }
-    // --- End Validation ---
+    // --- End Frontend Validation ---
 
     try {
       const result = await signup(
@@ -65,15 +67,14 @@ const Signup = () => {
         credentials.password,
         credentials.country,
         credentials.city,
-        // Pass 'about' if you re-add it to the form state and backend
+        // 'about' is handled by backend default
       );
       if (result.success) {
-        navigate("/"); // Redirect to home on successful signup
+        navigate("/"); // Redirect to home after successful signup
       } else {
-        setError(result.message || "Signup failed"); // Display error from context/backend
+        setError(result.message || "Signup failed");
       }
     } catch (error) {
-      // Catch errors thrown by the signup function (e.g., validation errors)
       setError(
         error.message || "An unexpected error occurred. Please try again.",
       );
@@ -87,33 +88,89 @@ const Signup = () => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
-  // --- Tailwind Classes for Inputs (Consistent Style) ---
+  // --- Google Signup/Login Handlers ---
+  const handleGoogleSuccess = async (credentialResponse) => {
+    console.log("Google Sign-Up/Login Success:", credentialResponse);
+    setError("");
+    setIsGoogleLoading(true); // Use specific loader
+    try {
+      const idToken = credentialResponse.credential;
+      // Send the token to the backend endpoint which handles both login & signup
+      const result = await googleLogin(idToken);
+
+      if (result.success) {
+        // Navigate to home regardless of whether it was login or signup
+        navigate("/");
+      } else {
+        setError(result.message || "Google Sign-Up failed. Please try again.");
+      }
+    } catch (err) {
+      console.error("Google sign-up/login processing error:", err);
+      setError("An error occurred during Google Sign-Up. Please try again.");
+    } finally {
+      setIsGoogleLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    console.error("Google Sign-Up/Login Failed");
+    setError(
+      "Google Sign-Up failed. Please ensure popups are enabled or try again later.",
+    );
+    setIsGoogleLoading(false);
+  };
+  // --- End Google Handlers ---
+
   const inputBaseClasses =
-    "mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white sm:text-sm";
+    "mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white sm:text-sm disabled:opacity-50 disabled:bg-gray-200 dark:disabled:bg-gray-700/50 disabled:cursor-not-allowed"; // Added disabled styles
   const labelBaseClasses =
     "block text-sm font-medium text-gray-700 dark:text-gray-300";
-  const requiredMarkClasses = "text-error"; // Assumes 'error' color is defined in tailwind.config.js
-  // ---
+  const requiredMarkClasses = "text-error";
 
-  // Apply container centering and adjust min-height for navbar
+  // Disable form fields if any loading is happening
+  const isFormDisabled = isLoading || isUserLoading || isGoogleLoading;
+
   return (
     <div className="container mx-auto px-4 py-12 flex items-center justify-center min-h-[calc(100vh-96px)]">
-      {/* Inner card for the form content */}
       <div className="w-full max-w-md p-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
         <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">
           Create Your Account
         </h2>
-
         {error && (
           <div className="mb-4 p-3 bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-200 rounded text-sm">
             {error}
           </div>
         )}
 
+        {/* --- Google Sign-Up Button --- */}
+        <div className="mb-6 flex justify-center">
+          {isGoogleLoading ? (
+            <LoadingSpinner />
+          ) : (
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              // You might want slightly different text/theme here?
+              // theme="filled_blue" // Example theme
+              // text="signup_with" // Example text option
+              useOneTap={false} // Disable One Tap on signup page to avoid confusion
+              width="300px" // Adjust width as needed
+            />
+          )}
+        </div>
+        {/* --- End Google Sign-Up Button --- */}
+
+        {/* Divider */}
+        <div className="relative flex py-3 items-center">
+          <div className="flex-grow border-t border-gray-300 dark:border-gray-600"></div>
+          <span className="flex-shrink mx-4 text-gray-500 dark:text-gray-400 text-xs">
+            OR
+          </span>
+          <div className="flex-grow border-t border-gray-300 dark:border-gray-600"></div>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
-          {" "}
-          {/* Adjusted spacing */}
-          {/* Name Field */}
+          {/* Name */}
           <div>
             <label htmlFor="name" className={labelBaseClasses}>
               Name <span className={requiredMarkClasses}>*</span>
@@ -128,10 +185,10 @@ const Signup = () => {
               placeholder="Enter your name"
               required
               minLength="3"
-              disabled={isLoading || isUserLoading}
+              disabled={isFormDisabled} // Disable if loading
             />
           </div>
-          {/* Email Field */}
+          {/* Email */}
           <div>
             <label htmlFor="email" className={labelBaseClasses}>
               Email <span className={requiredMarkClasses}>*</span>
@@ -145,10 +202,10 @@ const Signup = () => {
               className={inputBaseClasses}
               placeholder="Enter your email"
               required
-              disabled={isLoading || isUserLoading}
+              disabled={isFormDisabled} // Disable if loading
             />
           </div>
-          {/* Country Field */}
+          {/* Country */}
           <div>
             <label htmlFor="country" className={labelBaseClasses}>
               Country <span className={requiredMarkClasses}>*</span>
@@ -163,10 +220,10 @@ const Signup = () => {
               placeholder="Enter your country"
               required
               minLength="2"
-              disabled={isLoading || isUserLoading}
+              disabled={isFormDisabled} // Disable if loading
             />
           </div>
-          {/* City Field */}
+          {/* City */}
           <div>
             <label htmlFor="city" className={labelBaseClasses}>
               City <span className={requiredMarkClasses}>*</span>
@@ -181,10 +238,10 @@ const Signup = () => {
               placeholder="Enter your city"
               required
               minLength="1"
-              disabled={isLoading || isUserLoading}
+              disabled={isFormDisabled} // Disable if loading
             />
           </div>
-          {/* Password Field */}
+          {/* Password */}
           <div>
             <label htmlFor="password" className={labelBaseClasses}>
               Password <span className={requiredMarkClasses}>*</span>
@@ -199,13 +256,11 @@ const Signup = () => {
               placeholder="Enter your password (min 5 chars)"
               required
               minLength="5"
-              disabled={isLoading || isUserLoading}
+              disabled={isFormDisabled} // Disable if loading
             />
           </div>
-          {/* Confirm Password Field */}
+          {/* Confirm Password */}
           <div>
-            {" "}
-            {/* Removed mb-6, using space-y-4 on form */}
             <label htmlFor="confirmPassword" className={labelBaseClasses}>
               Confirm Password <span className={requiredMarkClasses}>*</span>
             </label>
@@ -219,26 +274,23 @@ const Signup = () => {
               placeholder="Confirm your password"
               required
               minLength="5"
-              disabled={isLoading || isUserLoading}
+              disabled={isFormDisabled} // Disable if loading
             />
           </div>
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 dark:focus:ring-offset-gray-800"
-            disabled={isLoading || isUserLoading}
+            className="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed dark:focus:ring-offset-gray-800"
+            disabled={isFormDisabled} // Disable if loading
           >
-            {isLoading || isUserLoading ? (
-              <LoadingSpinner /> // Use the component
+            {isLoading ? ( // Show spinner only for email/pass submit
+              <LoadingSpinner />
             ) : (
-              "Sign Up"
+              "Sign Up with Email" // Updated text
             )}
           </button>
         </form>
-
         <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
-          {" "}
-          {/* Increased margin-top */}
           Already have an account?{" "}
           <Link
             to="/login"

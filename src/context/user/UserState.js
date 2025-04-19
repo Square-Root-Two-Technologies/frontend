@@ -194,6 +194,42 @@ const UserState = (props) => {
     // No finally block needed here as getUserDetails handles loading state
   };
 
+  // --- NEW Google Login Function ---
+  const googleLogin = async (idToken) => {
+    if (!idToken) {
+      return { success: false, message: "Google ID Token is missing." };
+    }
+    try {
+      const response = await fetch(`${host}/api/auth/google-login`, {
+        // New backend endpoint
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token: idToken }), // Send the token
+      });
+      const json = await response.json();
+      if (json.success) {
+        localStorage.setItem("token", json.authtoken);
+        console.log(
+          "Google login successful, token stored. Fetching user details...",
+        );
+        await getUserDetails(); // Fetch user details after storing token
+        return { success: true };
+      } else {
+        console.error("Google Login API error:", json.error);
+        // Use the error from the API response
+        throw new Error(json.error || "Google login failed on backend");
+      }
+    } catch (error) {
+      console.error("Google login function error:", error.message);
+      return {
+        success: false,
+        message: error.message || "Google login failed",
+      };
+    }
+  };
+
   // Logout function
   const logout = useCallback(() => {
     console.log("logout: Removing token and clearing user."); // Added log
@@ -273,6 +309,7 @@ const UserState = (props) => {
       signup,
       isUploadingPicture,
       uploadProfilePicture,
+      googleLogin,
     }),
     [
       currentUser,
@@ -285,6 +322,7 @@ const UserState = (props) => {
       signup,
       isUploadingPicture,
       uploadProfilePicture,
+      googleLogin,
     ],
   );
 
