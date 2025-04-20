@@ -161,7 +161,6 @@ const UserState = (props) => {
 
   // Login function
   const login = async (email, password) => {
-    // No need for setIsUserLoading(true) here, getUserDetails will handle it
     try {
       const response = await fetch(`${host}/api/auth/login`, {
         method: "POST",
@@ -169,29 +168,56 @@ const UserState = (props) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: email || "", // Basic validation/defaulting
-          password: password || "", // Basic validation/defaulting
+          email: email || "",
+          password: password || "",
         }),
       });
+
+      // Check if the response status indicates an error (like 4xx or 5xx)
+      if (!response.ok) {
+        // --- Read the body ONCE as text ---
+        const errorText = await response.text(); // Read the body first
+        console.error(
+          `Login API Error Response (Status: ${response.status}):`,
+          errorText,
+        );
+
+        let errorMessage = `Login failed (Status: ${response.status})`;
+        try {
+          // --- Try to PARSE the text we already read ---
+          const errorJson = JSON.parse(errorText);
+          // Use specific error from JSON if available (e.g., for 400 errors)
+          errorMessage =
+            errorJson.error ||
+            `Login failed: ${errorJson.message || errorText.substring(0, 100)}`;
+        } catch (e) {
+          // If parsing failed, it was likely plain text (like the 500 error)
+          errorMessage = `Server error: ${
+            response.status
+          } - ${errorText.substring(0, 100)}`;
+        }
+        // Throw the determined error message
+        throw new Error(errorMessage);
+      }
+
+      // If response.ok is true, THEN read the body as JSON
       const json = await response.json();
 
       if (json.success) {
         localStorage.setItem("token", json.authtoken);
-        console.log("Login successful, token stored. Fetching user details..."); // Added log
-        await getUserDetails(); // *** CORRECTED FUNCTION CALL ***
-        return { success: true }; // Return success object
+        console.log("Login successful, token stored. Fetching user details...");
+        await getUserDetails(); // Ensure getUserDetails handles its own errors
+        return { success: true };
       } else {
-        console.error("Login API error:", json.error); // Log API error
-        // Throw specific error for component
+        // Handles cases where response is ok (2xx) but backend indicates logical failure
+        console.error("Login API error (success=false):", json.error);
         throw new Error(json.error || "Login failed");
       }
     } catch (error) {
-      // Catch network or other errors
+      // This catch block handles errors from fetch itself OR the errors thrown from the !response.ok block
       console.error("Login function error:", error.message);
-      // Return specific error for component
       return { success: false, message: error.message || "Login failed" };
     }
-    // No finally block needed here as getUserDetails handles loading state
   };
 
   // --- NEW Google Login Function ---
@@ -240,7 +266,6 @@ const UserState = (props) => {
 
   // Signup function
   const signup = async (name, email, password, country, city, about) => {
-    // No need for setIsUserLoading(true) here, getUserDetails will handle it
     try {
       const response = await fetch(`${host}/api/auth/createuser`, {
         method: "POST",
@@ -248,26 +273,57 @@ const UserState = (props) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: name || "", // Basic validation/defaulting
+          name: name || "",
           email: email || "",
           password: password || "",
-          country: country || "", // Send empty string if null/undefined
-          city: city || "", // Send empty string if null/undefined
-          about: about || "about is empty", // Default if not provided
+          country: country || "",
+          city: city || "",
+          about: about || "about is empty",
         }),
       });
-      const json = await response.json();
+
+      // --- ADD THIS CHECK ---
+      if (!response.ok) {
+        // Try to get error text if not JSON
+        const errorText = await response.text();
+        console.error("Signup API Error Response:", errorText);
+        // Try to parse as JSON if possible, otherwise use text
+        let errorMessage = "Signup failed";
+        try {
+          const errorJson = JSON.parse(errorText);
+          if (errorJson.error) {
+            errorMessage = errorJson.error;
+          } else if (errorJson.errors && Array.isArray(errorJson.errors)) {
+            errorMessage = errorJson.errors.map((err) => err.msg).join(", ");
+          } else {
+            errorMessage = `Server error: ${
+              response.status
+            } - ${errorText.substring(0, 100)}`; // Show start of text
+          }
+        } catch (e) {
+          errorMessage = `Server error: ${
+            response.status
+          } - ${errorText.substring(0, 100)}`; // Show start of text if parsing failed
+        }
+        throw new Error(errorMessage);
+      }
+      // --- END ADDED CHECK ---
+
+      const json = await response.json(); // Now only called if response.ok is true
 
       if (json.success) {
         localStorage.setItem("token", json.authtoken);
         console.log(
           "Signup successful, token stored. Fetching user details...",
-        ); // Added log
-        await getUserDetails(); // *** CORRECTED FUNCTION CALL ***
-        return { success: true }; // Return success object
+        );
+        await getUserDetails();
+        return { success: true };
       } else {
-        console.error("Signup API error:", json.error || json.errors); // Log API error
-        // Construct a meaningful error message
+        // This part might be less likely to be reached if !response.ok is handled above
+        console.error(
+          "Signup API error (but response ok?):",
+          json.error || json.errors,
+        );
         let errorMessage = "Signup failed";
         if (json.error) {
           errorMessage = json.error;
@@ -277,12 +333,9 @@ const UserState = (props) => {
         throw new Error(errorMessage);
       }
     } catch (error) {
-      // Catch network or other errors
       console.error("Signup function error:", error.message);
-      // Return specific error for component
       return { success: false, message: error.message || "Signup failed" };
     }
-    // No finally block needed here as getUserDetails handles loading state
   };
 
   // Effect to fetch user on initial load if token exists

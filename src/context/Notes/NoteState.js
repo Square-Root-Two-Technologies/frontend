@@ -36,6 +36,49 @@ const NoteState = (props) => {
 
   // --- Public Note Fetching (Home Page, Sidebar, etc.) ---
 
+  // --- FETCH NOTE BY SLUG FUNCTION ---
+  const fetchNoteBySlug = useCallback(
+    async (slug) => {
+      if (!slug) {
+        console.warn("fetchNoteBySlug called with empty slug.");
+        setError("Invalid post URL.");
+        setNote(null);
+        return;
+      }
+      console.log(`Workspaceing note by SLUG: ${slug}`);
+      setIsFetching(true); // Use the generic fetching state for now
+      setError(null);
+      setNote(null); // Clear previous single note before fetching new one
+      try {
+        const response = await fetch(
+          `${host}/api/notes/fetchNoteBySlug/${slug}`,
+        );
+        const data = await response.json();
+        if (!response.ok) {
+          // Set error based on response, fallback message
+          setError(
+            data.error || `Could not find post (Status: ${response.status})`,
+          );
+          setNote(null); // Ensure note is null on error
+          console.error(
+            "Fetch note by slug failed:",
+            data.error || response.status,
+          );
+        } else {
+          setNote(data); // Set the fetched note to state
+          console.log("Single note fetched successfully by slug:", data.title);
+        }
+      } catch (err) {
+        console.error("Network error fetching single note by slug:", err);
+        setError(err.message || "Failed to fetch note due to a network issue.");
+        setNote(null); // Ensure note is null on error
+      } finally {
+        setIsFetching(false); // Stop loading indicator
+      }
+    },
+    [host], // Dependency: host
+  );
+
   // FEATURED NOTES BATCH FETCHER (Handles Initial & Subsequent)
   const fetchFeaturedNotesBatch = useCallback(
     async (isInitialLoad = false, retryCount = 0) => {
@@ -583,6 +626,7 @@ const NoteState = (props) => {
       getNotes,
       fetchNextBatchOfNotes,
       fetchNoteById,
+      fetchNoteBySlug,
       getBlogTypes,
       getRecentPosts,
       searchResults, // <-- Add state
@@ -614,6 +658,7 @@ const NoteState = (props) => {
       getNotes,
       fetchNextBatchOfNotes,
       fetchNoteById,
+      fetchNoteBySlug,
       getBlogTypes,
       getRecentPosts,
       fetchFeaturedNotesBatch,
