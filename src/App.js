@@ -35,7 +35,7 @@ function App() {
                 <Routes>
                   <Route path="/" element={<HomeScreen />} />
                   <Route path="/blogspace" element={<BlogSpace />} />
-                  <Route path="/blog/:id" element={<SingleBlogPage />} />
+                  <Route path="/blog/:slug" element={<SingleBlogPage />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/signup" element={<Signup />} />
                   <Route path="/search" element={<SearchResultsPage />} />{" "}
