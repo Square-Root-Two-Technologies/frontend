@@ -1,39 +1,35 @@
-// FILE: src/components/BlogCardAnimation/BlogCardAnimation.js
 import React, { useMemo } from "react";
-import { motion, useReducedMotion } from "framer-motion"; // Import from Framer Motion
-import "./BlogCardAnimation.css"; // Keep your CSS for color classes
-import { getTypeColor } from "../../utils/typeColors";
+import { motion, useReducedMotion } from "framer-motion";
+import "./BlogCardAnimation.css";
+import { getTypeColor } from "../../utils/typeColors"; // Ensure path is correct
 
-// Constants (Keep or adjust as needed)
+// Constants (Keep As Is)
 const ANIMATION_AREA_WIDTH = 100;
 const ANIMATION_AREA_HEIGHT = 100;
 const MIN_POLYGONS = 2;
 const MAX_POLYGONS = 4;
-const MIN_SIZE = 20; // Slightly increased min size
-const MAX_SIZE = 45; // Slightly increased max size
-
-// Keep existing polygon shapes or define new ones
+const MIN_SIZE = 20;
+const MAX_SIZE = 45;
 const polygonShapes = [
-  "M50 0 L100 100 L0 100 Z", // Triangle
-  "M0 0 H100 V100 H0 Z", // Square
-  "M50 0 L100 25 L100 75 L50 100 L0 75 L0 25 Z", // Hexagon
-  "M50 0 L75 50 L50 100 L25 50 Z", // Diamond
-  "M 0 50 A 50 50 0 1 1 100 50 A 50 50 0 1 1 0 50 Z", // Circle (path approximation)
+  "M50 0 L100 100 L0 100 Z",
+  "M0 0 H100 V100 H0 Z",
+  "M50 0 L100 25 L100 75 L50 100 L0 75 L0 25 Z",
+  "M50 0 L75 50 L50 100 L25 50 Z",
+  "M 0 50 A 50 50 0 1 1 100 50 A 50 50 0 1 1 0 50 Z",
 ];
 
-// Keep your seeded random function
+// Seeded Random Functions (Keep As Is)
 const seededRandom = (seed) => {
   if (seed === undefined || seed === null) seed = Math.random() * 10000;
   const x = Math.sin(seed) * 10000;
   return x - Math.floor(x);
 };
-
 const rand = (min, max, seed) => min + (max - min) * seededRandom(seed);
 
-// Define different animation types
+// Animation Variants (Keep As Is)
 const animationVariants = [
-  // 1. Gentle drift and fade
   {
+    /* ... variant 1 ... */
     initial: (config) => ({
       x: config.initialX,
       y: config.initialY,
@@ -44,24 +40,24 @@ const animationVariants = [
     animate: (config) => ({
       x: config.targetX,
       y: config.targetY,
-      opacity: [0.1, 0.6, 0.1], // Fade in and out slightly
+      opacity: [0.1, 0.6, 0.1],
       scale: config.targetScale,
       rotate: config.targetRot,
       transition: {
-        duration: rand(8, 15, config.uniqueSeed + 100), // Longer duration
+        duration: rand(8, 15, config.uniqueSeed + 100),
         repeat: Infinity,
-        repeatType: "mirror", // Go back and forth
+        repeatType: "mirror",
         ease: "easeInOut",
         delay: config.delay,
       },
     }),
   },
-  // 2. Slow pulse
   {
+    /* ... variant 2 ... */
     initial: (config) => ({
       x: config.initialX,
       y: config.initialY,
-      scale: config.initialScale * 0.9, // Start slightly smaller
+      scale: config.initialScale * 0.9,
       rotate: config.initialRot,
       opacity: 0.5,
     }),
@@ -80,8 +76,8 @@ const animationVariants = [
       },
     }),
   },
-  // 3. Orbiting (more complex - example using x/y array)
   {
+    /* ... variant 3 ... */
     initial: (config) => ({
       x: config.initialX,
       y: config.initialY,
@@ -90,64 +86,65 @@ const animationVariants = [
       opacity: 0.6,
     }),
     animate: (config) => ({
-      // Animate along a path (e.g., circle/ellipse) - simplified here
       x: [config.initialX, config.targetX, config.initialX],
       y: [config.initialY, config.targetY, config.initialY],
       rotate: [0, 180, 360],
       transition: {
         duration: rand(10, 18, config.uniqueSeed + 102),
         repeat: Infinity,
-        ease: "linear", // Constant speed
+        ease: "linear",
         delay: config.delay,
       },
     }),
   },
 ];
 
+// --- BlogCardAnimation Component ---
 const BlogCardAnimation = ({ type, noteId }) => {
+  // 'type' prop now holds the category name
   const reduceMotion = useReducedMotion();
-  // Use the existing type color logic - ensures theme consistency
-  const typeColorClass = getTypeColor(type).replace("border-", "type-"); // e.g., "type-blue-600"
 
-  // Seeded random generation based on noteId
+  // Get the base color class prefix using the category name ('type' prop)
+  const typeColorClass = getTypeColor(type).replace("border-", "type-");
+  // Example: if type="javascript", getTypeColor returns "border-amber-500"
+  // typeColorClass becomes "type-amber-500"
+  // The CSS file (`BlogCardAnimation.css`) needs classes like `.type-amber-500-fill`, etc.
+
+  // Seed generation based on noteId (Keep As Is)
   const seed = useMemo(
     () =>
       noteId
-        ? noteId.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0) * 3 // Multiply seed for more variation
+        ? noteId.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0) * 3
         : Math.random() * 1000,
     [noteId],
   );
 
-  // Generate configuration for polygons
+  // Polygon configuration generation (Keep As Is)
   const polygonConfigs = useMemo(() => {
     const count = Math.floor(rand(MIN_POLYGONS, MAX_POLYGONS + 1, seed));
     return Array.from({ length: count }, (_, i) => {
-      const uniqueSeed = seed + i * 101; // Ensure unique seeds for each polygon
+      const uniqueSeed = seed + i * 101;
       const size = rand(MIN_SIZE, MAX_SIZE, uniqueSeed + 1);
       const initialX = rand(0, ANIMATION_AREA_WIDTH - size, uniqueSeed + 2);
       const initialY = rand(0, ANIMATION_AREA_HEIGHT - size, uniqueSeed + 3);
       const initialRot = rand(-30, 30, uniqueSeed + 4);
       const initialScale = rand(0.8, 1.1, uniqueSeed + 5);
-
-      // Targets might differ based on animation variant
       const targetX = rand(0, ANIMATION_AREA_WIDTH - size, uniqueSeed + 6);
       const targetY = rand(0, ANIMATION_AREA_HEIGHT - size, uniqueSeed + 7);
       const targetRot = initialRot + rand(-60, 60, uniqueSeed + 8);
       const targetScale = rand(0.9, 1.2, uniqueSeed + 9);
-
       const shapeIndex = Math.floor(
         rand(0, polygonShapes.length, uniqueSeed + 10),
       );
       const animationIndex = Math.floor(
         rand(0, animationVariants.length, uniqueSeed + 11),
       );
-      const delay = rand(0, 1.5, uniqueSeed + 12); // Delay in seconds
-
+      const delay = rand(0, 1.5, uniqueSeed + 12);
       return {
-        id: `${noteId}-poly-${i}`, // Unique ID for React key
+        id: `${noteId}-poly-${i}`,
         shape: polygonShapes[shapeIndex],
-        size: size, // Store size for potential use
-        uniqueSeed: uniqueSeed, // Pass seed for variant transitions
+        size: size,
+        uniqueSeed: uniqueSeed,
         initialX,
         initialY,
         initialRot,
@@ -160,21 +157,20 @@ const BlogCardAnimation = ({ type, noteId }) => {
         delay,
       };
     });
-  }, [seed, noteId]); // Depend on seed and noteId
+  }, [seed, noteId]);
 
-  // --- Static Fallback for Reduced Motion ---
+  // Reduced motion rendering (Keep As Is, but uses updated typeColorClass)
   if (reduceMotion) {
-    // Simple static display, using the first polygon's shape and color
-    const staticConfig = polygonConfigs[0] || { shape: polygonShapes[1] }; // Default to square if no configs
+    const staticConfig = polygonConfigs[0] || { shape: polygonShapes[1] };
     return (
       <div
-        // Use CSS helper classes for background based on type color
-        // Assumes you have classes like `type-blue-600-bg-light` defined in CSS
+        // Use the category-derived color class for background
         className={`w-full h-full flex items-center justify-center ${typeColorClass}-bg-light bg-opacity-30 dark:bg-opacity-20`}
       >
         <svg
-          className={`w-1/3 h-1/3 ${typeColorClass}-text opacity-50`} // Use text color utility
-          viewBox="0 0 100 100" // Standard viewBox for polygons
+          // Use the category-derived color class for text/fill
+          className={`w-1/3 h-1/3 ${typeColorClass}-text opacity-50`}
+          viewBox="0 0 100 100"
           fill="currentColor"
         >
           <path d={staticConfig.shape} />
@@ -183,29 +179,25 @@ const BlogCardAnimation = ({ type, noteId }) => {
     );
   }
 
-  // --- Animated Version ---
+  // Full animation rendering (Keep As Is, but uses updated typeColorClass)
   return (
     <div className="w-full h-full relative overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-800/70">
       <motion.svg
         viewBox={`0 0 ${ANIMATION_AREA_WIDTH} ${ANIMATION_AREA_HEIGHT}`}
-        // Ensure SVG fills the container div
         className="absolute inset-0 w-full h-full"
-        preserveAspectRatio="xMidYMid slice" // Cover the area
-        aria-hidden="true" // Hide decorative SVG from screen readers
+        preserveAspectRatio="xMidYMid slice"
+        aria-hidden="true"
       >
         {polygonConfigs.map((config) => (
           <motion.path
             key={config.id}
             d={config.shape}
-            // Apply color using the CSS utility classes
-            // Example: "type-blue-600-fill fill-current opacity-40 dark:opacity-30"
+            // Use the category-derived color class for fill
             className={`${typeColorClass}-fill fill-current opacity-40 dark:opacity-30`}
-            // Define animation using variants
-            custom={config} // Pass config to variants
+            custom={config}
             initial="initial"
             animate="animate"
             variants={config.animationVariant}
-            // Set transform origin for rotation/scaling
             style={{ transformOrigin: "50% 50%" }}
           />
         ))}
@@ -214,4 +206,4 @@ const BlogCardAnimation = ({ type, noteId }) => {
   );
 };
 
-export default React.memo(BlogCardAnimation); // Keep memoization
+export default React.memo(BlogCardAnimation);

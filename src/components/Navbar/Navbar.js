@@ -1,9 +1,17 @@
 // src/components/Navbar/Navbar.js
+
 import React, { useState, useContext } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import UserContext from "../../context/user/UserContext";
 import { ThemeContext } from "../../context/ThemeProvider/ThemeProvider";
-import { FaBars, FaTimes, FaSun, FaMoon, FaSearch } from "react-icons/fa";
+import {
+  FaBars,
+  FaTimes,
+  FaSun,
+  FaMoon,
+  FaSearch,
+  FaSitemap, // Using FaSitemap as an example icon for the tree view
+} from "react-icons/fa";
 
 const Navbar = () => {
   const { currentUser, isUserLoading, logout } = useContext(UserContext);
@@ -16,62 +24,61 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    setIsMobileMenuOpen(false); // Close mobile menu on logout
-    setShowUserMenu(false); // Close user dropdown on logout
-    navigate("/login"); // Redirect to login page
+    setIsMobileMenuOpen(false);
+    setShowUserMenu(false);
+    navigate("/login");
   };
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     const trimmedQuery = searchQuery.trim();
     if (trimmedQuery) {
-      // Navigate to the search results page with the query parameter
       navigate(`/search?q=${encodeURIComponent(trimmedQuery)}`);
-      setSearchQuery(""); // Clear the search input
-      setIsMobileSearchOpen(false); // Close mobile search bar if open
-      setIsMobileMenuOpen(false); // Close mobile menu if open
+      setSearchQuery("");
+      setIsMobileSearchOpen(false);
+      setIsMobileMenuOpen(false);
     }
   };
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
-    setIsMobileSearchOpen(false); // Close search if opening menu
+    setIsMobileSearchOpen(false);
   };
 
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
+  const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   const toggleMobileSearch = () => {
     setIsMobileSearchOpen(!isMobileSearchOpen);
-    setIsMobileMenuOpen(false); // Close menu if opening search
+    setIsMobileMenuOpen(false);
   };
 
-  // --- Tailwind Class Definitions ---
+  // Style constants
+  const linkBase =
+    "inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium";
+  const linkActive = "border-indigo-500 text-gray-900 dark:text-gray-100";
+  const linkInactive =
+    "border-transparent text-gray-500 hover:border-gray-300 dark:hover:border-gray-700 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100";
   const mobileLinkBase =
     "block rounded-md px-3 py-2 text-base font-medium text-center";
   const mobileLinkInactive =
     "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white";
   const mobileLinkActive =
     "bg-indigo-50 dark:bg-gray-900 text-indigo-700 dark:text-white";
-
   const searchInputClasses =
     "px-3 py-1.5 text-sm rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-neutral dark:text-gray-200 focus:outline-none focus:ring-1 focus:ring-indigo-500";
-  // --- End Tailwind Class Definitions ---
+  const iconButtonClasses =
+    "p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-indigo-500";
 
   return (
-    // Navbar container: fixed top, background, shadow, z-index
     <nav className="bg-white dark:bg-gray-800 shadow-md fixed top-0 left-0 right-0 z-50">
-      {/* Max width container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Flex container for alignment */}
         <div className="flex justify-between h-16">
-          {/* Left section: Logo and Desktop Links */}
+          {/* Left Side: Logo & Desktop Links */}
           <div className="flex">
             <Link
               to="/"
               className="flex-shrink-0 flex items-center"
-              onClick={closeMobileMenu} // Close menu when logo clicked
+              onClick={closeMobileMenu}
             >
               <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
                 √2
@@ -82,23 +89,23 @@ const Navbar = () => {
               <NavLink
                 to="/"
                 className={({ isActive }) =>
-                  `inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                    isActive
-                      ? "border-indigo-500 text-gray-900 dark:text-gray-100"
-                      : "border-transparent text-gray-500 hover:border-gray-300 dark:hover:border-gray-700 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100"
-                  }`
+                  `${linkBase} ${isActive ? linkActive : linkInactive}`
                 }
               >
                 Read
               </NavLink>
               <NavLink
-                to="/my-notes" // Link to the page where users can manage/write notes
+                to="/categories"
                 className={({ isActive }) =>
-                  `inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                    isActive
-                      ? "border-indigo-500 text-gray-900 dark:text-gray-100"
-                      : "border-transparent text-gray-500 hover:border-gray-300 dark:hover:border-gray-700 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100"
-                  }`
+                  `${linkBase} ${isActive ? linkActive : linkInactive}`
+                }
+              >
+                Categories
+              </NavLink>
+              <NavLink
+                to="/my-notes"
+                className={({ isActive }) =>
+                  `${linkBase} ${isActive ? linkActive : linkInactive}`
                 }
               >
                 Write
@@ -106,9 +113,9 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Right section: Search, Theme Toggle, Auth Links/User Menu, Mobile Menu Button */}
+          {/* Right Side: Search, Theme, User/Auth */}
           <div className="flex items-center space-x-2 sm:space-x-4">
-            {/* Desktop Search Form */}
+            {/* Desktop Search */}
             <form
               onSubmit={handleSearchSubmit}
               className="hidden sm:flex items-center relative"
@@ -118,7 +125,7 @@ const Navbar = () => {
                 placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className={`${searchInputClasses} pr-8`} // Added padding for icon
+                className={`${searchInputClasses} pr-8`}
                 aria-label="Search posts"
               />
               <button
@@ -130,7 +137,7 @@ const Navbar = () => {
               </button>
             </form>
 
-            {/* Mobile Search Toggle/Form */}
+            {/* Mobile Search Button/Input */}
             <div className="sm:hidden flex items-center">
               {isMobileSearchOpen ? (
                 <form
@@ -142,9 +149,9 @@ const Navbar = () => {
                     placeholder="Search..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className={`${searchInputClasses} w-36 pr-8`} // Adjust width as needed
+                    className={`${searchInputClasses} w-36 pr-8`}
                     aria-label="Search posts"
-                    autoFocus // Focus when opened
+                    autoFocus
                   />
                   <button
                     type="submit"
@@ -155,10 +162,9 @@ const Navbar = () => {
                   </button>
                 </form>
               ) : (
-                // Mobile Search Icon Button (appears when search bar is closed)
                 <button
                   onClick={toggleMobileSearch}
-                  className="p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className={iconButtonClasses}
                   aria-label="Open search"
                 >
                   <FaSearch size={20} />
@@ -169,16 +175,15 @@ const Navbar = () => {
             {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className={iconButtonClasses}
               aria-label="Toggle theme"
             >
               {theme === "light" ? <FaMoon size={20} /> : <FaSun size={20} />}
             </button>
 
-            {/* Desktop Auth Links / User Menu */}
+            {/* Desktop User Menu / Login Buttons */}
             <div className="hidden sm:flex sm:items-center">
               {!isUserLoading && currentUser ? (
-                // User Menu Dropdown
                 <div className="relative">
                   <button
                     onClick={() => setShowUserMenu(!showUserMenu)}
@@ -187,9 +192,9 @@ const Navbar = () => {
                     aria-expanded={showUserMenu}
                     aria-haspopup="true"
                   >
-                    {currentUser.name} {/* Display user name */}
+                    {currentUser.name}
                     <svg
-                      className="ml-1 h-5 w-5 text-gray-400" // Dropdown arrow
+                      className="ml-1 h-5 w-5 text-gray-400"
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 20 20"
                       fill="currentColor"
@@ -202,7 +207,6 @@ const Navbar = () => {
                       />
                     </svg>
                   </button>
-                  {/* User Dropdown Content */}
                   {showUserMenu && (
                     <div
                       className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white dark:bg-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none z-30"
@@ -214,7 +218,7 @@ const Navbar = () => {
                     >
                       <Link
                         to="/profile"
-                        onClick={() => setShowUserMenu(false)} // Close menu on click
+                        onClick={() => setShowUserMenu(false)}
                         className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
                         role="menuitem"
                         tabIndex="-1"
@@ -222,7 +226,7 @@ const Navbar = () => {
                         Profile
                       </Link>
                       <button
-                        onClick={handleLogout} // Use centralized logout handler
+                        onClick={handleLogout}
                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
                         role="menuitem"
                         tabIndex="-1"
@@ -233,7 +237,6 @@ const Navbar = () => {
                   )}
                 </div>
               ) : (
-                // Login/Signup Buttons when logged out
                 <>
                   <Link
                     to="/login"
@@ -251,7 +254,7 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* Mobile Menu Button (Hamburger Icon) */}
+            {/* Mobile Menu Button */}
             <div className="-mr-2 flex items-center sm:hidden">
               <button
                 onClick={toggleMobileMenu}
@@ -261,9 +264,9 @@ const Navbar = () => {
               >
                 <span className="sr-only">Open main menu</span>
                 {isMobileMenuOpen ? (
-                  <FaTimes className="block h-6 w-6" aria-hidden="true" /> // Close icon
+                  <FaTimes className="block h-6 w-6" aria-hidden="true" />
                 ) : (
-                  <FaBars className="block h-6 w-6" aria-hidden="true" /> // Hamburger icon
+                  <FaBars className="block h-6 w-6" aria-hidden="true" />
                 )}
               </button>
             </div>
@@ -271,7 +274,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown Content */}
+      {/* Mobile menu, show/hide based on menu state. */}
       {isMobileMenuOpen && (
         <div
           className="sm:hidden border-t border-gray-200 dark:border-gray-600"
@@ -286,9 +289,32 @@ const Navbar = () => {
                   isActive ? mobileLinkActive : mobileLinkInactive
                 }`
               }
-              onClick={closeMobileMenu} // Close menu on link click
+              onClick={closeMobileMenu}
             >
               Read
+            </NavLink>
+            <NavLink
+              to="/categories"
+              className={({ isActive }) =>
+                `${mobileLinkBase} ${
+                  isActive ? mobileLinkActive : mobileLinkInactive
+                }`
+              }
+              onClick={closeMobileMenu}
+            >
+              Categories
+            </NavLink>
+            {/* --- NEW LINK FOR CATEGORY TREE (Mobile) --- */}
+            <NavLink
+              to="/category-tree"
+              className={({ isActive }) =>
+                `${mobileLinkBase} ${
+                  isActive ? mobileLinkActive : mobileLinkInactive
+                }`
+              }
+              onClick={closeMobileMenu}
+            >
+              Browse Topics
             </NavLink>
             <NavLink
               to="/my-notes"
@@ -297,16 +323,15 @@ const Navbar = () => {
                   isActive ? mobileLinkActive : mobileLinkInactive
                 }`
               }
-              onClick={closeMobileMenu} // Close menu on link click
+              onClick={closeMobileMenu}
             >
               Write
             </NavLink>
           </div>
-          {/* Mobile Auth Links / User Menu */}
+          {/* Mobile User Actions (Profile/Logout or Login/Signup) */}
           <div className="pt-3 pb-3 border-t border-gray-200 dark:border-gray-700">
             <div className="px-2 space-y-1">
               {!isUserLoading && currentUser ? (
-                // Links when logged in
                 <>
                   <NavLink
                     to="/profile"
@@ -315,7 +340,7 @@ const Navbar = () => {
                         isActive ? mobileLinkActive : mobileLinkInactive
                       }`
                     }
-                    onClick={closeMobileMenu} // Close menu on link click
+                    onClick={closeMobileMenu}
                   >
                     Profile{" "}
                     <span className="font-normal text-xs">
@@ -323,14 +348,13 @@ const Navbar = () => {
                     </span>
                   </NavLink>
                   <button
-                    onClick={handleLogout} // Use centralized logout handler
+                    onClick={handleLogout}
                     className={`${mobileLinkBase} ${mobileLinkInactive} w-full`}
                   >
                     Logout
                   </button>
                 </>
               ) : (
-                // Links when logged out
                 <>
                   <NavLink
                     to="/login"
@@ -339,7 +363,7 @@ const Navbar = () => {
                         isActive ? mobileLinkActive : mobileLinkInactive
                       }`
                     }
-                    onClick={closeMobileMenu} // Close menu on link click
+                    onClick={closeMobileMenu}
                   >
                     Login
                   </NavLink>
@@ -350,7 +374,7 @@ const Navbar = () => {
                         isActive ? mobileLinkActive : mobileLinkInactive
                       }`
                     }
-                    onClick={closeMobileMenu} // Close menu on link click
+                    onClick={closeMobileMenu}
                   >
                     Sign Up
                   </NavLink>

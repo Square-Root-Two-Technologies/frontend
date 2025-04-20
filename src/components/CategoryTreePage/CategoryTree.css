@@ -1,0 +1,70 @@
+.category-tree-container {
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.category-tree-root,
+.children-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.children-list {
+  padding-left: 1.5rem; /* Indentation for children */
+  border-left: 1px dashed #ccc; /* Visual guide line */
+  margin-left: 0.5rem; /* Space before guide line */
+}
+.dark .children-list {
+  border-left-color: #4b5563; /* Dark mode guide line */
+}
+
+.category-node {
+  margin-bottom: 0.5rem;
+}
+
+.node-content {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-arrow {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.2rem 0.5rem 0.2rem 0;
+  font-size: 0.8rem;
+  color: #6b7280;
+  line-height: 1;
+}
+.dark .toggle-arrow {
+  color: #9ca3af;
+}
+
+.toggle-arrow:hover {
+  color: #111827;
+}
+.dark .toggle-arrow:hover {
+  color: #e5e7eb;
+}
+
+.category-link {
+  text-decoration: none;
+  color: #374151; /* Default text color */
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+.dark .category-link {
+  color: #d1d5db;
+}
+
+.category-link:hover {
+  color: #0d9488; /* Primary color on hover */
+  background-color: #f3f4f6;
+  text-decoration: underline;
+}
+.dark .category-link:hover {
+  background-color: #374151;
+  color: #5eead4; /* Lighter primary for dark hover */
+}
