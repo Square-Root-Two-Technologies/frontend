@@ -27,3 +27,6 @@ yarn-error.log*
 config.env
 
 all_frontend_code_condensed.txt
+
+yarn.lock
+package-lock.json
