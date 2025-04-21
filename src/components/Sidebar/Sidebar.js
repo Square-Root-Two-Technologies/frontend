@@ -1,39 +1,60 @@
-// src/components/Sidebar/Sidebar.js
-import React, { useContext, useEffect } from "react"; // Added useContext, useEffect
+import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa";
-import NoteContext from "../../context/Notes/NoteContext"; // Import context
-import CategoryTreeNode from "../CategoryTree/CategoryTreeNode"; // Import the reusable node
-import LoadingSpinner from "../LoadingSpinner/LoadingSpinner"; // For loading state
+import NoteContext from "../../context/Notes/NoteContext"; // Keep for recentPosts
+import CategoryContext from "../../context/category/CategoryContext"; // *** NEW ***
+import CategoryTreeNode from "../CategoryTree/CategoryTreeNode"; // Keep for rendering tree
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner"; // Keep for loading state
 
-const Sidebar = ({ recentPosts = [] /* categories removed as prop */ }) => {
-  // Get tree data from context
+// Helper function to format date (keep as is or move to utils)
+const formatDate = (dateString) => {
+  if (!dateString) return null;
+  try {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  } catch (e) {
+    console.error("Error formatting date:", e);
+    return null;
+  }
+};
+
+const Sidebar = ({ recentPosts = [] }) => {
+  // Accept recentPosts as prop OR get from NoteContext below
+  // Get category data from CategoryContext
   const {
     categoryTree,
-    fetchCategoryTree,
-    isFetchingCategories, // Use the shared loading state
-    categoryTreeError, // Use the shared error state
-  } = useContext(NoteContext);
+    fetchCategoryTree, // Function to fetch if needed
+    isFetchingCategories, // Loading state for categories
+    categoryTreeError, // Error state for categories
+  } = useContext(CategoryContext); // *** UPDATED ***
 
-  // Fetch tree if needed (e.g., if sidebar loads before main content)
+  // Optional: If recentPosts is not passed as a prop, get it from NoteContext
+  // const { recentPosts: contextRecentPosts } = useContext(NoteContext);
+  // const displayRecentPosts = recentPosts.length > 0 ? recentPosts : contextRecentPosts;
+  // For simplicity, assuming recentPosts is passed as a prop as in original code
+
   useEffect(() => {
+    // Fetch category tree if needed
     if (
       categoryTree.length === 0 &&
       !isFetchingCategories &&
       !categoryTreeError
     ) {
       console.log("Sidebar: Triggering fetchCategoryTree");
-      fetchCategoryTree();
+      fetchCategoryTree(); // Use function from CategoryContext
     }
   }, [
-    categoryTree,
+    categoryTree, // Depend on tree data
     fetchCategoryTree,
     isFetchingCategories,
     categoryTreeError,
-  ]);
+  ]); // Update dependencies
 
-  // --- Styling Classes (keep existing or adjust) ---
+  // --- Styling Classes (keep as they were) ---
   const cardBaseClasses =
     "p-4 bg-white dark:bg-gray-900 rounded-lg shadow-md border border-gray-200 dark:border-gray-700";
   const cardTitleClasses =
@@ -42,19 +63,14 @@ const Sidebar = ({ recentPosts = [] /* categories removed as prop */ }) => {
     "hover:text-blue-600 dark:hover:text-blue-400 hover:underline transition-colors text-gray-800 dark:text-gray-200";
   const disabledLinkClasses =
     "text-gray-400 dark:text-gray-500 cursor-not-allowed";
-  // const categoryLinkClasses = "block py-1 text-sm hover:text-blue-600 dark:hover:text-blue-400 hover:underline transition-colors text-gray-700 dark:text-gray-300"; // Replaced by tree
   const socialIconClasses =
     "text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors";
   const metaTextClasses = "text-xs text-gray-500 dark:text-gray-400";
 
-  const formatDate = (dateString) => {
-    /* ... (keep existing format function) ... */
-  };
-
   return (
     <aside className="lg:col-span-1 space-y-6">
-      {/* Recent Posts Card (Keep as is) */}
-      {recentPosts.length > 0 && (
+      {/* Recent Posts Section (Data potentially from props or NoteContext) */}
+      {recentPosts && recentPosts.length > 0 && (
         <div className={cardBaseClasses}>
           <h3 className={cardTitleClasses}>Recent Posts</h3>
           <ul className="space-y-3">
@@ -64,6 +80,7 @@ const Sidebar = ({ recentPosts = [] /* categories removed as prop */ }) => {
               const hasValidSlug =
                 typeof post.slug === "string" && post.slug.trim() !== "";
               const postLink = hasValidSlug ? `/blog/${post.slug}` : "#";
+
               return (
                 <li key={post._id}>
                   <Link
@@ -77,7 +94,7 @@ const Sidebar = ({ recentPosts = [] /* categories removed as prop */ }) => {
                   <div
                     className={`mt-1 ${metaTextClasses} flex items-center flex-wrap gap-x-2`}
                   >
-                    {/* ... date/category meta ... */}
+                    {/* Meta info */}
                     {formattedDate && (
                       <time
                         dateTime={
@@ -105,21 +122,22 @@ const Sidebar = ({ recentPosts = [] /* categories removed as prop */ }) => {
         </div>
       )}
 
-      {/* --- Category Tree Card (NEW) --- */}
+      {/* Browse Topics Section (Uses CategoryContext) */}
       <div className={cardBaseClasses}>
         <h3 className={cardTitleClasses}>Browse Topics</h3>
         {isFetchingCategories && categoryTree.length === 0 ? (
           <div className="flex justify-center items-center p-4">
-            {" "}
-            <LoadingSpinner />{" "}
+            <LoadingSpinner size="sm" /> {/* Use category loading state */}
           </div>
         ) : categoryTreeError ? (
           <p className="text-sm text-error">{categoryTreeError}</p>
         ) : categoryTree.length > 0 ? (
           <ul className="list-none p-0 -mt-2">
-            {" "}
-            {/* Adjust margin if needed */}
+            {/* Render tree using CategoryContext data */}
             {categoryTree.map((rootNode) => (
+              // Pass node data; ensure CategoryTreeNode doesn't use context directly
+              // It should rely on props passed down if it needs dynamic data.
+              // For simple tree display, only 'node' prop might be needed.
               <CategoryTreeNode key={rootNode._id} node={rootNode} level={0} />
             ))}
           </ul>
@@ -128,13 +146,13 @@ const Sidebar = ({ recentPosts = [] /* categories removed as prop */ }) => {
         )}
       </div>
 
-      {/* Social/About Cards (Keep as is) */}
+      {/* Social Links Section (Keep as is) */}
       <div className={cardBaseClasses}>
         <h3 className={cardTitleClasses}>Follow Us</h3>
         <div className="flex space-x-4">
-          {/* ... social links ... */}
+          {/* GitHub */}
           <a
-            href="https://github.com"
+            href="https://github.com" // Replace with your actual URL
             target="_blank"
             rel="noopener noreferrer"
             className={socialIconClasses}
@@ -142,8 +160,9 @@ const Sidebar = ({ recentPosts = [] /* categories removed as prop */ }) => {
           >
             <FaGithub size={24} />
           </a>
+          {/* LinkedIn */}
           <a
-            href="https://linkedin.com"
+            href="https://linkedin.com" // Replace with your actual URL
             target="_blank"
             rel="noopener noreferrer"
             className={socialIconClasses}
@@ -151,8 +170,9 @@ const Sidebar = ({ recentPosts = [] /* categories removed as prop */ }) => {
           >
             <FaLinkedin size={24} />
           </a>
+          {/* Twitter */}
           <a
-            href="https://twitter.com"
+            href="https://twitter.com" // Replace with your actual URL
             target="_blank"
             rel="noopener noreferrer"
             className={socialIconClasses}
@@ -162,6 +182,8 @@ const Sidebar = ({ recentPosts = [] /* categories removed as prop */ }) => {
           </a>
         </div>
       </div>
+
+      {/* About Section (Keep as is) */}
       <div className={cardBaseClasses}>
         <h3 className={cardTitleClasses}>About √2 Technologies</h3>
         <p className="text-sm text-gray-700 dark:text-gray-300">
@@ -173,7 +195,6 @@ const Sidebar = ({ recentPosts = [] /* categories removed as prop */ }) => {
   );
 };
 
-// Update PropTypes: 'categories' is no longer passed as a prop
 Sidebar.propTypes = {
   recentPosts: PropTypes.arrayOf(
     PropTypes.shape({
@@ -182,9 +203,11 @@ Sidebar.propTypes = {
       date: PropTypes.string,
       slug: PropTypes.string,
       category: PropTypes.shape({ name: PropTypes.string }),
-      tag: PropTypes.string,
+      // tag: PropTypes.string, // Was tag used here? If so add it back
     }),
   ),
+  // Remove categories prop if it's now always fetched from context
+  // categories: PropTypes.array,
 };
 
 export default Sidebar;

@@ -1,31 +1,26 @@
 /* src/index.css */
-
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  /* --- Added Rules for Full Height --- */
   html,
   body,
   #root {
-    height: 100%; /* Make html, body, and #root occupy full available height */
-    margin: 0; /* Remove default body margin */
-    padding: 0; /* Remove potential default padding */
+    @apply h-full m-0 p-0; /* Use @apply */
+  }
+
+  html {
+    /* Use Tailwind utility for scroll padding (4rem = 16 * 0.25rem) */
+    @apply scroll-pt-16 scroll-smooth;
   }
 
   body {
     @apply font-sans antialiased bg-background dark:bg-dark text-neutral dark:text-gray-200 leading-relaxed;
-    min-height: 100%; /* Ensure body can contain full height content */
+    @apply min-h-full; /* Use @apply */
   }
-
-  #root {
-    min-height: 100%; /* Ensure React root div fills the body */
-    display: flex; /* Needed because App.js uses flex */
-    flex-direction: column; /* Needed because App.js uses flex */
-  }
-  /* --- End of Added Rules --- */
 
   h1,
   h2,
@@ -36,67 +31,71 @@
     @apply font-semibold text-gray-900 dark:text-white;
   }
 
-  /* Tiptap Editor Styles */
+  /* --- Keep ProseMirror styles as they were --- */
   .ProseMirror {
-    min-height: 250px; /* Minimum height for the editor */
-    @apply bg-white dark:bg-gray-800 text-neutral dark:text-gray-200; /* Base editor appearance */
+    @apply bg-white dark:bg-gray-800 text-neutral dark:text-gray-200;
   }
 
   .ProseMirror:focus {
-    outline: none; /* Remove default focus outline */
+    outline: none;
   }
 
   .ProseMirror p {
-    @apply my-2 leading-relaxed; /* Spacing and line height for paragraphs */
+    @apply my-2 leading-relaxed;
   }
 
   .ProseMirror h2,
   .ProseMirror h3,
   .ProseMirror h4 {
-    @apply mt-6 mb-3 font-semibold text-gray-900 dark:text-white; /* Heading styles */
+    @apply mt-6 mb-3 font-semibold text-gray-900 dark:text-white;
   }
+
   .ProseMirror h2 {
     @apply text-xl;
   }
+
   .ProseMirror h3 {
     @apply text-lg;
   }
+
   .ProseMirror h4 {
     @apply text-base;
   }
 
   .ProseMirror ul,
   .ProseMirror ol {
-    @apply my-4 pl-6; /* List spacing and indentation */
-    list-style-position: outside; /* Ensure bullets/numbers are outside */
+    @apply my-4 pl-6;
+    list-style-position: outside;
   }
+
   .ProseMirror ul {
     @apply list-disc;
-  } /* Use discs for unordered lists */
+  }
+
   .ProseMirror ol {
     @apply list-decimal;
-  } /* Use numbers for ordered lists */
+  }
 
   .ProseMirror li > p {
-    @apply my-1; /* Reduce paragraph margin inside list items */
+    @apply my-1;
   }
+
   .ProseMirror li {
-    @apply my-1; /* Spacing for list items */
+    @apply my-1;
   }
 
   .ProseMirror blockquote {
-    @apply border-l-4 border-gray-300 dark:border-gray-600 pl-4 italic my-4 text-gray-600 dark:text-gray-400; /* Blockquote style */
+    @apply border-l-4 border-gray-300 dark:border-gray-600 pl-4 italic my-4 text-gray-600 dark:text-gray-400;
   }
 
   .ProseMirror pre {
-    @apply bg-gray-100 dark:bg-gray-900 text-neutral dark:text-gray-200 font-mono text-sm p-4 rounded overflow-x-auto my-4 whitespace-pre-wrap; /* Code block style */
+    @apply bg-gray-100 dark:bg-gray-900 text-neutral dark:text-gray-200 font-mono text-sm p-4 rounded overflow-x-auto my-4 whitespace-pre-wrap;
   }
 
   .ProseMirror code {
-    /* Inline code style */
     @apply bg-gray-200 dark:bg-gray-700 text-red-600 dark:text-red-400 px-1 py-0.5 rounded text-sm font-mono;
   }
-  /* Reset styles for code inside pre blocks */
+
   .ProseMirror pre code {
     background: none !important;
     color: inherit !important;
@@ -106,28 +105,20 @@
   }
 
   .ProseMirror a {
-    @apply text-blue-600 dark:text-blue-400 hover:underline cursor-pointer; /* Link style */
+    @apply text-blue-600 dark:text-blue-400 hover:underline cursor-pointer;
   }
 
-  .ProseMirror img {
-    @apply max-w-full h-auto my-4 rounded; /* Image style */
-    display: block; /* Make images block elements */
-  }
-  .ProseMirror img.ProseMirror-selectednode {
-    @apply ring-2 ring-blue-500 outline-none; /* Style for selected image node */
-  }
-
-  /* Tiptap Placeholder Style */
   .ProseMirror p.is-editor-empty:first-child::before {
     content: attr(data-placeholder);
     float: left;
-    color: #adb5bd; /* Placeholder text color (light mode) */
+    color: #adb5bd;
     pointer-events: none;
     height: 0;
-    @apply text-base; /* Placeholder text size */
+    @apply text-base;
   }
+
   .dark .ProseMirror p.is-editor-empty:first-child::before {
-    color: #6b7280; /* Placeholder text color (dark mode) */
+    color: #6b7280;
   }
 }
 
@@ -135,40 +126,49 @@
   .btn-primary {
     @apply inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-primary hover:bg-blue-900 rounded-lg shadow-soft focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition duration-200 ease-in-out;
   }
+
   .btn-secondary {
-    @apply inline-flex items-center px-4 py-2.5 text-sm font-medium text-neutral bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg shadow-soft focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition duration-200 ease-in-out;
+    @apply inline-flex items-center px-4 py-2.5 text-sm font-medium text-neutral dark:text-gray-200 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg shadow-soft focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition duration-200 ease-in-out;
   }
+
   .input-field {
     @apply w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-neutral dark:text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition duration-150 ease-in-out;
   }
+
   .card {
     @apply bg-white dark:bg-gray-900 rounded-lg shadow-soft-lg border border-gray-100 dark:border-gray-800 p-6;
   }
+
   .text-heading {
     @apply text-2xl md:text-3xl font-semibold text-gray-900 dark:text-white tracking-tight;
   }
+
   .text-subtle {
     @apply text-sm text-secondary dark:text-gray-400;
   }
-  /* Custom Scrollbar */
+
   .scrollbar-thin {
-    scrollbar-width: thin; /* For Firefox */
-    scrollbar-color: theme("colors.gray.400") theme("colors.gray.200"); /* For Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: theme("colors.gray.400") theme("colors.gray.200");
   }
+
   .dark .scrollbar-thin {
-    scrollbar-color: theme("colors.gray.600") theme("colors.gray.800"); /* For Firefox - Dark */
+    scrollbar-color: theme("colors.gray.600") theme("colors.gray.800");
   }
-  /* For Webkit browsers (Chrome, Safari) */
+
   .scrollbar-thin::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
+
   .scrollbar-thin::-webkit-scrollbar-track {
     @apply bg-gray-200 dark:bg-gray-800 rounded-full;
   }
+
   .scrollbar-thin::-webkit-scrollbar-thumb {
     @apply bg-gray-400 dark:bg-gray-600 rounded-full;
   }
+
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
     @apply bg-gray-500 dark:bg-gray-500;
   }

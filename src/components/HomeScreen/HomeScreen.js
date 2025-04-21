@@ -1,5 +1,8 @@
+// src/components/HomeScreen/HomeScreen.js
 import React, { useContext, useState, useRef, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom"; // Import useNavigate and useLocation
 import NoteContext from "../../context/Notes/NoteContext";
+import CategoryContext from "../../context/category/CategoryContext";
 import Sidebar from "../Sidebar/Sidebar";
 import Tabs from "../Tabs/Tabs";
 import FeaturedPosts from "../FeaturedPosts/FeaturedPosts";
@@ -13,39 +16,46 @@ const HomeScreen = () => {
     hasMore,
     isFetching,
     initialLoadDone,
-    categories, // <-- Use categories from context
-    recentPosts,
   } = useContext(NoteContext);
-
-  // State to track the active category ID ("All" is a special case)
+  const { categories } = useContext(CategoryContext);
   const [activeCategoryId, setActiveCategoryId] = useState("All");
+  const featuredPostsRef = useRef(null);
+  const categoryTabsAndGridRef = useRef(null);
+  const navigate = useNavigate(); // Get the navigate function
+  const location = useLocation(); // Get the current location
 
-  const scrollTargetRef = useRef(null); // Ref for scrolling to tabs/grid
-  const featuredPostsRef = useRef(null); // Ref for featured posts section
-
-  // Scroll to the notes grid when a category tab (other than "All") is clicked
   useEffect(() => {
-    if (!scrollTargetRef.current) return;
-
-    // Only scroll if a specific category is selected (not "All")
-    if (activeCategoryId !== "All") {
-      scrollTargetRef.current.scrollIntoView({
+    // Scroll to category grid when a specific category is selected
+    if (categoryTabsAndGridRef.current && activeCategoryId !== "All") {
+      categoryTabsAndGridRef.current.scrollIntoView({
         behavior: "smooth",
-        block: "start", // Align top of grid with top of viewport
+        block: "start",
       });
     }
-  }, [activeCategoryId]);
 
-  // Filter notes based on the active category ID
+    // Scroll to featured posts if navigated with hash, then remove hash
+    if (
+      location.hash === "#featured-posts-section" &&
+      featuredPostsRef.current
+    ) {
+      featuredPostsRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+      // Replace history entry to remove the hash without adding a new entry
+      navigate(location.pathname, { replace: true });
+    }
+  }, [activeCategoryId, location, navigate]); // Add dependencies
+
   const displayedNotes =
     activeCategoryId === "All"
-      ? allNotes // Show all notes if "All" is selected
-      : allNotes.filter((note) => note.category?._id === activeCategoryId); // Filter by category ID
+      ? allNotes
+      : allNotes.filter((note) => note.category?._id === activeCategoryId);
 
   return (
     <div className="w-full">
-      {/* Hero Section with Particle Simulation */}
-      <section className="flex flex-col lg:flex-row h-screen lg:h-[calc(100vh-96px)] w-full mb-8">
+      {/* Hero Section */}
+      <section className="flex flex-col lg:flex-row h-screen lg:h-[calc(100vh-64px)] w-full mb-8">
         {/* Particle Simulation */}
         <div className="w-full lg:w-1/2 h-[60vh] lg:h-full bg-black">
           <ParticleSimulationScene />
@@ -57,11 +67,11 @@ const HomeScreen = () => {
           </h1>
           <p className="text-lg text-neutral dark:text-gray-300 max-w-prose">
             Explore insights on development, Salesforce, and creative tech.
-            Scroll down to discover our latest posts.
+            Scroll down or click 'Read' to discover our latest posts.
           </p>
           {/* Scroll Down Indicator */}
           <div className="mt-8 animate-bounce text-secondary dark:text-gray-500">
-            <svg /* ... SVG icon ... */
+            <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -79,49 +89,53 @@ const HomeScreen = () => {
         </div>
       </section>
 
-      {/* Main Content Area: Featured, Tabs, Grid, Sidebar */}
+      {/* Main Content Area */}
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Main Column */}
           <main className="lg:col-span-3">
-            {/* Featured Posts */}
-            <div ref={featuredPostsRef}>
+            {/* Featured Posts Section */}
+            <div
+              ref={featuredPostsRef}
+              id="featured-posts-section"
+              className="scroll-mt-16"
+            >
+              {" "}
+              {/* Added scroll-mt */}
               <FeaturedPosts />
             </div>
 
-            {/* Scroll Target & Tabs */}
-            <div ref={scrollTargetRef} className="scroll-mt-16">
+            {/* Category Tabs & Notes Grid Container */}
+            <div ref={categoryTabsAndGridRef} className="scroll-mt-16">
               {" "}
-              {/* Added scroll-mt for fixed navbar offset */}
-              {/* Render Tabs only if initial load is done and there's more than one category (or just "All") */}
-              {initialLoadDone && categories.length > 0 && (
+              {/* Added scroll-mt */}
+              {initialLoadDone && categories && categories.length > 0 && (
                 <Tabs
-                  activeCategoryId={activeCategoryId} // Pass the active ID
-                  setActiveCategoryId={setActiveCategoryId} // Pass the setter
-                  categories={categories} // Pass the array of category objects
+                  activeCategoryId={activeCategoryId}
+                  setActiveCategoryId={setActiveCategoryId}
+                  categories={categories}
                 />
               )}
             </div>
-
-            {/* Notes Grid */}
             <div>
               <NotesGrid
-                notes={displayedNotes} // Pass the filtered notes
-                isFetching={isFetching && activeCategoryId === "All"} // Show grid loading only when fetching 'All' notes batch
-                hasMore={activeCategoryId === "All" ? hasMore : false} // Only 'All' tab loads more via scroll for now
+                notes={displayedNotes}
+                isFetching={isFetching && activeCategoryId === "All"} // Only show general loading for "All" tab
+                hasMore={activeCategoryId === "All" ? hasMore : false} // Only paginate "All" tab for now
                 initialLoadDone={initialLoadDone}
                 fetchNextBatchOfNotes={
                   activeCategoryId === "All" ? fetchNextBatchOfNotes : () => {}
-                } // Only fetch more for 'All'
+                }
               />
             </div>
           </main>
 
           {/* Sidebar */}
-          <div className="hidden lg:block lg:col-span-1 sticky top-20 self-start">
-            {/* Render Sidebar only after initial data load */}
-            {initialLoadDone && (
-              <Sidebar recentPosts={recentPosts} categories={categories} />
+          <div className="hidden lg:block lg:col-span-1 sticky top-20 self-start h-[calc(100vh-5rem-2rem)] overflow-y-auto scrollbar-thin">
+            {" "}
+            {/* Adjusted sticky position and added overflow */}
+            {initialLoadDone && categories && (
+              <Sidebar categories={categories} /> // Pass categories if needed by Sidebar
             )}
           </div>
         </div>
