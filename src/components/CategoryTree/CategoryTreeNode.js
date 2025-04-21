@@ -14,8 +14,8 @@ const CategoryTreeNode = ({
   node,
   level = 0,
   linkTarget = "_self",
-  currentNoteId, // ID of the currently viewed note
-  ancestorPathIds = [], // Array of IDs for the current note's ancestors + direct parent
+  currentNoteId,
+  ancestorPathIds = [],
   fetchPostsForCategory,
   fetchedCategoryNotesMap = {},
   categoryNotesLoadingMap = {},
@@ -23,86 +23,87 @@ const CategoryTreeNode = ({
 }) => {
   const navigate = useNavigate();
 
-  if (!node || !node._id) {
-    console.warn("CategoryTreeNode rendered with invalid node:", node);
-    return null;
-  }
-
-  const nodeId = node._id;
-  const hasChildren = node.children && node.children.length > 0;
+  // --- MOVE HOOKS HERE ---
+  const nodeId = node?._id; // Safely access _id after checking node
+  const hasChildren = node?.children && node.children.length > 0;
   const canHavePosts = !!fetchPostsForCategory;
+  const shouldBeOpenInitially = nodeId
+    ? ancestorPathIds.includes(nodeId)
+    : false; // Check nodeId exists
 
-  // Initial state determination (still useful for the very first load)
-  const shouldBeOpenInitially = ancestorPathIds.includes(nodeId);
   const [isOpen, setIsOpen] = useState(shouldBeOpenInitially);
+  const notesForThisNode = nodeId ? fetchedCategoryNotesMap[nodeId] || [] : [];
+  const currentIsLoadingNotes = nodeId
+    ? categoryNotesLoadingMap[nodeId] || false
+    : false;
+  const currentErrorLoadingNotes = nodeId
+    ? categoryNotesErrorMap[nodeId] || null
+    : null;
+  const currentHasFetchedNotes = nodeId
+    ? fetchedCategoryNotesMap.hasOwnProperty(nodeId) ||
+      categoryNotesErrorMap.hasOwnProperty(nodeId)
+    : false;
 
-  // --- START: Added useEffect to synchronize state with props ---
-  useEffect(() => {
-    // This effect runs when the component mounts AND whenever
-    // currentNoteId or ancestorPathIds change.
-    // It ensures the open state reflects the *current* active path.
-    const shouldBeOpenBasedOnProps = ancestorPathIds.includes(nodeId);
-    console.log(
-      `Node ${node.name} (${nodeId}): currentNoteId=${currentNoteId}, ancestors=${ancestorPathIds}, shouldBeOpen=${shouldBeOpenBasedOnProps}, currentIsOpen=${isOpen}`,
-    );
-    setIsOpen(shouldBeOpenBasedOnProps);
-  }, [currentNoteId, ancestorPathIds, nodeId]); // Re-evaluate when the viewed note changes
-  // --- END: Added useEffect ---
-
-  const notesForThisNode = fetchedCategoryNotesMap[nodeId] || [];
-  const currentIsLoadingNotes = categoryNotesLoadingMap[nodeId] || false;
-  const currentErrorLoadingNotes = categoryNotesErrorMap[nodeId] || null;
-  const currentHasFetchedNotes =
-    fetchedCategoryNotesMap.hasOwnProperty(nodeId) ||
-    categoryNotesErrorMap.hasOwnProperty(nodeId);
-
-  // User-initiated toggle function
   const toggleOpen = useCallback((e) => {
     e?.stopPropagation();
-    setIsOpen((prev) => !prev); // Just toggle the current state
-  }, []);
+    setIsOpen((prev) => !prev);
+  }, []); // Dependency array is empty as it doesn't depend on external variables
 
-  // Effect to fetch posts when a node is opened (if needed) - Keep this as is
   useEffect(() => {
+    if (!nodeId) return; // Don't run effect if nodeId is invalid
+    const shouldBeOpenBasedOnProps = ancestorPathIds.includes(nodeId);
+    // Removed console log for brevity, can be added back if needed for debugging
+    // console.log(`Node ${node.name} (${nodeId}): currentNoteId=${currentNoteId}, ancestors=${ancestorPathIds}, shouldBeOpen=${shouldBeOpenBasedOnProps}, currentIsOpen=${isOpen}`);
+    setIsOpen(shouldBeOpenBasedOnProps);
+  }, [currentNoteId, ancestorPathIds, nodeId]); // Removed node.name, node from deps as nodeId covers uniqueness
+
+  useEffect(() => {
+    if (!nodeId) return; // Don't run effect if nodeId is invalid
     const shouldFetch =
       isOpen &&
       canHavePosts &&
       !currentHasFetchedNotes &&
       !currentIsLoadingNotes &&
       fetchPostsForCategory;
-
     if (shouldFetch) {
-      console.log(
-        `Node '${node.name}' (${nodeId}) is open and needs data, triggering fetch...`,
-      );
+      // Removed console log for brevity
+      // console.log(`Node '${node.name}' (${nodeId}) is open and needs data, triggering fetch...`);
       fetchPostsForCategory(nodeId);
     }
   }, [
-    isOpen, // Now depends on the potentially updated state
+    isOpen,
     canHavePosts,
     currentHasFetchedNotes,
     currentIsLoadingNotes,
     fetchPostsForCategory,
-    nodeId,
-    node.name,
+    nodeId, // Use nodeId instead of node.name
+    // node.name, // Removed: node.name dependency not strictly needed if logic relies on nodeId
   ]);
+  // --- END OF MOVED HOOKS ---
 
-  // Handle clicks on the category name itself
+  // Early return check NOW comes after hooks
+  if (!node || !node._id) {
+    console.warn("CategoryTreeNode rendered with invalid node:", node);
+    return null;
+  }
+
+  // ... rest of the component logic remains the same ...
+
   const handleCategoryClick = (e) => {
     e.preventDefault();
     if (linkTarget !== "_self") {
       navigate(`/category/${node._id}`);
     } else {
-      // In sidebar, clicking the category name should toggle it
-      toggleOpen(e);
+      toggleOpen(e); // toggleOpen is now defined above
     }
   };
 
-  // Styling Classes (use isOpen state which is now synchronized)
-  const isAncestorOfCurrentNote = ancestorPathIds.includes(nodeId); // Keep for styling
+  const isAncestorOfCurrentNote = ancestorPathIds.includes(nodeId);
+
+  // Class definitions (no changes needed here)
   const nodeContainerClasses = "py-0.5";
   const nodeContentClasses = `flex items-center group rounded px-1.5 py-1 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition-colors duration-150 ease-in-out ${
-    isAncestorOfCurrentNote // Style based on ancestry prop, not necessarily the 'isOpen' state
+    isAncestorOfCurrentNote
       ? "bg-blue-50 dark:bg-blue-900/30 font-semibold"
       : ""
   }`;
@@ -125,16 +126,16 @@ const CategoryTreeNode = ({
   const postLinkActiveClasses =
     "text-blue-700 dark:text-blue-300 font-semibold bg-blue-100 dark:bg-blue-900/40";
 
-  // --- Render logic uses the 'isOpen' state ---
+  // JSX return (no changes needed here, assuming logic inside uses hooks correctly defined above)
   return (
     <li className={nodeContainerClasses}>
       <div className={nodeContentClasses}>
-        {/* Toggle Arrow */}
+        {/* Toggle Button */}
         {hasChildren || canHavePosts ? (
           <button
-            onClick={toggleOpen} // User click toggles state
+            onClick={toggleOpen}
             className={toggleButtonClasses}
-            aria-expanded={isOpen} // Reflects current state
+            aria-expanded={isOpen}
             aria-label={
               isOpen ? `Collapse ${node.name}` : `Expand ${node.name}`
             }
@@ -147,10 +148,10 @@ const CategoryTreeNode = ({
             )}
           </button>
         ) : (
-          <span className="inline-block w-[22px] mr-1.5 flex-shrink-0"></span>
+          <span className="inline-block w-[22px] mr-1.5 flex-shrink-0"></span> // Placeholder for alignment
         )}
 
-        {/* Category Icon */}
+        {/* Folder Icon */}
         <span className={categoryIconClasses}>
           {isOpen &&
           (hasChildren ||
@@ -165,7 +166,7 @@ const CategoryTreeNode = ({
         {/* Category Link/Name */}
         <a
           href={linkTarget === "_self" ? "#" : `/category/${node._id}`}
-          onClick={handleCategoryClick} // Handles toggle/navigate
+          onClick={handleCategoryClick}
           className={categoryLinkClasses}
           title={node.description || `View category: ${node.name}`}
         >
@@ -173,15 +174,15 @@ const CategoryTreeNode = ({
         </a>
       </div>
 
-      {/* Children and Posts - Render based on 'isOpen' state */}
+      {/* Children and Posts */}
       {isOpen && (
         <div className="mt-0.5">
-          {/* Sub-categories */}
+          {/* Render Children */}
           {hasChildren && (
             <ul className={subCategoryListClasses}>
               {node.children.map((child) => (
                 <CategoryTreeNode
-                  key={child._id} // Key is important for React updates
+                  key={child._id}
                   node={child}
                   level={level + 1}
                   linkTarget={linkTarget}
@@ -196,33 +197,32 @@ const CategoryTreeNode = ({
             </ul>
           )}
 
-          {/* Posts within this category */}
+          {/* Render Posts */}
           {canHavePosts && (
             <ul className={noteListClasses}>
-              {/* Loading Indicator */}
+              {/* Loading State */}
               {currentIsLoadingNotes && (
                 <li className="py-1 flex items-center text-xs text-subtle px-1">
                   <LoadingSpinner size="sm" />
                   <span className="ml-1.5">Loading posts...</span>
                 </li>
               )}
-              {/* Error Message */}
+
+              {/* Error State */}
               {currentErrorLoadingNotes && (
                 <li className="py-1 text-xs text-error px-1 italic">
                   Error: {currentErrorLoadingNotes}
                 </li>
               )}
-              {/* Display Posts */}
+
+              {/* Posts List */}
               {!currentIsLoadingNotes &&
                 !currentErrorLoadingNotes &&
                 currentHasFetchedNotes &&
                 notesForThisNode.length > 0 &&
                 notesForThisNode.map((noteInList) => {
                   if (!noteInList || !noteInList._id || !noteInList.slug) {
-                    console.warn(
-                      `[TreeNode Skipping Invalid Post] Node: ${node.name}`,
-                      noteInList,
-                    );
+                    // console.warn( `[TreeNode Skipping Invalid Post] Node: ${node.name}`, noteInList); // Optional: keep for debugging
                     return null;
                   }
                   const isCurrent = noteInList._id === currentNoteId;
@@ -253,14 +253,15 @@ const CategoryTreeNode = ({
                             : postLinkInactiveClasses
                         }`}
                         aria-current={isCurrent ? "page" : undefined}
-                        onClick={(e) => e.stopPropagation()}
+                        onClick={(e) => e.stopPropagation()} // Prevent collapsing parent when clicking post
                       >
                         {noteInList.title || "Untitled Post"}
                       </Link>
                     </li>
                   );
                 })}
-              {/* No Posts Message */}
+
+              {/* No Posts State */}
               {!currentIsLoadingNotes &&
                 !currentErrorLoadingNotes &&
                 currentHasFetchedNotes &&
@@ -277,7 +278,7 @@ const CategoryTreeNode = ({
   );
 };
 
-// PropTypes and DefaultProps remain the same as in the previous attempt
+// PropTypes remain the same
 CategoryTreeNode.propTypes = {
   node: PropTypes.shape({
     _id: PropTypes.string.isRequired,
@@ -296,6 +297,7 @@ CategoryTreeNode.propTypes = {
   categoryNotesErrorMap: PropTypes.object,
 };
 
+// DefaultProps remain the same
 CategoryTreeNode.defaultProps = {
   level: 0,
   linkTarget: "_self",
@@ -307,4 +309,4 @@ CategoryTreeNode.defaultProps = {
   categoryNotesErrorMap: {},
 };
 
-export default CategoryTreeNode; // Consider React.memo if performance becomes an issue
+export default CategoryTreeNode;
