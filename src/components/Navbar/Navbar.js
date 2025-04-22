@@ -60,7 +60,7 @@ const Navbar = () => {
     e.preventDefault();
     closeMobileMenu();
     const targetId = "featured-posts-section"; // Target FeaturedPosts section
-    if (location.pathname === "/") {
+    if (location.pathname === "/homescreen") {
       const element = document.getElementById(targetId);
       if (element) {
         element.scrollIntoView({ behavior: "smooth", block: "start" });

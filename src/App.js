@@ -1,14 +1,8 @@
 import React from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Outlet, // Keep Outlet if needed elsewhere, but not directly used here for BlogLayout
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
 import LoadingSpinner from "./components/LoadingSpinner/LoadingSpinner";
 import HomeScreen from "./components/HomeScreen/HomeScreen";
-// SingleBlogPage is removed from imports as it's replaced
 import Login from "./components/Login/Login";
 import Signup from "./components/Signup/Signup";
 import MyNotesPage from "./components/MyNotesPage/MyNotesPage";
@@ -18,15 +12,18 @@ import UserProfile from "./components/UserProfile/UserProfile";
 import EditProfile from "./components/EditProfile/EditProfile";
 import SearchResultsPage from "./components/SearchResultsPage/SearchResultsPage";
 import CategoryPage from "./components/CategoryPage/CategoryPage";
-import AdminCategoriesPage from "./components/AdminCategories/AdminCategoriesPage.js";
+import AdminCategoriesPage from "./components/AdminCategories/AdminCategoriesPage";
 import CategoriesExplorerPage from "./components/CategoriesExplorerPage/CategoriesExplorerPage";
 import CategoriesWelcomeMessage from "./components/CategoriesExplorerPage/CategoriesWelcomeMessage";
-import BlogPostDisplay from "./components/CategoriesExplorerPage/BlogPostDisplay"; // Keep for categories explorer
-
-// Import the new layout and content components
+import BlogPostDisplay from "./components/CategoriesExplorerPage/BlogPostDisplay";
 import BlogLayout from "./components/BlogLayout/BlogLayout";
 import SingleBlogPostContent from "./components/SingleBlogPostContent/SingleBlogPostContent";
-import BlogIndexPage from "./components/BlogIndexPage/BlogIndexPage"; // Optional index page
+import BlogIndexPage from "./components/BlogIndexPage/BlogIndexPage";
+import LandingPage from "./components/LandingPage/LandingPage";
+// Import new service page components
+import SalesforceServicePage from "./components/Services/SalesforceServicePage";
+import FrontendServicePage from "./components/Services/FrontendServicePage";
+import BackendServicePage from "./components/Services/BackendServicePage";
 
 import NoteState from "./context/Notes/NoteState";
 import UserState from "./context/user/UserState";
@@ -46,44 +43,49 @@ function App() {
                 <Navbar />
                 <main className="flex-grow w-full pt-16">
                   {" "}
-                  {}
+                  {/* Adjust pt if navbar height changes */}
                   <Routes>
-                    {}
-                    <Route path="/" element={<HomeScreen />} />
-
-                    {/* --- Modified Blog Routing --- */}
-                    <Route path="/blog" element={<BlogLayout />}>
-                      <Route index element={<BlogIndexPage />} />{" "}
-                      {/* Optional: Content for just /blog */}
-                      <Route path=":slug" element={<SingleBlogPostContent />} />
-                    </Route>
-                    {/* --- End Modified Blog Routing --- */}
-
+                    {/* Existing Routes */}
+                    <Route path="/" element={<LandingPage />} />
+                    <Route path="/homescreen" element={<HomeScreen />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />
                     <Route path="/search" element={<SearchResultsPage />} />
 
-                    {}
+                    {/* Blog Routes */}
+                    <Route path="/blog" element={<BlogLayout />}>
+                      <Route index element={<BlogIndexPage />} />
+                      <Route path=":slug" element={<SingleBlogPostContent />} />
+                    </Route>
+
+                    {/* Category Explorer Routes */}
                     <Route
                       path="/categories"
                       element={<CategoriesExplorerPage />}
                     >
-                      {}
                       <Route index element={<CategoriesWelcomeMessage />} />
-                      {}
                       <Route path="blog/:slug" element={<BlogPostDisplay />} />
-                      {}
-                      {}
                     </Route>
-                    {}
-                    {}
-                    {}
                     <Route
                       path="/category/:categoryId"
                       element={<CategoryPage />}
                     />
 
-                    {}
+                    {/* New Service Routes */}
+                    <Route
+                      path="/services/salesforce"
+                      element={<SalesforceServicePage />}
+                    />
+                    <Route
+                      path="/services/frontend"
+                      element={<FrontendServicePage />}
+                    />
+                    <Route
+                      path="/services/backend"
+                      element={<BackendServicePage />}
+                    />
+
+                    {/* Protected Routes */}
                     <Route
                       path="/my-notes"
                       element={
@@ -125,7 +127,7 @@ function App() {
                       }
                     />
 
-                    {}
+                    {/* Admin Routes */}
                     <Route
                       path="/admin/categories"
                       element={
@@ -135,7 +137,7 @@ function App() {
                       }
                     />
 
-                    {}
+                    {/* Fallback 404 Route */}
                     <Route
                       path="*"
                       element={
@@ -148,7 +150,6 @@ function App() {
                     />
                   </Routes>
                 </main>
-                {}
               </div>
             </Router>
           </NoteState>
