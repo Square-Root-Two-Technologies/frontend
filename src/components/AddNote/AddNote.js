@@ -1,131 +1,199 @@
-import React, { useState, useContext, useEffect } from "react";
+// FILE: src/components/AddNote/AddNote.js
+import React, {
+  useState,
+  useContext,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import NoteContext from "../../context/Notes/NoteContext";
+import CategoryContext from "../../context/category/CategoryContext";
 import UserContext from "../../context/user/UserContext";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
-
-// Tiptap Imports
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import Link from "@tiptap/extension-link";
-import Image from "@tiptap/extension-image";
 import MenuBar from "../EditorToolbar/MenuBar";
+
+// Helper function to generate nested options (unchanged)
+const generateCategoryOptions = (categories, parentId = null, level = 0) => {
+  // ... (keep the existing implementation)
+  const options = [];
+  const children = categories.filter(
+    (cat) => cat.parent === parentId || (!cat.parent && parentId === null), // Handle both ObjectId and null/undefined parents
+  );
+  children.sort((a, b) => a.name.localeCompare(b.name)); // Sort children alphabetically
+  children.forEach((cat) => {
+    options.push(
+      <option
+        key={cat._id}
+        value={cat._id}
+        style={{ paddingLeft: `${level * 1.5}rem` }} // Indent subcategories
+      >
+        {/* &nbsp;&nbsp; repeated ${level} times */}
+        {cat.name}
+      </option>,
+    );
+    // Recursively generate options for subcategories
+    const subOptions = generateCategoryOptions(categories, cat._id, level + 1);
+    options.push(...subOptions);
+  });
+  return options;
+};
 
 const AddNote = () => {
   const navigate = useNavigate();
-  const { addNote } = useContext(NoteContext);
-  const { currentUser } = useContext(UserContext);
+  const { addNote, error: noteError } = useContext(NoteContext); // Assuming addNote might return errors
+  const {
+    categories,
+    getCategories,
+    isFetchingCategories,
+    categoryTreeError, // Use the specific error for tree/categories
+  } = useContext(CategoryContext);
+  const { currentUser } = useContext(UserContext); // Get current user info
+
+  // State for form fields
   const [noteTitle, setNoteTitle] = useState("");
   const [noteTag, setNoteTag] = useState("");
-  const [noteType, setNoteType] = useState("");
+  const [noteCategoryId, setNoteCategoryId] = useState("");
   const [noteIsFeatured, setNoteIsFeatured] = useState(false);
   const [editorContent, setEditorContent] = useState("");
 
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(""); // General form error
+  const [isLoading, setIsLoading] = useState(false); // Loading state for submission
 
-  // --- Tiptap Editor Setup ---
+  // Fetch categories if they aren't loaded
+  const fetchCategoriesIfNeeded = useCallback(async () => {
+    if (categories.length === 0 && !isFetchingCategories) {
+      console.log("AddNote: Fetching categories...");
+      try {
+        await getCategories();
+      } catch (err) {
+        console.error("Failed to fetch categories for AddNote:", err);
+        // setError("Could not load categories. Please try refreshing."); // Optionally set error here
+      }
+    }
+  }, [categories.length, getCategories, isFetchingCategories]);
+
+  useEffect(() => {
+    fetchCategoriesIfNeeded();
+  }, [fetchCategoriesIfNeeded]);
+
+  // Handle category loading errors
+  useEffect(() => {
+    if (categoryTreeError) {
+      setError(`Failed to load categories: ${categoryTreeError}`);
+    } else {
+      // Clear the error if it was previously related to categories and now it's resolved
+      setError((prev) =>
+        prev.startsWith("Failed to load categories:") ? "" : prev,
+      );
+    }
+  }, [categoryTreeError]);
+
+  // Tiptap editor setup
   const editor = useEditor({
     extensions: [
-      StarterKit.configure({
-        codeBlock: {
-          HTMLAttributes: {
-            class:
-              "bg-gray-100 dark:bg-gray-900 p-2 rounded text-sm font-mono overflow-x-auto",
-          },
-        },
-        heading: {
-          levels: [2, 3, 4],
-        },
-      }),
-      Placeholder.configure({
-        placeholder: "Write your note here...",
-      }),
-      Link.configure({
-        openOnClick: false,
-        autolink: true,
-      }),
-      Image.configure({
-        inline: false,
-        HTMLAttributes: {
-          class: "max-w-full h-auto my-4 rounded",
-        },
-      }),
+      StarterKit.configure({}),
+      Placeholder.configure({ placeholder: "Write your note here..." }),
+      Link.configure({ openOnClick: false, autolink: true }),
     ],
     content: editorContent,
     onUpdate: ({ editor }) => {
       setEditorContent(editor.getHTML());
+      // Basic client-side validation on update
+      if (editor?.getText().trim().length >= 5) {
+        setError((prev) =>
+          prev === "Description must be at least 5 characters long."
+            ? ""
+            : prev,
+        );
+      }
     },
     editorProps: {
       attributes: {
-        // Increased responsive min-height for the editor
         class:
-          "prose dark:prose-invert prose-sm sm:prose-base focus:outline-none p-4 min-h-[300px] md:min-h-[400px] lg:min-h-[500px] border border-t-0 border-gray-200 dark:border-gray-700 rounded-b-lg bg-white dark:bg-gray-800 text-neutral dark:text-gray-200",
+          "focus:outline-none p-4 min-h-[300px] md:min-h-[400px] lg:min-h-[500px] border border-t-0 border-gray-200 dark:border-gray-700 rounded-b-lg bg-white dark:bg-gray-800 text-neutral dark:text-gray-200", // Min height + styling
       },
     },
   });
-  // --- End Tiptap Setup ---
 
+  // Cleanup editor instance
   useEffect(() => {
     return () => {
       editor?.destroy();
     };
   }, [editor]);
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setIsLoading(true);
 
+    // Basic Client-side validation
+    let currentError = ""; // Use a local variable for current submission errors
     if (!noteTitle || noteTitle.length < 3) {
-      setError("Title must be at least 3 characters long.");
-      setIsLoading(false);
-      return;
-    }
-    if (
+      currentError = "Title must be at least 3 characters long.";
+    } else if (
       !editorContent ||
-      editorContent === "<p></p>" ||
-      editor.getText().trim().length < 5
+      editorContent === "<p></p>" || // Check for empty paragraph
+      editor?.getText().trim().length < 5
     ) {
-      setError("Description must be at least 5 characters long.");
-      setIsLoading(false);
-      return;
-    }
-    if (!noteType) {
-      setError("Please select a note type.");
-      setIsLoading(false);
-      return;
+      currentError = "Description must be at least 5 characters long.";
+    } else if (!noteCategoryId) {
+      currentError = "Please select a category.";
     }
 
+    setError(currentError); // Set the error state
+    if (currentError) {
+      return; // Stop submission if there are errors
+    }
+
+    setIsLoading(true);
     try {
       const noteToAdd = {
         title: noteTitle,
         description: editorContent,
         tag: noteTag || "General",
-        type: noteType,
+        categoryId: noteCategoryId,
+        isFeatured: noteIsFeatured, // Include isFeatured initially
       };
 
-      if (currentUser?.role === "admin") {
-        noteToAdd.isFeatured = noteIsFeatured;
+      // --- MODIFICATION START ---
+      // Only include 'isFeatured' if user is admin or SuperAdmin
+      const allowedAdminRoles = ["admin", "SuperAdmin"];
+      if (!allowedAdminRoles.includes(currentUser?.role)) {
+        delete noteToAdd.isFeatured; // Remove it if user is not admin/SuperAdmin
+        console.log(
+          "AddNote: Non-admin submitting, 'isFeatured' flag removed.",
+        );
+      } else {
+        console.log(
+          `AddNote: Admin/SuperAdmin submitting, 'isFeatured' flag value: ${noteIsFeatured}`,
+        );
       }
+      // --- MODIFICATION END ---
 
-      const response = await addNote(noteToAdd);
+      const response = await addNote(noteToAdd); // Call context function
 
       if (response.success) {
-        navigate("/my-notes");
+        navigate("/my-notes"); // Navigate on success
       } else {
+        // Handle errors from the backend context function
         setError(response.message || "Failed to add note. Please try again.");
       }
     } catch (err) {
-      console.error("Add note error:", err);
-      setError("An unexpected error occurred. Please try again later.");
+      console.error("Add note submission error:", err);
+      setError(
+        err.message || "An unexpected error occurred. Please try again later.",
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Input field classes
+  // CSS Classes for styling consistency
   const inputFieldClasses = "input-field mt-1";
   const labelClasses =
     "block text-sm font-medium text-neutral dark:text-gray-200";
@@ -133,21 +201,35 @@ const AddNote = () => {
     "text-sm text-error text-center p-3 bg-red-100 dark:bg-red-900/20 rounded-md my-4";
   const requiredMarkClasses = "text-error";
   const checkboxClasses = `h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:checked:bg-blue-500 rounded`;
+  const primaryButtonClasses = `btn-primary`;
+  const secondaryButtonClasses = `btn-secondary`;
+
+  // Generate category options using the memoized helper
+  const categoryOptions = useMemo(
+    () => generateCategoryOptions(categories),
+    [categories],
+  );
+
+  // --- MODIFICATION START ---
+  // Check if user is admin or SuperAdmin for conditional rendering
+  const isAdminOrSuperAdmin = useMemo(() => {
+    const allowedRoles = ["admin", "SuperAdmin"];
+    return allowedRoles.includes(currentUser?.role);
+  }, [currentUser?.role]);
+  // --- MODIFICATION END ---
 
   return (
-    // --- Updated Outer Container ---
-    // Takes minimum screen height, uses flexbox to center the card vertically and horizontally
     <div className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-      {/* --- Updated Card Container --- */}
-      {/* Tries to take full width up to a larger max-width */}
-      <div className="card w-full max-w-6xl">
+      <div className="card w-full max-w-4xl">
         {" "}
         {/* Increased max-width */}
         <h1 className="text-heading mb-6 text-center">Add New Note</h1>
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Display Error Messages */}
           {error && <div className={errorTextClasses}>{error}</div>}
+          {/* {noteError && <div className={errorTextClasses}>{noteError}</div>} */}
 
-          {/* Title Field */}
+          {/* Title Input */}
           <div>
             <label htmlFor="title" className={labelClasses}>
               Title <span className={requiredMarkClasses}>*</span>
@@ -159,21 +241,31 @@ const AddNote = () => {
               required
               minLength="3"
               value={noteTitle}
-              onChange={(e) => setNoteTitle(e.target.value)}
+              onChange={(e) => {
+                setNoteTitle(e.target.value);
+                // Basic client-side validation on change
+                if (e.target.value.length >= 3) {
+                  setError((prev) =>
+                    prev === "Title must be at least 3 characters long."
+                      ? ""
+                      : prev,
+                  );
+                }
+              }}
               className={inputFieldClasses}
               placeholder="Note Title"
               disabled={isLoading}
             />
           </div>
 
-          {/* Description Field (Tiptap Editor) */}
+          {/* Description Editor */}
           <div>
             <label htmlFor="description" className={labelClasses}>
               Description <span className={requiredMarkClasses}>*</span>
             </label>
-            <div className="mt-1 border-collapse">
+            {/* Tiptap Editor Integration */}
+            <div className="mt-1 shadow-sm">
               <MenuBar editor={editor} />
-              {/* Note: Editor height is controlled via editorProps */}
               <EditorContent editor={editor} id="description" />
             </div>
             <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
@@ -181,34 +273,49 @@ const AddNote = () => {
             </p>
           </div>
 
-          {/* --- Row for Type and Tag --- */}
+          {/* Category and Tag Inputs */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Type Select */}
+            {/* Category Dropdown */}
             <div>
-              <label htmlFor="type" className={labelClasses}>
-                Type <span className={requiredMarkClasses}>*</span>
+              <label htmlFor="category" className={labelClasses}>
+                Category <span className={requiredMarkClasses}>*</span>
               </label>
               <select
-                name="type"
-                id="type"
+                name="category"
+                id="category"
                 required
-                value={noteType}
-                onChange={(e) => setNoteType(e.target.value)}
+                value={noteCategoryId}
+                onChange={(e) => {
+                  setNoteCategoryId(e.target.value);
+                  // Basic client-side validation on change
+                  if (e.target.value) {
+                    setError((prev) =>
+                      prev === "Please select a category." ? "" : prev,
+                    );
+                  }
+                }}
                 className={inputFieldClasses}
-                disabled={isLoading}
+                disabled={
+                  isLoading ||
+                  isFetchingCategories ||
+                  categories.length === 0 ||
+                  !!categoryTreeError // Disable if categories are loading, none available, or error
+                }
               >
                 <option value="" disabled>
-                  Select a type
+                  {isFetchingCategories
+                    ? "Loading categories..."
+                    : categoryTreeError // Check for specific category loading error first
+                    ? "Error loading categories"
+                    : categories.length === 0
+                    ? "No categories available"
+                    : "Select a category"}
                 </option>
-                <option value="JavaScript">JavaScript</option>
-                <option value="Salesforce">Salesforce</option>
-                <option value="Sociology">Sociology</option>
-                <option value="Life">Life</option>
-                <option value="Technology">Technology</option>
-                <option value="Creative">Creative</option>
-                <option value="Tutorial">Tutorial</option>
-                <option value="News">News</option>
+                {categoryOptions}
               </select>
+              {isFetchingCategories && !categoryTreeError && (
+                <LoadingSpinner size="sm" /> // Show spinner only if loading and no error
+              )}
             </div>
 
             {/* Tag Input */}
@@ -223,15 +330,16 @@ const AddNote = () => {
                 value={noteTag}
                 onChange={(e) => setNoteTag(e.target.value)}
                 className={inputFieldClasses}
-                placeholder="e.g., React, ProjectX"
+                placeholder="e.g., React, API, Tip"
                 disabled={isLoading}
               />
             </div>
           </div>
-          {/* --- End Row --- */}
 
-          {/* Featured Checkbox (Admin Only) */}
-          {currentUser?.role === "admin" && (
+          {/* Featured Checkbox (Admin/SuperAdmin Only) */}
+          {/* --- MODIFICATION START --- */}
+          {isAdminOrSuperAdmin && (
+            // --- MODIFICATION END ---
             <div className="flex items-center pt-2">
               <input
                 type="checkbox"
@@ -244,23 +352,39 @@ const AddNote = () => {
               />
               <label
                 htmlFor="isFeatured"
-                className={`ml-2 block text-sm font-medium text-neutral dark:text-gray-200`}
+                className={`ml-2 block text-sm font-medium ${labelClasses}`}
               >
-                Mark as Featured (Admin Only)
+                Mark as Featured (Admin/SuperAdmin Only)
               </label>
             </div>
           )}
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className={`btn-primary w-full ${
-              isLoading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-            disabled={isLoading || !editor}
-          >
-            {isLoading ? <LoadingSpinner /> : "Add Note"}
-          </button>
+          {/* Action Buttons */}
+          <div className="pt-4 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+            <button
+              type="submit"
+              className={`${primaryButtonClasses} flex-1 ${
+                isLoading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+              disabled={
+                isLoading ||
+                !editor ||
+                isFetchingCategories ||
+                !!categoryTreeError
+              } // Disable if submitting, editor not ready, or categories not loaded/error
+            >
+              {isLoading ? <LoadingSpinner size="sm" /> : "Add Note"}
+            </button>
+            {/* Cancel Button */}
+            <button
+              type="button"
+              onClick={() => navigate("/my-notes")} // Or navigate back
+              className={`${secondaryButtonClasses} flex-1`} // Ensure cancel button also uses flex-1
+              disabled={isLoading} // Disable cancel during submission too
+            >
+              Cancel
+            </button>
+          </div>
         </form>
       </div>
     </div>

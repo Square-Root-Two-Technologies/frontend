@@ -1,4 +1,3 @@
-// FILE: tailwind.config.js
 const defaultTheme = require("tailwindcss/defaultTheme");
 
 module.exports = {
@@ -6,31 +5,24 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // --- Option 1: Warmer Primary (e.g., Terracotta/Warm Red or Deep Teal) ---
-        // primary: '#B95C50', // Terracotta/Warm Red
-        "primary": "#0D9488", // Deep Teal (still slightly cool but richer than default blue)
-        // --- Option 2: Keep a Blue, but maybe a richer/warmer shade ---
-        // primary: '#312E81', // Indigo-700 (slightly warmer blue)
+        // Your existing colors
+        "primary": "#0D9488",
+        "accent": "#F59E0B",
+        "neutral": "#57534E",
+        "secondary": "#A8A29E",
+        "background": "#FEFBF6",
+        "dark": "#000000", // Consider a slightly off-black like #111827 or #1F2937 for better depth
+        "error": "#E11D48", // Keep existing or adjust (e.g., #DC2626)
+        "success": "#16A34A",
+        "dark-card": "#1F2937", // Example dark card bg
+        "dark-subtle": "#9CA3AF", // Example dark subtle text
 
-        "accent": "#F59E0B", // Amber-500 (Warm accent)
-        // Or maybe a Rose accent:
-        // accent: '#E11D48', // Rose-600
-
-        // Use warmer grays like 'stone' or 'zinc' or 'neutral'
-        "neutral": "#57534E", // stone-600 (Warmer dark gray for text)
-        "secondary": "#A8A29E", // stone-400 (Warmer medium gray for subtle text)
-
-        // Warmer background tones
-        "background": "#FEFBF6", // Off-white / very light cream/beige
-        "dark": "#000000", // stone-800 (Warm dark background)
-
-        // Keep error/success distinct, maybe slightly muted
-        "error": "#E11D48", // Rose-600 (Vibrant but fits warmer tones)
-        "success": "#16A34A", // Green-600 (Standard green)
-
-        // You might need specific shades for dark mode elements if 'dark' isn't enough
-        "dark-card": "#3F3F46", // zinc-700 Example for card background in dark mode
-        "dark-subtle": "#A1A1AA", // zinc-400 Example for subtle text in dark mode
+        // --- UI Improvement Start: Add complementary error colors ---
+        "error-light": "#FEF2F2", // For light backgrounds on errors (bg-red-50)
+        "error-dark": "#991B1B", // For dark text on light error backgrounds (text-red-700)
+        "error-border": "#F87171", // For borders (border-red-400)
+        "error-ring": "#FCA5A5", // For focus rings (ring-red-300)
+        // --- UI Improvement End ---
       },
       fontFamily: {
         sans: ["Inter", ...defaultTheme.fontFamily.sans],
@@ -49,8 +41,24 @@ module.exports = {
       transitionProperty: {
         height: "height",
       },
+      // --- UI Improvement Start: Add ring color utility for error ---
+      ringColor: ({ theme }) => ({
+        ...theme("colors"), // Keep existing colors
+        DEFAULT: theme("colors.blue.500", "#3B82F6"), // Default ring color
+        error: theme("colors.error", "#E11D48"), // Add error ring color
+      }),
+      borderColor: ({ theme }) => ({
+        // Ensure error border color is available
+        ...theme("colors"),
+        DEFAULT: theme("colors.gray.200", "#E5E7EB"),
+        error: theme("colors.error", "#E11D48"), // Use your error color
+      }),
+      // --- UI Improvement End ---
     },
   },
-  darkMode: "class",
-  plugins: [],
+  darkMode: "class", // Ensure dark mode is enabled
+  plugins: [
+    require("@tailwindcss/typography"), // Add if not already present for prose styling
+    require("@tailwindcss/forms"), // Add if not already present for form styling resets
+  ],
 };
