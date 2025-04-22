@@ -68,12 +68,18 @@ const LandingPage = () => {
 
   // --- Data ---
   const keyMetrics = [
-    { metric: "Years Professional Exp.", value: "4+" },
+    {
+      metric:
+        "Years Professional Experience in Salesforce Development and Consultation",
+      value: "4+",
+    },
+    {
+      metric: "Years Professional Experience in Web Development",
+      value: "4+",
+    },
     { metric: "Salesforce Certifications", value: "6" },
-    { metric: "LWCs Developed (Example)", value: "26" },
+    { metric: "LWCs Developed", value: "26" },
     { metric: "Support Cases Resolved", value: "400+" },
-    { metric: "Productivity (Peak)", value: ">120%" },
-    { metric: "Proven CX Improvement", value: "+15%" },
     { metric: "Integration PoCs Led", value: "9" },
   ];
   const services = [
@@ -314,23 +320,6 @@ const LandingPage = () => {
                   applications. Delivered solutions for diverse clients,
                   including in the Financial Services sector (MetLife Japan).
                 </p>
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold mb-2 text-neutral dark:text-white">
-                  Recognition & Achievements
-                </h3>
-                <ul className="list-disc list-inside text-subtle dark:text-dark-subtle space-y-1">
-                  <li>
-                    Operational Excellence Award: Achieved >120% productivity
-                    peak.
-                  </li>
-                  <li>
-                    Customer Satisfaction Kudos: Increased CX scores by 15%.
-                  </li>
-                  <li>
-                    Consistently delivered high-quality, efficient solutions.
-                  </li>
-                </ul>
               </div>
             </div>
             {/* Right Side: Key Metrics Table */}
