@@ -1,5 +1,5 @@
 // src/components/Navbar/Navbar.js
-import React, { useState, useContext, useMemo } from "react"; // Added useMemo
+import React, { useState, useContext, useMemo } from "react";
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import UserContext from "../../context/user/UserContext";
 import { ThemeContext } from "../../context/ThemeProvider/ThemeProvider";
@@ -13,7 +13,7 @@ import {
   FaSignOutAlt,
   FaUser,
   FaCog,
-  FaUsersCog, // Added FaUsersCog
+  FaUsersCog,
 } from "react-icons/fa";
 
 const Navbar = () => {
@@ -56,24 +56,16 @@ const Navbar = () => {
     setIsMobileMenuOpen(false);
   };
 
+  // --- MODIFICATION START ---
+  // Changed handleReadClick to navigate directly to /homescreen
   const handleReadClick = (e) => {
     e.preventDefault();
     closeMobileMenu();
-    const targetId = "featured-posts-section";
-    if (location.pathname === "/homescreen") {
-      const element = document.getElementById(targetId);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "start" });
-      } else {
-        console.warn(`Scroll target #${targetId} not found on current page.`);
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    } else {
-      navigate(`/homescreen#${targetId}`);
-    }
+    // Always navigate to the HomeScreen route
+    navigate("/homescreen");
   };
+  // --- MODIFICATION END ---
 
-  // --- Style definitions (no changes needed) ---
   const linkBase =
     "inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium";
   const linkActive = "border-indigo-500 text-gray-900 dark:text-gray-100";
@@ -92,22 +84,19 @@ const Navbar = () => {
   const userMenuItemClass =
     "flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600";
 
-  // --- Updated Role Checks ---
   const isAdmin = useMemo(() => {
     const allowedRoles = ["admin", "SuperAdmin"];
     return allowedRoles.includes(currentUser?.role);
   }, [currentUser?.role]);
-
   const isSuperAdmin = useMemo(() => {
     return currentUser?.role === "SuperAdmin";
   }, [currentUser?.role]);
-  // --- End Updated Role Checks ---
 
   return (
     <nav className="bg-white dark:bg-gray-800 shadow-md fixed top-0 left-0 right-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          {/* Left Side: Logo & Main Links */}
+          {/* Logo and Desktop Links */}
           <div className="flex">
             <Link
               to="/"
@@ -120,13 +109,16 @@ const Navbar = () => {
             </Link>
             {/* Desktop Links */}
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+              {/* --- MODIFICATION START --- */}
+              {/* Removed href, rely solely on onClick */}
               <a
-                href="/#featured-posts-section"
+                // href="/homescreen#featured-posts-section" // Removed href
                 onClick={handleReadClick}
                 className={`${linkBase} ${linkInactive} cursor-pointer`}
               >
                 Read
               </a>
+              {/* --- MODIFICATION END --- */}
               <NavLink
                 to="/categories"
                 className={({ isActive }) =>
@@ -135,7 +127,7 @@ const Navbar = () => {
               >
                 Categories
               </NavLink>
-              {/* Conditionally show My Notes / Manage All Notes */}
+              {/* Conditionally render My Notes / Manage Notes based on role */}
               <NavLink
                 to="/my-notes"
                 className={({ isActive }) =>
@@ -144,7 +136,7 @@ const Navbar = () => {
               >
                 {isAdmin ? "Manage Notes" : "My Notes"}
               </NavLink>
-              {/* ADDED: Conditionally show Manage Organisation link */}
+              {/* SuperAdmin Link */}
               {isSuperAdmin && (
                 <NavLink
                   to="/manage-organisation"
@@ -155,18 +147,18 @@ const Navbar = () => {
                   Manage Org
                 </NavLink>
               )}
-              {/* END ADDED */}
+              {/* Add other links as needed */}
             </div>
           </div>
 
-          {/* Right Side: Search, Theme Toggle, User Menu/Auth */}
+          {/* Right side icons and user menu */}
           <div className="flex items-center space-x-2 sm:space-x-4">
-            {/* Search (Desktop) */}
+            {/* Desktop Search */}
             <form
               onSubmit={handleSearchSubmit}
               className="hidden sm:flex items-center relative"
             >
-              {/* ... search input and button ... */}
+              {/* Input */}
               <input
                 type="text"
                 placeholder="Search..."
@@ -184,9 +176,9 @@ const Navbar = () => {
               </button>
             </form>
 
-            {/* Search (Mobile Toggle & Input) */}
+            {/* Mobile Search Toggle & Form */}
             <div className="sm:hidden flex items-center">
-              {/* ... mobile search toggle logic ... */}
+              {/* Search Icon or Form */}
               {isMobileSearchOpen ? (
                 <form
                   onSubmit={handleSearchSubmit}
@@ -218,7 +210,7 @@ const Navbar = () => {
                   <FaSearch size={20} />
                 </button>
               )}
-              {/* Mobile search close button */}
+              {/* Close Mobile Search Button */}
               {isMobileSearchOpen && (
                 <button
                   onClick={() => {
@@ -242,72 +234,86 @@ const Navbar = () => {
               {theme === "light" ? <FaMoon size={20} /> : <FaSun size={20} />}
             </button>
 
-            {/* User Menu / Login/Signup (Desktop) */}
+            {/* Desktop User Menu / Login/Signup */}
             <div className="hidden sm:flex sm:items-center">
-              {!isUserLoading && currentUser ? (
-                <div className="relative">
-                  <button
-                    onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="flex items-center text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white focus:outline-none"
-                    id="user-menu-button"
-                    aria-expanded={showUserMenu}
-                    aria-haspopup="true"
-                  >
-                    {currentUser.profilePictureUrl ? (
-                      <img
-                        src={currentUser.profilePictureUrl}
-                        alt="User avatar"
-                        className="w-8 h-8 rounded-full mr-2 object-cover border border-gray-300 dark:border-gray-600"
-                      />
-                    ) : (
-                      <span className="mr-2 text-xl">👤</span>
-                    )}
-                    <span className="hidden md:inline">{currentUser.name}</span>
-                    <svg
-                      className="ml-1 h-5 w-5 text-gray-400"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      aria-hidden="true"
+              {
+                !isUserLoading && currentUser ? (
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowUserMenu(!showUserMenu)}
+                      className="flex items-center text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white focus:outline-none"
+                      id="user-menu-button"
+                      aria-expanded={showUserMenu}
+                      aria-haspopup="true"
                     >
-                      <path
-                        fillRule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </button>
-                  {/* User Dropdown Menu */}
-                  {showUserMenu && (
-                    <div
-                      className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white dark:bg-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none z-30"
-                      role="menu"
-                      aria-orientation="vertical"
-                      aria-labelledby="user-menu-button"
-                      tabIndex="-1"
-                      onMouseLeave={() => setShowUserMenu(false)}
-                    >
-                      <Link
-                        to="/add-note"
-                        onClick={() => setShowUserMenu(false)}
-                        className={userMenuItemClass}
-                        role="menuitem"
-                        tabIndex="-1"
+                      {currentUser.profilePictureUrl ? (
+                        <img
+                          src={currentUser.profilePictureUrl}
+                          alt="User avatar"
+                          className="w-8 h-8 rounded-full mr-2 object-cover border border-gray-300 dark:border-gray-600"
+                        />
+                      ) : (
+                        <span className="mr-2 text-xl">👤</span> // Placeholder
+                      )}
+                      <span className="hidden md:inline">
+                        {currentUser.name}
+                      </span>
+                      <svg
+                        className="ml-1 h-5 w-5 text-gray-400"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
                       >
-                        <FaPlus size={14} /> Add New Note
-                      </Link>
-                      <Link
-                        to="/profile"
-                        onClick={() => setShowUserMenu(false)}
-                        className={userMenuItemClass}
-                        role="menuitem"
+                        <path
+                          fillRule="evenodd"
+                          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </button>
+                    {/* Dropdown Menu */}
+                    {showUserMenu && (
+                      <div
+                        className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white dark:bg-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none z-30"
+                        role="menu"
+                        aria-orientation="vertical"
+                        aria-labelledby="user-menu-button"
                         tabIndex="-1"
+                        onMouseLeave={() => setShowUserMenu(false)} // Close on mouse leave
                       >
-                        <FaUser size={14} /> Profile
-                      </Link>
-                      {/* UPDATED Admin/SuperAdmin Links */}
-                      {isAdmin &&
-                        !isSuperAdmin && ( // Only show Admin Panel if admin but NOT superadmin
+                        <Link
+                          to="/add-note"
+                          onClick={() => setShowUserMenu(false)}
+                          className={userMenuItemClass}
+                          role="menuitem"
+                          tabIndex="-1"
+                        >
+                          <FaPlus size={14} /> Add New Note
+                        </Link>
+                        <Link
+                          to="/profile"
+                          onClick={() => setShowUserMenu(false)}
+                          className={userMenuItemClass}
+                          role="menuitem"
+                          tabIndex="-1"
+                        >
+                          <FaUser size={14} /> Profile
+                        </Link>
+                        {/* Admin Links */}
+                        {isAdmin &&
+                          !isSuperAdmin && ( // Only Admin
+                            <Link
+                              to="/admin/categories"
+                              onClick={() => setShowUserMenu(false)}
+                              className={userMenuItemClass}
+                              role="menuitem"
+                              tabIndex="-1"
+                            >
+                              <FaCog size={14} /> Admin Panel
+                            </Link>
+                          )}
+                        {isSuperAdmin && ( // SuperAdmin (can see both)
                           <Link
                             to="/admin/categories"
                             onClick={() => setShowUserMenu(false)}
@@ -315,49 +321,38 @@ const Navbar = () => {
                             role="menuitem"
                             tabIndex="-1"
                           >
-                            <FaCog size={14} /> Admin Panel
+                            <FaCog size={14} /> Admin (Cats)
                           </Link>
                         )}
-                      {isSuperAdmin && ( // Show combined link for SuperAdmin
-                        <Link
-                          to="/admin/categories"
-                          onClick={() => setShowUserMenu(false)}
-                          className={userMenuItemClass}
+                        {/* Conditionally add more admin links if needed */}
+                        <button
+                          onClick={handleLogout}
+                          className={`${userMenuItemClass} w-full`}
                           role="menuitem"
                           tabIndex="-1"
                         >
-                          <FaCog size={14} /> Admin (Cats)
-                        </Link>
-                      )}
-                      {/* Manage Org Link remains separate for clarity */}
-                      {/* END UPDATED */}
-                      <button
-                        onClick={handleLogout}
-                        className={`${userMenuItemClass} w-full`}
-                        role="menuitem"
-                        tabIndex="-1"
-                      >
-                        <FaSignOutAlt size={14} /> Logout
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ) : !isUserLoading ? (
-                <>
-                  <Link
-                    to="/login"
-                    className="text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100 inline-flex items-center px-3 py-2 text-sm font-medium"
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    to="/signup"
-                    className="bg-indigo-600 text-white hover:bg-indigo-700 inline-flex items-center px-3 py-2 rounded-md text-sm font-medium"
-                  >
-                    Sign Up
-                  </Link>
-                </>
-              ) : null}
+                          <FaSignOutAlt size={14} /> Logout
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : !isUserLoading ? (
+                  <>
+                    <Link
+                      to="/login"
+                      className="text-gray-500 hover:text-gray-900 dark:text-gray-300 dark:hover:text-gray-100 inline-flex items-center px-3 py-2 text-sm font-medium"
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      to="/signup"
+                      className="bg-indigo-600 text-white hover:bg-indigo-700 inline-flex items-center px-3 py-2 rounded-md text-sm font-medium"
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                ) : null /* Show nothing while user is loading */
+              }
             </div>
 
             {/* Mobile Menu Button */}
@@ -380,21 +375,24 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile menu */}
       {isMobileMenuOpen && (
         <div
           className="sm:hidden border-t border-gray-200 dark:border-gray-600"
           id="mobile-menu"
         >
-          {/* Mobile Nav Links */}
+          {/* Links */}
           <div className="px-2 pt-2 pb-3 space-y-1">
+            {/* --- MODIFICATION START --- */}
+            {/* Removed href, rely solely on onClick */}
             <a
-              href="/#featured-posts-section"
+              // href="/homescreen#featured-posts-section" // Removed href
               onClick={handleReadClick}
               className={`${mobileLinkBase} ${mobileLinkInactive} cursor-pointer`}
             >
               Read
             </a>
+            {/* --- MODIFICATION END --- */}
             <NavLink
               to="/categories"
               className={({ isActive }) =>
@@ -417,7 +415,6 @@ const Navbar = () => {
             >
               {isAdmin ? "Manage Notes" : "My Notes"}
             </NavLink>
-            {/* ADDED: Mobile Manage Organisation link */}
             {isSuperAdmin && (
               <NavLink
                 to="/manage-organisation"
@@ -431,59 +428,58 @@ const Navbar = () => {
                 Manage Org
               </NavLink>
             )}
-            {/* END ADDED */}
           </div>
-          {/* Mobile User Info / Auth Links */}
+          {/* User Info / Login/Signup */}
           <div className="pt-3 pb-3 border-t border-gray-200 dark:border-gray-700">
-            {!isUserLoading && currentUser ? (
-              <>
-                {/* User Info */}
-                <div className="flex items-center px-5 mb-3">
-                  {currentUser.profilePictureUrl ? (
-                    <img
-                      src={currentUser.profilePictureUrl}
-                      alt="User avatar"
-                      className="w-10 h-10 rounded-full mr-3 object-cover flex-shrink-0 border border-gray-300 dark:border-gray-600"
-                    />
-                  ) : (
-                    <span className="mr-3 text-2xl">👤</span>
-                  )}
-                  <div className="text-left">
-                    <div className="text-base font-medium text-gray-800 dark:text-white">
-                      {currentUser.name}
-                    </div>
-                    <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                      {currentUser.email}
+            {
+              !isUserLoading && currentUser ? (
+                <>
+                  {/* User Info */}
+                  <div className="flex items-center px-5 mb-3">
+                    {currentUser.profilePictureUrl ? (
+                      <img
+                        src={currentUser.profilePictureUrl}
+                        alt="User avatar"
+                        className="w-10 h-10 rounded-full mr-3 object-cover flex-shrink-0 border border-gray-300 dark:border-gray-600"
+                      />
+                    ) : (
+                      <span className="mr-3 text-2xl">👤</span> // Placeholder
+                    )}
+                    <div className="text-left">
+                      <div className="text-base font-medium text-gray-800 dark:text-white">
+                        {currentUser.name}
+                      </div>
+                      <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                        {currentUser.email}
+                      </div>
                     </div>
                   </div>
-                </div>
-                {/* User Actions */}
-                <div className="px-2 space-y-1">
-                  <NavLink
-                    to="/add-note"
-                    className={({ isActive }) =>
-                      `${mobileLinkBase} ${
-                        isActive ? mobileLinkActive : mobileLinkInactive
-                      }`
-                    }
-                    onClick={closeMobileMenu}
-                  >
-                    <FaPlus className="inline mr-1 mb-0.5" /> Add New Note
-                  </NavLink>
-                  <NavLink
-                    to="/profile"
-                    className={({ isActive }) =>
-                      `${mobileLinkBase} ${
-                        isActive ? mobileLinkActive : mobileLinkInactive
-                      }`
-                    }
-                    onClick={closeMobileMenu}
-                  >
-                    <FaUser className="inline mr-1 mb-0.5" /> Profile
-                  </NavLink>
-                  {/* UPDATED Admin/SuperAdmin Links */}
-                  {isAdmin &&
-                    !isSuperAdmin && ( // Only show Admin Panel if admin but NOT superadmin
+                  {/* User Actions */}
+                  <div className="px-2 space-y-1">
+                    <NavLink
+                      to="/add-note"
+                      className={({ isActive }) =>
+                        `${mobileLinkBase} ${
+                          isActive ? mobileLinkActive : mobileLinkInactive
+                        }`
+                      }
+                      onClick={closeMobileMenu}
+                    >
+                      <FaPlus className="inline mr-1 mb-0.5" /> Add New Note
+                    </NavLink>
+                    <NavLink
+                      to="/profile"
+                      className={({ isActive }) =>
+                        `${mobileLinkBase} ${
+                          isActive ? mobileLinkActive : mobileLinkInactive
+                        }`
+                      }
+                      onClick={closeMobileMenu}
+                    >
+                      <FaUser className="inline mr-1 mb-0.5" /> Profile
+                    </NavLink>
+                    {/* Admin Links */}
+                    {isAdmin && !isSuperAdmin && (
                       <NavLink
                         to="/admin/categories"
                         className={({ isActive }) =>
@@ -496,55 +492,55 @@ const Navbar = () => {
                         <FaCog className="inline mr-1 mb-0.5" /> Admin Panel
                       </NavLink>
                     )}
-                  {isSuperAdmin && ( // Show combined link for SuperAdmin
-                    <NavLink
-                      to="/admin/categories"
-                      className={({ isActive }) =>
-                        `${mobileLinkBase} ${
-                          isActive ? mobileLinkActive : mobileLinkInactive
-                        }`
-                      }
-                      onClick={closeMobileMenu}
+                    {isSuperAdmin && (
+                      <NavLink
+                        to="/admin/categories"
+                        className={({ isActive }) =>
+                          `${mobileLinkBase} ${
+                            isActive ? mobileLinkActive : mobileLinkInactive
+                          }`
+                        }
+                        onClick={closeMobileMenu}
+                      >
+                        <FaCog className="inline mr-1 mb-0.5" /> Admin (Cats)
+                      </NavLink>
+                    )}
+                    {/* Conditionally add more admin links */}
+                    <button
+                      onClick={handleLogout}
+                      className={`${mobileLinkBase} ${mobileLinkInactive} w-full`}
                     >
-                      <FaCog className="inline mr-1 mb-0.5" /> Admin (Cats)
-                    </NavLink>
-                  )}
-                  {/* Manage Org Link is separate */}
-                  {/* END UPDATED */}
-                  <button
-                    onClick={handleLogout}
-                    className={`${mobileLinkBase} ${mobileLinkInactive} w-full`}
+                      <FaSignOutAlt className="inline mr-1 mb-0.5" /> Logout
+                    </button>
+                  </div>
+                </>
+              ) : !isUserLoading ? (
+                <div className="px-2 space-y-1">
+                  <NavLink
+                    to="/login"
+                    className={({ isActive }) =>
+                      `${mobileLinkBase} ${
+                        isActive ? mobileLinkActive : mobileLinkInactive
+                      }`
+                    }
+                    onClick={closeMobileMenu}
                   >
-                    <FaSignOutAlt className="inline mr-1 mb-0.5" /> Logout
-                  </button>
+                    Login
+                  </NavLink>
+                  <NavLink
+                    to="/signup"
+                    className={({ isActive }) =>
+                      `${mobileLinkBase} ${
+                        isActive ? mobileLinkActive : mobileLinkInactive
+                      }`
+                    }
+                    onClick={closeMobileMenu}
+                  >
+                    Sign Up
+                  </NavLink>
                 </div>
-              </>
-            ) : !isUserLoading ? (
-              <div className="px-2 space-y-1">
-                <NavLink
-                  to="/login"
-                  className={({ isActive }) =>
-                    `${mobileLinkBase} ${
-                      isActive ? mobileLinkActive : mobileLinkInactive
-                    }`
-                  }
-                  onClick={closeMobileMenu}
-                >
-                  Login
-                </NavLink>
-                <NavLink
-                  to="/signup"
-                  className={({ isActive }) =>
-                    `${mobileLinkBase} ${
-                      isActive ? mobileLinkActive : mobileLinkInactive
-                    }`
-                  }
-                  onClick={closeMobileMenu}
-                >
-                  Sign Up
-                </NavLink>
-              </div>
-            ) : null}
+              ) : null /* Show nothing while user is loading */
+            }
           </div>
         </div>
       )}
