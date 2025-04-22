@@ -21,10 +21,12 @@ const AdminRoute = ({ children }) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (currentUser.role !== "admin") {
-    // Logged in but not an admin, redirect to home or an unauthorized page
-    console.warn("AdminRoute: Access denied for non-admin user.");
-    // You could optionally show an "Unauthorized" component here
+  const allowedAdminRoles = ["admin", "SuperAdmin"];
+  if (!allowedAdminRoles.includes(currentUser.role)) {
+    // User is logged in but not an admin or SuperAdmin, redirect to home
+    console.warn(
+      `AdminRoute: Access denied for non-admin/SuperAdmin user (role: ${currentUser.role}).`,
+    );
     return <Navigate to="/" replace />;
   }
 

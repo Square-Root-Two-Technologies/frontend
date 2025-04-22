@@ -1,3 +1,4 @@
+// FILE: src/components/Navbar/Navbar.js
 import React, { useState, useContext } from "react";
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import UserContext from "../../context/user/UserContext";
@@ -8,11 +9,11 @@ import {
   FaSun,
   FaMoon,
   FaSearch,
-  FaPlus, // Added for Add Note icon potentially
+  FaPlus, // Keep if used
   FaSignOutAlt,
   FaUser,
-  FaCog, // For Admin Panel icon
-} from "react-icons/fa"; // Added/adjusted icons
+  FaCog, // Icon for Admin Panel
+} from "react-icons/fa"; // Using react-icons
 
 const Navbar = () => {
   const { currentUser, isUserLoading, logout } = useContext(UserContext);
@@ -27,8 +28,8 @@ const Navbar = () => {
   const handleLogout = () => {
     logout();
     setIsMobileMenuOpen(false);
-    setShowUserMenu(false);
-    navigate("/login");
+    setShowUserMenu(false); // Close user menu on logout
+    navigate("/login"); // Redirect to login after logout
   };
 
   const handleSearchSubmit = (e) => {
@@ -37,53 +38,54 @@ const Navbar = () => {
     if (trimmedQuery) {
       navigate(`/search?q=${encodeURIComponent(trimmedQuery)}`);
       setSearchQuery("");
-      setIsMobileSearchOpen(false);
-      setIsMobileMenuOpen(false);
+      setIsMobileSearchOpen(false); // Close mobile search on submit
+      setIsMobileMenuOpen(false); // Close mobile menu on submit
     }
   };
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
-    setIsMobileSearchOpen(false); // Close search when opening menu
+    setIsMobileSearchOpen(false); // Close search if opening menu
   };
 
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   const toggleMobileSearch = () => {
     setIsMobileSearchOpen(!isMobileSearchOpen);
-    setIsMobileMenuOpen(false); // Close menu when opening search
+    setIsMobileMenuOpen(false); // Close menu if opening search
   };
 
-  // --- UI Improvement Start: Handle Read Click ---
-  // Smooth scroll or navigate for the "Read" link
+  // Handle "Read" link click to scroll or navigate
   const handleReadClick = (e) => {
-    e.preventDefault();
-    closeMobileMenu();
-    const targetId = "featured-posts-section"; // Target FeaturedPosts section
+    e.preventDefault(); // Prevent default anchor behavior
+    closeMobileMenu(); // Close mobile menu if open
+    const targetId = "featured-posts-section"; // The ID of the section to scroll to
+
+    // If already on the HomeScreen, scroll smoothly
     if (location.pathname === "/homescreen") {
       const element = document.getElementById(targetId);
       if (element) {
         element.scrollIntoView({ behavior: "smooth", block: "start" });
       } else {
+        // Fallback if the element isn't found immediately (rare)
         console.warn(`Scroll target #${targetId} not found on current page.`);
-        // Optionally scroll to top or another fallback
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
     } else {
-      // Navigate to home page and add hash for scrolling after navigation
-      navigate(`/#${targetId}`);
+      // If on a different page, navigate to HomeScreen with the hash
+      navigate(`/homescreen#${targetId}`);
+      // The useEffect in HomeScreen should handle the scroll after navigation
     }
   };
-  // --- UI Improvement End: Handle Read Click ---
 
-  // Style definitions (keep existing ones)
+  // --- Tailwind classes for styling ---
   const linkBase =
     "inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium";
   const linkActive = "border-indigo-500 text-gray-900 dark:text-gray-100";
   const linkInactive =
     "border-transparent text-gray-500 hover:border-gray-300 dark:hover:border-gray-700 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100";
   const mobileLinkBase =
-    "block rounded-md px-3 py-2 text-base font-medium text-center"; // Centered text
+    "block rounded-md px-3 py-2 text-base font-medium text-center"; // Centered mobile links
   const mobileLinkInactive =
     "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white";
   const mobileLinkActive =
@@ -92,17 +94,22 @@ const Navbar = () => {
     "px-3 py-1.5 text-sm rounded-md border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-neutral dark:text-gray-200 focus:outline-none focus:ring-1 focus:ring-indigo-500";
   const iconButtonClasses =
     "p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-indigo-500";
-
-  // --- UI Improvement Start: Dropdown Menu Item Style ---
   const userMenuItemClass =
     "flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600";
-  // --- UI Improvement End: Dropdown Menu Item Style ---
+
+  // --- MODIFICATION START ---
+  // Check if user is admin or SuperAdmin for conditional rendering
+  const isAdminOrSuperAdmin = React.useMemo(() => {
+    const allowedRoles = ["admin", "SuperAdmin"];
+    return allowedRoles.includes(currentUser?.role);
+  }, [currentUser?.role]);
+  // --- MODIFICATION END ---
 
   return (
     <nav className="bg-white dark:bg-gray-800 shadow-md fixed top-0 left-0 right-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          {/* Left Side: Logo & Links */}
+          {/* Logo and Desktop Nav Links */}
           <div className="flex">
             <Link
               to="/"
@@ -113,9 +120,9 @@ const Navbar = () => {
                 √2
               </span>
             </Link>
-            {/* Desktop Links */}
+            {/* Desktop Nav */}
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-              <a // Use anchor + onClick for smooth scroll
+              <a // Use anchor tag for scrolling, handled by handleReadClick
                 href="/#featured-posts-section"
                 onClick={handleReadClick}
                 className={`${linkBase} ${linkInactive} cursor-pointer`}
@@ -130,7 +137,8 @@ const Navbar = () => {
               >
                 Categories
               </NavLink>
-              {/* --- UI Improvement: Renamed "Write" to "My Notes" --- */}
+              {/* Conditionally render My Notes */}
+              {/* {currentUser && ( */}
               <NavLink
                 to="/my-notes"
                 className={({ isActive }) =>
@@ -139,11 +147,11 @@ const Navbar = () => {
               >
                 My Notes
               </NavLink>
-              {/* --- UI Improvement End --- */}
+              {/* )} */}
             </div>
           </div>
 
-          {/* Right Side: Search, Theme, User */}
+          {/* Right Side: Search, Theme, User/Auth */}
           <div className="flex items-center space-x-2 sm:space-x-4">
             {/* Desktop Search */}
             <form
@@ -200,7 +208,7 @@ const Navbar = () => {
                   <FaSearch size={20} />
                 </button>
               )}
-              {/* Close button for mobile search */}
+              {/* Close Mobile Search Button */}
               {isMobileSearchOpen && (
                 <button
                   onClick={() => {
@@ -224,8 +232,12 @@ const Navbar = () => {
               {theme === "light" ? <FaMoon size={20} /> : <FaSun size={20} />}
             </button>
 
-            {/* User Area (Desktop) */}
+            {/* User Menu / Auth Links (Desktop) */}
             <div className="hidden sm:flex sm:items-center">
+              {/* Show loading indicator or user menu/auth links */}
+              {/* {isUserLoading ? (
+                <div className="p-2"><LoadingSpinner size="sm"/></div> // Or some placeholder
+              ) : */}
               {
                 !isUserLoading && currentUser ? (
                   <div className="relative">
@@ -243,7 +255,7 @@ const Navbar = () => {
                           className="w-8 h-8 rounded-full mr-2 object-cover border border-gray-300 dark:border-gray-600"
                         />
                       ) : (
-                        <span className="mr-2 text-xl">👤</span> // Placeholder icon
+                        <span className="mr-2 text-xl">👤</span> // Placeholder avatar
                       )}
                       <span className="hidden md:inline">
                         {currentUser.name}
@@ -263,6 +275,7 @@ const Navbar = () => {
                         />
                       </svg>
                     </button>
+                    {/* User Dropdown Menu */}
                     {showUserMenu && (
                       <div
                         className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white dark:bg-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none z-30"
@@ -272,7 +285,7 @@ const Navbar = () => {
                         tabIndex="-1"
                         onMouseLeave={() => setShowUserMenu(false)} // Close on mouse leave
                       >
-                        {/* --- UI Improvement: Added Add Note to Dropdown --- */}
+                        {/* Add Note */}
                         <Link
                           to="/add-note"
                           onClick={() => setShowUserMenu(false)}
@@ -282,7 +295,7 @@ const Navbar = () => {
                         >
                           <FaPlus size={14} /> Add New Note
                         </Link>
-                        {/* --- UI Improvement End --- */}
+                        {/* Profile Link */}
                         <Link
                           to="/profile"
                           onClick={() => setShowUserMenu(false)}
@@ -292,7 +305,9 @@ const Navbar = () => {
                         >
                           <FaUser size={14} /> Profile
                         </Link>
-                        {currentUser?.role === "admin" && (
+                        {/* --- MODIFICATION START --- */}
+                        {/* Admin Panel Link (Admin/SuperAdmin Only) */}
+                        {isAdminOrSuperAdmin && (
                           <Link
                             to="/admin/categories"
                             onClick={() => setShowUserMenu(false)}
@@ -303,9 +318,11 @@ const Navbar = () => {
                             <FaCog size={14} /> Admin Panel
                           </Link>
                         )}
+                        {/* --- MODIFICATION END --- */}
+                        {/* Logout Button */}
                         <button
                           onClick={handleLogout}
-                          className={`${userMenuItemClass} w-full`} // Ensure button takes full width
+                          className={`${userMenuItemClass} w-full`} // Make button full width
                           role="menuitem"
                           tabIndex="-1"
                         >
@@ -314,7 +331,7 @@ const Navbar = () => {
                       </div>
                     )}
                   </div>
-                ) : !isUserLoading ? ( // Only show login/signup if not loading and no user
+                ) : !isUserLoading ? ( // Only show Login/Signup if not loading and no user
                   <>
                     <Link
                       to="/login"
@@ -329,11 +346,11 @@ const Navbar = () => {
                       Sign Up
                     </Link>
                   </>
-                ) : null /* Or a small spinner while loading user state */
+                ) : null /* Render nothing while loading user */
               }
             </div>
 
-            {/* Mobile Menu Toggle */}
+            {/* Mobile Menu Button */}
             <div className="-mr-2 flex items-center sm:hidden">
               <button
                 onClick={toggleMobileMenu}
@@ -359,9 +376,9 @@ const Navbar = () => {
           className="sm:hidden border-t border-gray-200 dark:border-gray-600"
           id="mobile-menu"
         >
-          {/* Main Links */}
+          {/* Mobile Nav Links */}
           <div className="px-2 pt-2 pb-3 space-y-1">
-            <a
+            <a // Use anchor tag for scrolling, handled by handleReadClick
               href="/#featured-posts-section"
               onClick={handleReadClick} // Use the handler
               className={`${mobileLinkBase} ${mobileLinkInactive} cursor-pointer`}
@@ -379,7 +396,7 @@ const Navbar = () => {
             >
               Categories
             </NavLink>
-            {/* --- UI Improvement: Renamed "Write" to "My Notes" --- */}
+            {/* {currentUser && ( */}
             <NavLink
               to="/my-notes"
               className={({ isActive }) =>
@@ -391,59 +408,38 @@ const Navbar = () => {
             >
               My Notes
             </NavLink>
-            {/* --- UI Improvement End --- */}
+            {/* )} */}
           </div>
-          {/* User Links (Mobile) */}
+          {/* Mobile User/Auth Section */}
           <div className="pt-3 pb-3 border-t border-gray-200 dark:border-gray-700">
-            {!isUserLoading && currentUser ? (
-              <>
-                <div className="flex items-center px-5 mb-3">
-                  {currentUser.profilePictureUrl ? (
-                    <img
-                      src={currentUser.profilePictureUrl}
-                      alt="User avatar"
-                      className="w-10 h-10 rounded-full mr-3 object-cover flex-shrink-0 border border-gray-300 dark:border-gray-600"
-                    />
-                  ) : (
-                    <span className="mr-3 text-2xl">👤</span> // Placeholder
-                  )}
-                  <div className="text-left">
-                    <div className="text-base font-medium text-gray-800 dark:text-white">
-                      {currentUser.name}
-                    </div>
-                    <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                      {currentUser.email}
+            {
+              !isUserLoading && currentUser ? (
+                <>
+                  {/* User Info */}
+                  <div className="flex items-center px-5 mb-3">
+                    {currentUser.profilePictureUrl ? (
+                      <img
+                        src={currentUser.profilePictureUrl}
+                        alt="User avatar"
+                        className="w-10 h-10 rounded-full mr-3 object-cover flex-shrink-0 border border-gray-300 dark:border-gray-600"
+                      />
+                    ) : (
+                      <span className="mr-3 text-2xl">👤</span> // Placeholder
+                    )}
+                    <div className="text-left">
+                      <div className="text-base font-medium text-gray-800 dark:text-white">
+                        {currentUser.name}
+                      </div>
+                      <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                        {currentUser.email}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="px-2 space-y-1">
-                  {/* --- UI Improvement: Added Add Note to Mobile Menu --- */}
-                  <NavLink
-                    to="/add-note"
-                    className={({ isActive }) =>
-                      `${mobileLinkBase} ${
-                        isActive ? mobileLinkActive : mobileLinkInactive
-                      }`
-                    }
-                    onClick={closeMobileMenu}
-                  >
-                    <FaPlus className="inline mr-1 mb-0.5" /> Add New Note
-                  </NavLink>
-                  {/* --- UI Improvement End --- */}
-                  <NavLink
-                    to="/profile"
-                    className={({ isActive }) =>
-                      `${mobileLinkBase} ${
-                        isActive ? mobileLinkActive : mobileLinkInactive
-                      }`
-                    }
-                    onClick={closeMobileMenu}
-                  >
-                    <FaUser className="inline mr-1 mb-0.5" /> Profile
-                  </NavLink>
-                  {currentUser?.role === "admin" && (
+                  {/* User Actions */}
+                  <div className="px-2 space-y-1">
+                    {/* Add Note */}
                     <NavLink
-                      to="/admin/categories"
+                      to="/add-note"
                       className={({ isActive }) =>
                         `${mobileLinkBase} ${
                           isActive ? mobileLinkActive : mobileLinkInactive
@@ -451,43 +447,72 @@ const Navbar = () => {
                       }
                       onClick={closeMobileMenu}
                     >
-                      <FaCog className="inline mr-1 mb-0.5" /> Admin Panel
+                      <FaPlus className="inline mr-1 mb-0.5" /> Add New Note
                     </NavLink>
-                  )}
-                  <button
-                    onClick={handleLogout}
-                    className={`${mobileLinkBase} ${mobileLinkInactive} w-full`} // Use same styling base
+                    {/* Profile Link */}
+                    <NavLink
+                      to="/profile"
+                      className={({ isActive }) =>
+                        `${mobileLinkBase} ${
+                          isActive ? mobileLinkActive : mobileLinkInactive
+                        }`
+                      }
+                      onClick={closeMobileMenu}
+                    >
+                      <FaUser className="inline mr-1 mb-0.5" /> Profile
+                    </NavLink>
+                    {/* --- MODIFICATION START --- */}
+                    {/* Admin Panel Link (Admin/SuperAdmin Only) */}
+                    {isAdminOrSuperAdmin && (
+                      <NavLink
+                        to="/admin/categories"
+                        className={({ isActive }) =>
+                          `${mobileLinkBase} ${
+                            isActive ? mobileLinkActive : mobileLinkInactive
+                          }`
+                        }
+                        onClick={closeMobileMenu}
+                      >
+                        <FaCog className="inline mr-1 mb-0.5" /> Admin Panel
+                      </NavLink>
+                    )}
+                    {/* --- MODIFICATION END --- */}
+                    {/* Logout Button */}
+                    <button
+                      onClick={handleLogout}
+                      className={`${mobileLinkBase} ${mobileLinkInactive} w-full`} // Full width button
+                    >
+                      <FaSignOutAlt className="inline mr-1 mb-0.5" /> Logout
+                    </button>
+                  </div>
+                </>
+              ) : !isUserLoading ? ( // Only show if not loading and no user
+                <div className="px-2 space-y-1">
+                  <NavLink
+                    to="/login"
+                    className={({ isActive }) =>
+                      `${mobileLinkBase} ${
+                        isActive ? mobileLinkActive : mobileLinkInactive
+                      }`
+                    }
+                    onClick={closeMobileMenu}
                   >
-                    <FaSignOutAlt className="inline mr-1 mb-0.5" /> Logout
-                  </button>
+                    Login
+                  </NavLink>
+                  <NavLink
+                    to="/signup"
+                    className={({ isActive }) =>
+                      `${mobileLinkBase} ${
+                        isActive ? mobileLinkActive : mobileLinkInactive
+                      }`
+                    }
+                    onClick={closeMobileMenu}
+                  >
+                    Sign Up
+                  </NavLink>
                 </div>
-              </>
-            ) : !isUserLoading ? ( // Only show if not loading and no user
-              <div className="px-2 space-y-1">
-                <NavLink
-                  to="/login"
-                  className={({ isActive }) =>
-                    `${mobileLinkBase} ${
-                      isActive ? mobileLinkActive : mobileLinkInactive
-                    }`
-                  }
-                  onClick={closeMobileMenu}
-                >
-                  Login
-                </NavLink>
-                <NavLink
-                  to="/signup"
-                  className={({ isActive }) =>
-                    `${mobileLinkBase} ${
-                      isActive ? mobileLinkActive : mobileLinkInactive
-                    }`
-                  }
-                  onClick={closeMobileMenu}
-                >
-                  Sign Up
-                </NavLink>
-              </div>
-            ) : null}
+              ) : null /* Render nothing while loading */
+            }
           </div>
         </div>
       )}

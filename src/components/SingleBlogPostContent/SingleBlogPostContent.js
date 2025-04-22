@@ -1,9 +1,10 @@
+// FILE: src/components/SingleBlogPostContent/SingleBlogPostContent.js
 import React, { useEffect, useContext } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import NoteContext from "../../context/Notes/NoteContext";
 import UserContext from "../../context/user/UserContext";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
-import Breadcrumbs from "../Breadcrumbs/Breadcrumbs"; // Keep Breadcrumbs here if you want them per post
+import Breadcrumbs from "../Breadcrumbs/Breadcrumbs"; // Assuming you have this component
 import { getTypeColor } from "../../utils/typeColors";
 import DOMPurify from "dompurify";
 
@@ -19,28 +20,32 @@ const SingleBlogPostContent = () => {
   const { currentUser, isUserLoading } = useContext(UserContext);
 
   useEffect(() => {
-    // This effect now runs whenever the slug changes for this component instance
+    // Fetch note only if slug is present and either no note is loaded,
+    // the loaded note's slug doesn't match, or it's not currently fetching.
     console.log(
       `SingleBlogPostContent Effect: Slug='${slug}'. Fetching: ${isFetchingNote}`,
     );
     if (slug && !isFetchingNote) {
+      // Check if the current note matches the slug before fetching again
+      // This check was removed to ensure fresh data is fetched when slug changes,
+      // even if a note with a different slug was previously loaded.
       console.log(`-> Fetching note content for slug: ${slug}`);
-      fetchNoteBySlug(slug); // This updates the 'note' in NoteContext
+      fetchNoteBySlug(slug); // Fetch based on slug change
     }
-    window.scrollTo(0, 0); // Scroll to top on content load
-  }, [slug, fetchNoteBySlug, isFetchingNote]); // Depend only on slug and fetch function
+    window.scrollTo(0, 0); // Scroll to top on slug change
+  }, [slug, fetchNoteBySlug, isFetchingNote]); // Dependency array
 
   const handleEdit = () => {
     if (note && note._id) {
       navigate(`/edit-note/${note._id}`);
     } else {
       console.error("Cannot navigate to edit page: Note ID is missing.");
+      // Optionally show a user-friendly message
       alert("Could not find note ID for editing.");
     }
   };
 
-  // --- Rendering Logic (mostly moved from SingleBlogPage) ---
-
+  // Helper for centered messages (Loading, Error, Not Found)
   const CenteredMessage = ({ children }) => (
     <div className="flex justify-center items-center min-h-[calc(100vh-250px)]">
       {" "}
@@ -48,6 +53,8 @@ const SingleBlogPostContent = () => {
       {children}
     </div>
   );
+
+  // --- Render Logic ---
 
   if (isFetchingNote) {
     return (
@@ -66,6 +73,7 @@ const SingleBlogPostContent = () => {
           </h2>
           <p className="text-error mb-6">{noteError}</p>
           <div className="flex gap-2 justify-center">
+            {/* Retry button only if slug exists */}
             {slug && (
               <button
                 onClick={() => fetchNoteBySlug(slug)}
@@ -84,22 +92,34 @@ const SingleBlogPostContent = () => {
     );
   }
 
-  // Important: Check if the loaded note matches the current slug
+  // Condition after loading and error checks:
+  // If not fetching, no error, but note is null OR note's slug doesn't match URL slug
+  // This can happen briefly during navigation or if fetch failed silently (unlikely with error handling)
+  // Or if the note was not found (backend returned success=false or 404)
   if (!note || note.slug !== slug) {
-    // This state occurs briefly between route change and fetch completion,
-    // or if the fetch failed silently or the note doesn't match.
-    // Can show a minimal loading or null. If it persists, there's an issue.
     console.warn(
       `Mismatch: slug=${slug}, note.slug=${note?.slug}. Waiting for fetch or error.`,
     );
+    // Show loading spinner here as well, as it might still be fetching the correct note
+    // Or, if you are sure the fetch completed and it's genuinely not found:
+    // return (
+    //   <CenteredMessage>
+    //     <div className="card text-center max-w-md mx-auto">
+    //       <h2 className="text-xl font-semibold text-neutral dark:text-gray-100 mb-4">Post Not Found</h2>
+    //       <p className="text-subtle mb-6">The blog post might have been moved or deleted.</p>
+    //       <Link to="/" className="btn-primary">Back to Home</Link>
+    //     </div>
+    //   </CenteredMessage>
+    // );
+    // For now, showing loading is safer during transitions
     return (
       <CenteredMessage>
         <LoadingSpinner />
       </CenteredMessage>
-    ); // Or return null;
+    );
   }
 
-  // --- Destructure note data only after confirming it exists and matches slug ---
+  // If note is loaded and matches slug, extract data
   const {
     title = "Untitled Post",
     description = "",
@@ -107,15 +127,17 @@ const SingleBlogPostContent = () => {
     readTimeMinutes,
     user,
     date,
-    _id, // Keep _id if needed for keys or edit links
-    ancestorPath = [],
+    _id, // Needed for edit link
+    ancestorPath = [], // Get ancestor path from note data
   } = note;
 
+  // Sanitize HTML content
   const sanitizedDescription = DOMPurify.sanitize(
     description || "<p>No content available for this post.</p>",
-    { USE_PROFILES: { html: true } },
+    { USE_PROFILES: { html: true } }, // Ensure HTML is allowed
   );
 
+  // Prepare display data
   const authorName = user?.name || "Unknown Author";
   const postDate = date
     ? new Date(date).toLocaleDateString("en-US", {
@@ -125,30 +147,35 @@ const SingleBlogPostContent = () => {
       })
     : "No date";
   const categoryName = category?.name;
-  const categoryColorClass = getTypeColor(categoryName); // You might remove this if the border is on the layout
+  const categoryColorClass = getTypeColor(categoryName); // Get color based on category name
+
+  // --- MODIFICATION START ---
+  // Determine if the current user can edit (owner or Admin/SuperAdmin)
+  const allowedAdminRoles = ["admin", "SuperAdmin"];
   const canEdit =
-    !isUserLoading &&
-    currentUser &&
-    user &&
-    (currentUser._id === user._id || currentUser.role === "admin");
+    !isUserLoading && // Ensure user loading is finished
+    currentUser && // Ensure user is logged in
+    user && // Ensure the post has a user associated
+    (currentUser._id === user._id || // Check if current user is the owner
+      allowedAdminRoles.includes(currentUser.role)); // Check if current user is Admin or SuperAdmin
+  // --- MODIFICATION END ---
 
   return (
-    // Removed outer container/flex layout, as that's handled by BlogLayout
     <article
       className={`card w-full max-w-4xl ${categoryColorClass} border-t-4`}
     >
       {" "}
-      {/* Keep card styling */}
+      {/* Added max-width */}
+      {/* Breadcrumbs */}
       <Breadcrumbs path={ancestorPath} currentTitle={title} />{" "}
-      {/* Breadcrumbs stay with content */}
-      {/* <Link to="/" className="text-primary hover:underline mb-6 inline-block text-sm">
-            ← Back to All Posts
-        </Link> */}{" "}
-      {/* Decide if you want this back link */}
+      {/* Use Breadcrumbs component */}
+      {/* Header Section */}
+      {/* Removed Back Link - handled by layout potentially */}
       <div className="flex justify-between items-start mb-4 flex-wrap gap-y-2 gap-x-4">
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-neutral dark:text-gray-100 flex-1 mr-4 break-words hyphens-auto">
           {title}
         </h1>
+        {/* Edit Button - Conditionally Rendered */}
         {canEdit && (
           <button
             onClick={handleEdit}
@@ -161,6 +188,7 @@ const SingleBlogPostContent = () => {
       </div>
       {/* Meta Information */}
       <div className="text-subtle mb-8 flex flex-wrap gap-x-4 gap-y-2 items-center border-b border-gray-200 dark:border-gray-700 pb-4">
+        {/* Author Avatar and Name */}
         <div className="flex items-center space-x-2">
           <div className="h-8 w-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-sm font-medium text-neutral dark:text-gray-200 overflow-hidden">
             {user?.profilePictureUrl ? (
@@ -170,6 +198,7 @@ const SingleBlogPostContent = () => {
                 className="w-full h-full object-cover"
               />
             ) : (
+              // Fallback initials or icon
               authorName
                 ?.split(" ")
                 .map((n) => n?.[0])
@@ -182,21 +211,24 @@ const SingleBlogPostContent = () => {
             {authorName}
           </span>
         </div>
+        {/* Date */}
         <span aria-hidden="true">•</span>
         <time dateTime={date ? new Date(date).toISOString() : undefined}>
           {postDate}
         </time>
+        {/* Read Time */}
         {readTimeMinutes && (
           <>
             <span aria-hidden="true">•</span>
             <span>{readTimeMinutes} min read</span>
           </>
         )}
+        {/* Category Link */}
         {categoryName && (
           <>
             <span aria-hidden="true">•</span>
             <Link
-              to={`/category/${category?._id}`}
+              to={`/category/${category?._id}`} // Link to category page
               className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-neutral dark:text-gray-300 text-xs font-medium rounded-full capitalize hover:underline"
             >
               {categoryName}
@@ -206,7 +238,7 @@ const SingleBlogPostContent = () => {
       </div>
       {/* Post Content */}
       <div
-        className="prose dark:prose-invert max-w-none text-neutral dark:text-gray-200 leading-relaxed"
+        className="prose dark:prose-invert max-w-none text-neutral dark:text-gray-200 leading-relaxed" // Apply prose for typography styling
         dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
       />
     </article>
