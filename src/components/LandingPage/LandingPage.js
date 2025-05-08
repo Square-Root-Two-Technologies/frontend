@@ -244,7 +244,7 @@ const LandingPage = () => {
           </h1>
           <br></br>
           <h3 className="text-3xl md:text-3xl lg:text-3xl font-bold text-primary dark:text-indigo-400 mb-4">
-            Expert Full-Stack Development & Salesforce Consulting
+            Your friendly neighborhood Full Stack Developer!
           </h3>
           <p className="text-lg md:text-xl text-neutral dark:text-gray-300 max-w-prose mb-8">
             Leveraging 4+ years of combined Salesforce (6x Certified) and
@@ -254,7 +254,7 @@ const LandingPage = () => {
             solutions built for real-world success.
           </p>
           <a href="#contact" className={btnPrimary}>
-            Get a Free Consultation
+            What's on your mind?
           </a>
           {/* Scroll Down Arrow */}
           <div className="mt-12 animate-bounce text-secondary dark:text-gray-500">
