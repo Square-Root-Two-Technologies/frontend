@@ -624,6 +624,47 @@ const NoteState = (props) => {
     [host],
   );
 
+  const deleteNotesByCategory = useCallback(
+    async (categoryId) => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        return { success: false, message: "Authentication required." };
+      }
+      if (!categoryId) {
+        return { success: false, message: "Category ID is required." };
+      }
+
+      try {
+        const response = await fetch(
+          `${host}/api/notes/by-category/${categoryId}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              "auth-token": token,
+            },
+          },
+        );
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || "Failed to delete notes.");
+        }
+
+        console.log("Deleted notes by category response:", result);
+        return { success: true, message: result.message };
+      } catch (error) {
+        console.error(
+          "Error in deleteNotesByCategory context function:",
+          error,
+        );
+        return { success: false, message: error.message };
+      }
+    },
+    [host],
+  );
+
   // Initial data fetch
   useEffect(() => {
     if (!initialFetchInitiated.current) {
@@ -664,6 +705,7 @@ const NoteState = (props) => {
       getRecentPosts,
       fetchFeaturedNotesBatch,
       fetchSearchResults,
+      deleteNotesByCategory,
     }),
     [
       notes,
@@ -693,6 +735,7 @@ const NoteState = (props) => {
       getRecentPosts,
       fetchFeaturedNotesBatch,
       fetchSearchResults,
+      deleteNotesByCategory,
     ],
   );
 
