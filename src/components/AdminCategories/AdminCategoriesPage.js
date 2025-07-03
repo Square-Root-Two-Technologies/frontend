@@ -3,7 +3,7 @@ import React, { useState, useEffect, useContext, useCallback } from "react";
 import CategoryContext from "../../context/category/CategoryContext"; // *** NEW ***
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import CategoryForm from "./CategoryForm"; // Keep this import
-import { FaEdit, FaPlus } from "react-icons/fa"; // Keep icons
+import { FaEdit, FaPlus, FaTrash } from "react-icons/fa"; // Keep icons
 
 // --- AdminCategoryTreeNode (Internal Component) ---
 // This component now receives callbacks directly, doesn't need context itself
