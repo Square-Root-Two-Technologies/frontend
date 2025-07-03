@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
-// import NoteContext from "../../context/Notes/NoteContext"; // *** REMOVED ***
+import NoteContext from "../../context/Notes/NoteContext";
 import CategoryContext from "../../context/category/CategoryContext"; // *** NEW ***
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import CategoryForm from "./CategoryForm"; // Keep this import
