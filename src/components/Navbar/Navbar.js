@@ -127,6 +127,14 @@ const Navbar = () => {
               >
                 Categories
               </NavLink>
+              <NavLink
+                to="/services/salesforce-experience"
+                className={({ isActive }) =>
+                  `${linkBase} ${isActive ? linkActive : linkInactive}`
+                }
+              >
+                SF Experience
+              </NavLink>
               {/* Conditionally render My Notes / Manage Notes based on role */}
               <NavLink
                 to="/my-notes"
@@ -300,7 +308,6 @@ const Navbar = () => {
                         >
                           <FaUser size={14} /> Profile
                         </Link>
-                        {/* Admin Links */}
                         {isAdmin &&
                           !isSuperAdmin && ( // Only Admin
                             <Link
@@ -403,6 +410,17 @@ const Navbar = () => {
               onClick={closeMobileMenu}
             >
               Categories
+            </NavLink>
+            <NavLink
+              to="/services/salesforce-experience"
+              className={({ isActive }) =>
+                `${mobileLinkBase} ${
+                  isActive ? mobileLinkActive : mobileLinkInactive
+                }`
+              }
+              onClick={closeMobileMenu}
+            >
+              SF Experience
             </NavLink>
             <NavLink
               to="/my-notes"

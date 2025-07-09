@@ -75,7 +75,7 @@ function App() {
                         element={<CategoryPage />}
                       />
                       <Route
-                        path="/services/salesforceprojects"
+                        path="/services/salesforce-experience"
                         element={<SalesforceExperiencePage />}
                       />
                       <Route
