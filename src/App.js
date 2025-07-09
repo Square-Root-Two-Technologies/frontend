@@ -24,6 +24,7 @@ import LandingPage from "./components/LandingPage/LandingPage";
 import SalesforceServicePage from "./components/Services/SalesforceServicePage";
 import FrontendServicePage from "./components/Services/FrontendServicePage";
 import BackendServicePage from "./components/Services/BackendServicePage";
+import SalesforceExperiencePage from "./components/Services/SalesforceExperiencePage";
 import ManageOrganisationPage from "./components/ManageOrganisation/ManageOrganisationPage"; // ADDED
 
 import NoteState from "./context/Notes/NoteState";
@@ -42,23 +43,16 @@ function App() {
         <CategoryState>
           <NoteState>
             <ConsultationRequestState>
-              {" "}
-              {/* ADDED Provider */}
               <Router>
                 <div className="flex flex-col min-h-screen bg-background dark:bg-dark">
                   <Navbar />
                   <main className="flex-grow w-full pt-16">
-                    {" "}
-                    {}
                     <Routes>
-                      {}
                       <Route path="/" element={<LandingPage />} />
                       <Route path="/homescreen" element={<HomeScreen />} />
                       <Route path="/login" element={<Login />} />
                       <Route path="/signup" element={<Signup />} />
                       <Route path="/search" element={<SearchResultsPage />} />
-
-                      {}
                       <Route path="/blog" element={<BlogLayout />}>
                         <Route index element={<BlogIndexPage />} />
                         <Route
@@ -66,8 +60,6 @@ function App() {
                           element={<SingleBlogPostContent />}
                         />
                       </Route>
-
-                      {}
                       <Route
                         path="/categories"
                         element={<CategoriesExplorerPage />}
@@ -82,8 +74,10 @@ function App() {
                         path="/category/:categoryId"
                         element={<CategoryPage />}
                       />
-
-                      {}
+                      <Route
+                        path="/services/salesforce"
+                        element={<SalesforceServicePage />}
+                      />
                       <Route
                         path="/services/salesforce"
                         element={<SalesforceServicePage />}
@@ -96,8 +90,6 @@ function App() {
                         path="/services/backend"
                         element={<BackendServicePage />}
                       />
-
-                      {}
                       <Route
                         path="/my-notes"
                         element={
@@ -138,8 +130,6 @@ function App() {
                           </ProtectedRoute>
                         }
                       />
-
-                      {}
                       <Route
                         path="/admin/categories"
                         element={
@@ -148,7 +138,6 @@ function App() {
                           </AdminRoute>
                         }
                       />
-                      {/* ADDED SuperAdmin Route */}
                       <Route
                         path="/manage-organisation"
                         element={
@@ -157,8 +146,6 @@ function App() {
                           </SuperAdminRoute>
                         }
                       />
-
-                      {}
                       <Route
                         path="*"
                         element={
@@ -173,8 +160,7 @@ function App() {
                   </main>
                 </div>
               </Router>
-            </ConsultationRequestState>{" "}
-            {/* CLOSE Provider */}
+            </ConsultationRequestState>
           </NoteState>
         </CategoryState>
       </UserState>

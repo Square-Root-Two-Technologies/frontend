@@ -13,19 +13,16 @@ import {
   FaShieldAlt,
   FaFileAlt,
   FaComments,
-} from "react-icons/fa"; // Added more relevant icons
-
+} from "react-icons/fa";
 const SalesforceServicePage = () => {
-  // Reusable card style for offerings
   const offeringCardStyle =
     "bg-gray-50 dark:bg-gray-800/50 p-6 rounded-lg shadow-soft border border-gray-200 dark:border-gray-700 flex flex-col items-center text-center transition-transform transform hover:scale-105";
   const iconWrapperStyle =
     "flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/50 text-primary dark:text-blue-300 mb-4";
-
   return (
     <div className="container mx-auto px-4 py-12 min-h-[calc(100vh-160px)]">
       <div className="max-w-4xl mx-auto bg-white dark:bg-gray-900 p-8 rounded-lg shadow-soft-lg border border-gray-200 dark:border-gray-700">
-        {/* Header Section */}
+        {}
         <div className="flex flex-col sm:flex-row items-center mb-8 text-center sm:text-left">
           <FaCloud className="text-5xl text-primary dark:text-indigo-400 mr-0 sm:mr-5 mb-4 sm:mb-0 flex-shrink-0" />
           <div>
@@ -39,8 +36,7 @@ const SalesforceServicePage = () => {
             </p>
           </div>
         </div>
-
-        {/* Introduction/Value Proposition */}
+        {}
         <section className="mb-12">
           <h2 className="text-2xl font-semibold text-neutral dark:text-white mb-4">
             Transform Your Business with Salesforce
@@ -61,14 +57,28 @@ const SalesforceServicePage = () => {
             scalable, efficient, and user-friendly.
           </p>
         </section>
-
-        {/* Specific Offerings */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-semibold text-neutral dark:text-white mb-6 text-center">
+            Explore Our Live Demo Portal
+          </h2>
+          <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg text-center">
+            <p className="text-neutral dark:text-gray-300 mb-4">
+              See our Salesforce Digital Experience capabilities in action.
+              Explore a live, interactive portal built on the Salesforce
+              platform.
+            </p>
+            <Link to="/services/salesforce-experience" className="btn-primary">
+              Explore the Portal
+            </Link>
+          </div>
+        </section>
+        {}
         <section className="mb-12">
           <h2 className="text-2xl font-semibold text-neutral dark:text-white mb-6 text-center">
             Our Salesforce Services
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Offering 1 */}
+            {}
             <div className={offeringCardStyle}>
               <div className={iconWrapperStyle}>
                 <FaCode />
@@ -82,7 +92,7 @@ const SalesforceServicePage = () => {
                 requirements.
               </p>
             </div>
-            {/* Offering 2 */}
+            {}
             <div className={offeringCardStyle}>
               <div className={iconWrapperStyle}>
                 <FaCog />
@@ -95,7 +105,7 @@ const SalesforceServicePage = () => {
                 (Certified Consultant), Service Cloud, and Experience Cloud.
               </p>
             </div>
-            {/* Offering 3 */}
+            {}
             <div className={offeringCardStyle}>
               <div className={iconWrapperStyle}>
                 <FaExchangeAlt />
@@ -108,7 +118,7 @@ const SalesforceServicePage = () => {
                 business systems using REST/SOAP APIs for unified data flow.
               </p>
             </div>
-            {/* Offering 4 */}
+            {}
             <div className={offeringCardStyle}>
               <div className={iconWrapperStyle}>
                 <FaRocket />
@@ -121,7 +131,7 @@ const SalesforceServicePage = () => {
                 Builder, and Approval Processes to boost efficiency.
               </p>
             </div>
-            {/* Offering 5 */}
+            {}
             <div className={offeringCardStyle}>
               <div className={iconWrapperStyle}>
                 <FaChartLine />
@@ -135,7 +145,7 @@ const SalesforceServicePage = () => {
                 cases resolved).
               </p>
             </div>
-            {/* Offering 6 */}
+            {}
             <div className={offeringCardStyle}>
               <div className={iconWrapperStyle}>
                 <FaUsers />
@@ -150,8 +160,7 @@ const SalesforceServicePage = () => {
             </div>
           </div>
         </section>
-
-        {/* Our Process */}
+        {}
         <section className="mb-12">
           <h2 className="text-2xl font-semibold text-neutral dark:text-white mb-6 text-center">
             Our Approach
@@ -204,8 +213,7 @@ const SalesforceServicePage = () => {
             </div>
           </div>
         </section>
-
-        {/* Technology Stack */}
+        {}
         <section className="mb-12">
           <h2 className="text-2xl font-semibold text-neutral dark:text-white mb-4">
             Technologies We Use
@@ -221,7 +229,7 @@ const SalesforceServicePage = () => {
               "SOAP API",
               "Salesforce DX",
               "Git",
-              "Visualforce", // Keep if relevant
+              "Visualforce",
             ].map((tech) => (
               <span
                 key={tech}
@@ -232,8 +240,7 @@ const SalesforceServicePage = () => {
             ))}
           </div>
         </section>
-
-        {/* Why Choose Us */}
+        {}
         <section className="mb-12 bg-gray-50 dark:bg-gray-800/50 p-6 rounded-lg">
           <h2 className="text-2xl font-semibold text-neutral dark:text-white mb-4">
             Why Partner With Us for Salesforce?
@@ -283,14 +290,13 @@ const SalesforceServicePage = () => {
             </li>
           </ul>
         </section>
-
-        {/* --- Placeholder for Case Studies --- */}
+        {}
         <section className="mb-12">
           <h2 className="text-2xl font-semibold text-neutral dark:text-white mb-6 text-center">
             Success Stories
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Example Case Study Placeholder 1 */}
+            {}
             <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
               <h3 className="font-semibold text-lg mb-2 text-neutral dark:text-white">
                 Challenge: [Client's Problem, e.g., Inefficient Sales Process]
@@ -307,7 +313,7 @@ const SalesforceServicePage = () => {
                 Industry: [Client Industry]
               </p>
             </div>
-            {/* Example Case Study Placeholder 2 */}
+            {}
             <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
               <h3 className="font-semibold text-lg mb-2 text-neutral dark:text-white">
                 Challenge: [Client's Problem, e.g., Disconnected Customer
@@ -326,15 +332,12 @@ const SalesforceServicePage = () => {
                 Industry: [Client Industry]
               </p>
             </div>
-            {/* Add more placeholders as needed */}
+            {}
           </div>
-          {/* <p className="text-center mt-6 text-subtle dark:text-dark-subtle">
-                        [Optional: Add real client logos here if permission granted]
-                    </p> */}
+          {}
         </section>
-        {/* --- End Placeholder --- */}
-
-        {/* Call to Action */}
+        {}
+        {}
         <section className="text-center mt-12 py-8 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-800/70 rounded-lg">
           <h2 className="text-2xl font-semibold text-neutral dark:text-white mb-4">
             Ready to Optimize Your Salesforce?
@@ -345,18 +348,17 @@ const SalesforceServicePage = () => {
           </p>
           <a href="/#contact" className="btn-primary">
             {" "}
-            {/* Links to contact form on LandingPage */}
+            {}
             Request Free Consultation
           </a>
         </section>
-
-        {/* Back Link */}
+        {}
         <div className="mt-10">
           <Link
             to="/"
             className="inline-flex items-center text-sm font-medium text-primary dark:text-indigo-400 hover:underline"
           >
-            <svg // Using SVG for arrow for better alignment
+            <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4 mr-1"
               fill="none"
@@ -377,5 +379,4 @@ const SalesforceServicePage = () => {
     </div>
   );
 };
-
 export default SalesforceServicePage;
