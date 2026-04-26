@@ -2,155 +2,73 @@ import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import UserContext from "../../context/user/UserContext";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
-import { FaUserCircle } from "react-icons/fa"; // Removed FaCamera, not needed here
+
+const Row = ({ label, value }) => (
+  <div style={{ paddingBottom: "1.25rem", borderBottom: "1px solid var(--border)" }}>
+    <p className="field-label">{label}</p>
+    <p style={{ fontSize: "1rem", color: "var(--text)", margin: 0, fontFamily: "var(--font-serif)", fontWeight: 400 }}>{value || "—"}</p>
+  </div>
+);
 
 const UserProfile = () => {
-  const {
-    currentUser,
-    isUserLoading,
-    getUserDetails,
-    // No need for upload functions here
-  } = useContext(UserContext);
+  const { currentUser, isUserLoading, getUserDetails } = useContext(UserContext);
 
-  // Fetch user details if not already available (e.g., on direct navigation)
   useEffect(() => {
-    if (!currentUser && !isUserLoading) {
-      getUserDetails();
-    }
+    if (!currentUser && !isUserLoading) getUserDetails();
   }, [currentUser, isUserLoading, getUserDetails]);
 
-  // --- Loading State ---
-  if (isUserLoading || (!currentUser && isUserLoading)) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <LoadingSpinner size="lg" />
-      </div>
-    );
-  }
-
-  // --- Error/Not Found State ---
-  if (!currentUser) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-lg text-gray-700 dark:text-gray-300">
-          Unable to load profile. Please try logging in again.
-        </p>
-      </div>
-    );
-  }
-
-  // Default Avatar Component
-  const DefaultAvatar = () => (
-    <FaUserCircle className="w-32 h-32 text-gray-400 dark:text-gray-500" /> // Increased size
+  if (isUserLoading) return (
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}>
+      <LoadingSpinner size="lg" />
+    </div>
   );
 
-  // --- Profile Display ---
+  if (!currentUser) return (
+    <div style={{ textAlign: "center", padding: "4rem 1.5rem" }}>
+      <p style={{ fontSize: "1rem", color: "var(--text2)" }}>Unable to load profile.</p>
+    </div>
+  );
+
+  const initials = currentUser.name?.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2) || "?";
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md p-8 bg-white dark:bg-gray-800 rounded-lg shadow-xl text-center">
-        {" "}
-        {/* Added text-center */}
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
-          Your Profile
-        </h2>
-        {/* Profile Picture */}
-        <div className="flex justify-center mb-8">
-          {" "}
-          {/* Increased bottom margin */}
-          {currentUser.profilePictureUrl ? (
-            <img
-              src={currentUser.profilePictureUrl}
-              alt={`${currentUser.name}'s profile`}
-              className="w-32 h-32 rounded-full object-cover border-4 border-gray-300 dark:border-gray-600 shadow-md" // Increased size, added border/shadow
-            />
-          ) : (
-            <DefaultAvatar />
+    <div style={{ maxWidth: 560, margin: "0 auto", padding: "3rem 1.5rem" }}>
+      {/* Avatar */}
+      <div style={{ display: "flex", alignItems: "center", gap: "1.25rem", marginBottom: "2.5rem" }}>
+        {currentUser.avatarUrl
+          ? <img src={currentUser.avatarUrl} alt={currentUser.name} style={{ width: 64, height: 64, borderRadius: "50%", objectFit: "cover" }} onError={(e) => e.target.style.display = "none"} />
+          : (
+            <span style={{ width: 64, height: 64, borderRadius: "50%", background: "var(--bg3)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-serif)", fontSize: "1.5rem", color: "var(--text2)", flexShrink: 0 }}>
+              {initials}
+            </span>
+          )
+        }
+        <div>
+          <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "1.75rem", fontWeight: 400, color: "var(--text)", margin: "0 0 0.25rem" }}>
+            {currentUser.name}
+          </h1>
+          {currentUser.role === "admin" && (
+            <span className="type-pill">Admin</span>
           )}
         </div>
-        {/* Profile Details */}
-        <div className="space-y-5 text-left">
-          {" "}
-          {/* Increased spacing, keep text left */}
-          <div>
-            <label className="block text-sm font-medium text-gray-500 dark:text-gray-400">
-              Name
-            </label>
-            <p className="mt-1 text-xl text-gray-900 dark:text-gray-100">
-              {" "}
-              {/* Increased text size */}
-              {currentUser.name || "N/A"}
-            </p>
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
+        <Row label="Email" value={currentUser.email} />
+        {currentUser.country && <Row label="Country" value={currentUser.country} />}
+        {currentUser.city && <Row label="City" value={currentUser.city} />}
+        {currentUser.about && currentUser.about !== "about is empty" && (
+          <div style={{ paddingBottom: "1.25rem", borderBottom: "1px solid var(--border)" }}>
+            <p className="field-label">About</p>
+            <p style={{ fontSize: "0.9375rem", color: "var(--text2)", margin: 0, lineHeight: 1.65 }}>{currentUser.about}</p>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-500 dark:text-gray-400">
-              Email
-            </label>
-            <p className="mt-1 text-xl text-gray-900 dark:text-gray-100">
-              {" "}
-              {/* Increased text size */}
-              {currentUser.email || "N/A"}
-            </p>
-          </div>
-          {/* Display Country and City if they exist */}
-          {currentUser.country && (
-            <div>
-              <label className="block text-sm font-medium text-gray-500 dark:text-gray-400">
-                Country
-              </label>
-              <p className="mt-1 text-xl text-gray-900 dark:text-gray-100">
-                {currentUser.country}
-              </p>
-            </div>
-          )}
-          {currentUser.city && (
-            <div>
-              <label className="block text-sm font-medium text-gray-500 dark:text-gray-400">
-                City
-              </label>
-              <p className="mt-1 text-xl text-gray-900 dark:text-gray-100">
-                {currentUser.city}
-              </p>
-            </div>
-          )}
-          {/* Display About if it exists */}
-          {currentUser.about && currentUser.about !== "about is empty" && (
-            <div>
-              <label className="block text-sm font-medium text-gray-500 dark:text-gray-400">
-                About
-              </label>
-              <p className="mt-1 text-lg text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-                {" "}
-                {/* Allow line breaks */}
-                {currentUser.about}
-              </p>
-            </div>
-          )}
-          <div>
-            <label className="block text-sm font-medium text-gray-500 dark:text-gray-400">
-              Joined
-            </label>
-            <p className="mt-1 text-lg text-gray-900 dark:text-gray-100">
-              {" "}
-              {/* Slightly smaller text */}
-              {new Date(currentUser.date).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </p>
-          </div>
-        </div>
-        {/* Edit Button */}
-        <div className="mt-8">
-          {" "}
-          {/* Increased top margin */}
-          <Link
-            to="/edit-profile"
-            className="w-full inline-flex justify-center py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out"
-          >
-            Edit Profile
-          </Link>
-        </div>
+        )}
+        <Row label="Member since" value={new Date(currentUser.date).toLocaleDateString("en-US", { year: "numeric", month: "long" })} />
+      </div>
+
+      <div style={{ marginTop: "2rem", display: "flex", gap: "0.75rem" }}>
+        <Link to="/edit-profile" className="btn-primary">Edit profile</Link>
+        <Link to="/my-notes" className="btn-secondary">My notes</Link>
       </div>
     </div>
   );

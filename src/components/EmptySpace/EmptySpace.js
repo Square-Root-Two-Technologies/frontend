@@ -1,15 +1,19 @@
-// Option 1: Remove the image
 import React from "react";
 
-const EmptyState = ({ message = "No blog posts found." }) => (
-  <div className="card text-center py-12">
-    {/* Image removed */}
-    <h3 className="text-lg font-semibold text-neutral dark:text-gray-100 mb-4">
-      {" "}
-      {/* Added margin-bottom */}
-      Nothing Here Yet
-    </h3>
-    <p className="mt-2 text-subtle">{message}</p>
+const EmptyState = ({ message = "Nothing here yet." }) => (
+  <div
+    style={{
+      gridColumn: "1 / -1",
+      padding: "4rem 2rem",
+      textAlign: "center",
+      border: "1px dashed var(--border)",
+      borderRadius: "var(--radius)",
+    }}
+  >
+    <p style={{ fontFamily: "var(--font-serif)", fontSize: "1.25rem", color: "var(--text2)", marginBottom: "0.5rem", fontStyle: "italic" }}>
+      Nothing here yet.
+    </p>
+    <p style={{ fontSize: "0.875rem", color: "var(--text3)" }}>{message}</p>
   </div>
 );
 

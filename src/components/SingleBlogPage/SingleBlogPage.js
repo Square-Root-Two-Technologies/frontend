@@ -1,217 +1,112 @@
 import React, { useEffect, useContext } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import NoteContext from "../../context/Notes/NoteContext";
+import NoteContext from "../../context/notes/NoteContext";
 import UserContext from "../../context/user/UserContext";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
-import Breadcrumbs from "../Breadcrumbs/Breadcrumbs";
-import { getTypeColor } from "../../utils/typeColors";
-import DOMPurify from "dompurify";
-import BlogSidebar from "../BlogSidebar/BlogSidebar";
+
+const formatDate = (d) =>
+  d ? new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : "";
 
 const SingleBlogPage = () => {
-  const { slug } = useParams();
-  const navigate = useNavigate();
-  const { note, fetchNoteBySlug, isFetching, error } = useContext(NoteContext);
+  const { id } = useParams();
+  const { note, fetchNoteById, isFetching, error } = useContext(NoteContext);
   const { currentUser, isUserLoading } = useContext(UserContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    console.log(
-      `SingleBlogPage Effect: Current slug='${slug}'. Note loaded: ${!!note}, Note slug: '${
-        note?.slug
-      }', Fetching: ${isFetching}`,
-    );
-    if (slug && (!note || note.slug !== slug) && !isFetching) {
-      console.log(`-> Fetching note for slug: ${slug}`);
-      fetchNoteBySlug(slug);
+    if ((!note || note._id !== id) && !isFetching) {
+      fetchNoteById(id);
     }
-    window.scrollTo(0, 0);
-  }, [slug, fetchNoteBySlug, note, isFetching]);
+  }, [id, fetchNoteById]); // eslint-disable-line
 
-  const handleEdit = () => {
-    if (note && note._id) {
-      navigate(`/edit-note/${note._id}`);
-    } else {
-      console.error("Cannot navigate to edit page: Note ID is missing.");
-      alert("Could not find note ID for editing.");
-    }
-  };
-
-  const CenteredMessage = ({ children }) => (
-    <div className="container mx-auto px-4 py-12 flex justify-center items-center min-h-[calc(100vh-160px)]">
-      {children}
-    </div>
-  );
-
-  // --- Render Logic ---
-  if (isFetching) {
+  if (isFetching || isUserLoading || (!note && !error)) {
     return (
-      <CenteredMessage>
-        <LoadingSpinner />
-      </CenteredMessage>
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}>
+        <LoadingSpinner size="lg" />
+      </div>
     );
   }
 
   if (error) {
     return (
-      <CenteredMessage>
-        <div className="card text-center max-w-md mx-auto">
-          <h2 className="text-xl font-semibold text-error mb-4">
-            Error Loading Post
-          </h2>
-          <p className="text-error mb-6">{error}</p>
-          <div className="flex gap-2 justify-center">
-            {slug && (
-              <button
-                onClick={() => fetchNoteBySlug(slug)}
-                className="btn-primary"
-                disabled={isFetching}
-              >
-                Retry
-              </button>
-            )}
-            <Link to="/" className="btn-secondary">
-              Back to Home
-            </Link>
-          </div>
+      <div style={{ maxWidth: 540, margin: "4rem auto", padding: "0 1.5rem", textAlign: "center" }}>
+        <p style={{ fontFamily: "var(--font-serif)", fontSize: "1.25rem", color: "var(--text2)", marginBottom: "1.5rem", fontStyle: "italic" }}>
+          Couldn't load this post.
+        </p>
+        <p style={{ fontSize: "0.875rem", color: "var(--text3)", marginBottom: "1.5rem" }}>{error}</p>
+        <div style={{ display: "flex", gap: "0.75rem", justifyContent: "center" }}>
+          <button className="btn-primary" onClick={() => fetchNoteById(id)}>Try again</button>
+          <Link to="/home" className="btn-secondary">← All posts</Link>
         </div>
-      </CenteredMessage>
-    );
-  }
-
-  if (!isFetching && !error && (!note || note.slug !== slug)) {
-    return (
-      <CenteredMessage>
-        <div className="card text-center max-w-md mx-auto">
-          <h2 className="text-xl font-semibold text-neutral dark:text-gray-100 mb-4">
-            Post Not Found
-          </h2>
-          <p className="text-subtle mb-6">
-            The blog post you're looking for might have been moved or deleted.
-          </p>
-          <Link to="/" className="btn-primary">
-            Back to Home
-          </Link>
-        </div>
-      </CenteredMessage>
+      </div>
     );
   }
 
   if (!note) {
     return (
-      <CenteredMessage>
-        <p>Loading...</p>
-      </CenteredMessage>
+      <div style={{ maxWidth: 540, margin: "4rem auto", padding: "0 1.5rem", textAlign: "center" }}>
+        <p style={{ fontFamily: "var(--font-serif)", fontSize: "1.25rem", color: "var(--text2)", marginBottom: "1.5rem", fontStyle: "italic" }}>
+          Post not found.
+        </p>
+        <Link to="/home" className="btn-primary">← All posts</Link>
+      </div>
     );
   }
 
-  // --- Note Content Rendering ---
-  const {
-    title = "Untitled Post",
-    description = "",
-    category,
-    readTimeMinutes,
-    user,
-    date,
-    _id,
-    ancestorPath = [],
-  } = note;
-
-  const sanitizedDescription = DOMPurify.sanitize(
-    description || "<p>No content available for this post.</p>",
-    { USE_PROFILES: { html: true } },
-  );
-  const authorName = user?.name || "Unknown Author";
-  const postDate = date
-    ? new Date(date).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
-    : "No date";
-  const categoryName = category?.name;
-  const categoryColorClass = getTypeColor(categoryName);
-  const canEdit =
-    !isUserLoading &&
-    currentUser &&
-    user &&
-    (currentUser._id === user._id || currentUser.role === "admin");
+  const { title, description, tag, type, readTimeMinutes, user, date } = note;
+  const authorName = user?.name || "Unknown";
+  const label = type || tag;
+  const canEdit = !isUserLoading && currentUser && user && (currentUser._id === user._id || currentUser.role === "admin");
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Breadcrumbs path={ancestorPath} currentTitle={title} />
-      <div className="flex flex-col lg:flex-row lg:gap-8">
-        <BlogSidebar currentNote={note} />
-        <main className="flex-grow min-w-0">
-          <article
-            className={`card w-full max-w-4xl ${categoryColorClass} border-t-4`}
+    <div style={{ maxWidth: 760, margin: "0 auto", padding: "2.5rem 1.5rem 4rem" }}>
+
+      {/* Back */}
+      <Link to="/home" style={{ fontSize: "0.8125rem", color: "var(--text3)", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "0.25rem", marginBottom: "2.5rem", letterSpacing: "0.02em" }}>
+        ← All posts
+      </Link>
+
+      {/* Type */}
+      {label && <span className="type-pill" style={{ display: "inline-block", marginBottom: "1rem" }}>{label}</span>}
+
+      {/* Title */}
+      <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(2rem, 5vw, 3rem)", fontWeight: 400, color: "var(--text)", lineHeight: 1.1, letterSpacing: "-0.01em", margin: "0 0 1.5rem" }}>
+        {title}
+      </h1>
+
+      {/* Meta */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem 1rem", alignItems: "center", paddingBottom: "1.5rem", borderBottom: "1px solid var(--border)", marginBottom: "2.5rem", fontSize: "0.875rem", color: "var(--text3)" }}>
+        {user?.avatarUrl
+          ? <img src={user.avatarUrl} alt={authorName} style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover" }} onError={(e) => e.target.style.display = "none"} />
+          : <span style={{ width: 28, height: 28, borderRadius: "50%", background: "var(--linen)", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: "0.6875rem", fontWeight: 600, color: "var(--text2)", flexShrink: 0 }}>{authorName[0]?.toUpperCase()}</span>
+        }
+        <span style={{ color: "var(--text2)" }}>{authorName}</span>
+        {date && <><span style={{ opacity: 0.4 }}>·</span><time dateTime={new Date(date).toISOString()}>{formatDate(date)}</time></>}
+        {readTimeMinutes && <><span style={{ opacity: 0.4 }}>·</span><span>{readTimeMinutes} min read</span></>}
+
+        {canEdit && (
+          <button
+            onClick={() => navigate(`/edit-note/${id}`)}
+            className="btn-secondary"
+            style={{ marginLeft: "auto", padding: "0.25rem 0.75rem", fontSize: "0.8rem" }}
           >
-            <Link
-              to="/"
-              className="text-primary hover:underline mb-6 inline-block text-sm"
-            >
-              ← Back to All Posts
-            </Link>
-            <div className="flex justify-between items-start mb-4 flex-wrap gap-y-2 gap-x-4">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-neutral dark:text-gray-100 flex-1 mr-4 break-words hyphens-auto">
-                {title}
-              </h1>
-              {canEdit && (
-                <button
-                  onClick={handleEdit}
-                  className="btn-secondary whitespace-nowrap px-3 py-1.5 text-xs self-start"
-                  aria-label={`Edit post titled ${title}`}
-                >
-                  Edit Post
-                </button>
-              )}
-            </div>
-            <div className="text-subtle mb-8 flex flex-wrap gap-x-4 gap-y-2 items-center border-b border-gray-200 dark:border-gray-700 pb-4">
-              <div className="flex items-center space-x-2">
-                <div className="h-8 w-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-sm font-medium text-neutral dark:text-gray-200 overflow-hidden">
-                  {user?.profilePictureUrl ? (
-                    <img
-                      src={user.profilePictureUrl}
-                      alt={authorName}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    authorName
-                      ?.split(" ")
-                      .map((n) => n?.[0])
-                      .join("")
-                      .toUpperCase()
-                      .slice(0, 2) || "?"
-                  )}
-                </div>
-                <span className="font-medium text-neutral dark:text-gray-200">
-                  {authorName}
-                </span>
-              </div>
-              <span aria-hidden="true">•</span>
-              <time dateTime={date ? new Date(date).toISOString() : undefined}>
-                {postDate}
-              </time>
-              {readTimeMinutes && (
-                <>
-                  <span aria-hidden="true">•</span>
-                  <span>{readTimeMinutes} min read</span>
-                </>
-              )}
-              {categoryName && (
-                <>
-                  <span aria-hidden="true">•</span>
-                  <span className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-neutral dark:text-gray-300 text-xs font-medium rounded-full capitalize">
-                    {categoryName}
-                  </span>
-                </>
-              )}
-            </div>
-            <div
-              className="prose dark:prose-invert max-w-none text-neutral dark:text-gray-200 leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
-            />
-          </article>
-        </main>
+            Edit
+          </button>
+        )}
+      </div>
+
+      {/* Content */}
+      <div
+        style={{ fontFamily: "var(--font-sans)", fontSize: "1.0625rem", lineHeight: 1.8, color: "var(--text)" }}
+        className="blog-content"
+        dangerouslySetInnerHTML={{ __html: description || "<p>No content available.</p>" }}
+      />
+
+      {/* Bottom nav */}
+      <div style={{ marginTop: "4rem", paddingTop: "2rem", borderTop: "1px solid var(--border)" }}>
+        <Link to="/home" style={{ fontSize: "0.8125rem", color: "var(--text3)", textDecoration: "none" }}>
+          ← Back to all posts
+        </Link>
       </div>
     </div>
   );

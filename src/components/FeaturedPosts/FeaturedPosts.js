@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useCallback } from "react";
-import NoteContext from "../../context/Notes/NoteContext";
+import NoteContext from "../../context/notes/NoteContext";
 import BlogCard from "../BlogCard/BlogCard";
 
 const FeaturedPosts = () => {
@@ -12,104 +12,67 @@ const FeaturedPosts = () => {
   } = useContext(NoteContext);
 
   const observer = useRef();
-  const lastFeaturedNoteRef = useCallback(
+
+  const lastRef = useCallback(
     (node) => {
-      if (
-        isInitialFeaturedLoading ||
-        isFetchingMoreFeatured ||
-        !hasMoreFeatured
-      ) {
-        return;
-      }
+      if (isInitialFeaturedLoading || isFetchingMoreFeatured || !hasMoreFeatured) return;
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver(
         (entries) => {
-          if (entries[0].isIntersecting && hasMoreFeatured) {
-            console.log("Fetching next featured batch...");
-            fetchFeaturedNotesBatch();
-          }
+          if (entries[0].isIntersecting && hasMoreFeatured) fetchFeaturedNotesBatch();
         },
-        {
-          root: null,
-          threshold: 0.8,
-        },
+        { threshold: 0.8 },
       );
       if (node) observer.current.observe(node);
     },
-    [
-      isInitialFeaturedLoading,
-      isFetchingMoreFeatured,
-      hasMoreFeatured,
-      fetchFeaturedNotesBatch,
-    ],
+    [isInitialFeaturedLoading, isFetchingMoreFeatured, hasMoreFeatured, fetchFeaturedNotesBatch],
   );
 
-  // Choose a suitable height - adjust as needed
-  const cardHeightClass = "h-[430px]"; // Example fixed height
+  if (!isInitialFeaturedLoading && featuredNotes.length === 0) return null;
 
   return (
-    <section className="mb-10">
-      <h2 className="text-heading mb-6">Featured Posts</h2>
-      <div className="flex space-x-6 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800">
-        {isInitialFeaturedLoading &&
-          Array(3)
-            .fill()
-            .map((_, i) => (
-              <div
-                key={`feat-skel-init-${i}`}
-                className={`w-72 flex-shrink-0 snap-start ${cardHeightClass}`} // Apply height to skeleton container
-              >
-                <BlogCard isLoading={true} />
+    <section style={{ marginBottom: "3rem" }}>
+      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: "1.25rem" }}>
+        <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "1.5rem", fontWeight: 400, color: "var(--text)", margin: 0 }}>
+          Featured
+        </h2>
+        <span style={{ fontSize: "0.75rem", color: "var(--text3)", letterSpacing: "0.04em" }}>
+          {featuredNotes.length} post{featuredNotes.length !== 1 ? "s" : ""}
+        </span>
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          gap: "1rem",
+          overflowX: "auto",
+          paddingBottom: "0.75rem",
+          scrollSnapType: "x mandatory",
+          scrollbarWidth: "none",
+        }}
+      >
+        <style>{`.no-scroll::-webkit-scrollbar{display:none}`}</style>
+        {isInitialFeaturedLoading
+          ? Array(3).fill(null).map((_, i) => (
+              <div key={i} style={{ width: 280, flexShrink: 0, scrollSnapAlign: "start" }}>
+                <BlogCard isLoading />
               </div>
-            ))}
-
-        {!isInitialFeaturedLoading &&
-          featuredNotes.map((note, index) => (
-            <div
-              ref={
-                index === featuredNotes.length - 1 ? lastFeaturedNoteRef : null
-              }
-              key={note._id}
-              // Apply fixed height to the container div
-              className={`w-72 ${cardHeightClass} flex-shrink-0 snap-start`}
-            >
-              {/* The BlogCard will now be inside a fixed-height container */}
-              <BlogCard note={note} isFeatured={true} />
-            </div>
-          ))}
-
-        {!isInitialFeaturedLoading && isFetchingMoreFeatured && (
-          <div
-            className={`w-72 flex-shrink-0 snap-start flex items-center justify-center ${cardHeightClass}`}
-          >
-            {" "}
-            {/* Apply height */}
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 dark:border-blue-400"></div>
+            ))
+          : featuredNotes.map((note, i) => (
+              <div
+                key={note._id}
+                ref={i === featuredNotes.length - 1 ? lastRef : null}
+                style={{ width: 280, flexShrink: 0, scrollSnapAlign: "start" }}
+              >
+                <BlogCard note={note} isFeatured />
+              </div>
+            ))
+        }
+        {isFetchingMoreFeatured && (
+          <div style={{ width: 280, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <span className="ep-spinner" />
           </div>
         )}
-
-        {!isInitialFeaturedLoading &&
-          !isFetchingMoreFeatured &&
-          featuredNotes.length === 0 && (
-            <div className="text-center py-4 text-subtle w-full">
-              No featured posts available.
-            </div>
-          )}
-
-        {/* Note: The "End of featured posts" message might look odd in a fixed height container,
-            consider alternative UI if needed */}
-        {!isInitialFeaturedLoading &&
-          !hasMoreFeatured &&
-          featuredNotes.length > 0 &&
-          !isFetchingMoreFeatured && (
-            <div
-              className={`w-72 flex-shrink-0 snap-start flex items-center justify-center text-subtle text-sm italic ${cardHeightClass}`}
-            >
-              {" "}
-              {/* Apply height */}
-              End of featured posts.
-            </div>
-          )}
       </div>
     </section>
   );
