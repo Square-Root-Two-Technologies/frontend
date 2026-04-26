@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import NoteContext from "../../context/notes/NoteContext";
+import NoteContext from "../../context/Notes/NoteContext";
 import NotesGrid from "../NotesGrid/NotesGrid";
 import Tabs from "../Tabs/Tabs";
 

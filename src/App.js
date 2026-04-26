@@ -9,7 +9,7 @@ import Login from "./components/Login/Login";
 import Signup from "./components/Signup/Signup";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import MyNotesPage from "./components/MyNotesPage/MyNotesPage";
-import NoteState from "./context/notes/NoteState";
+import NoteState from "./context/Notes/NoteState";
 import UserState from "./context/user/UserState";
 import ThemeProvider from "./context/ThemeProvider/ThemeProvider";
 import AddNote from "./components/AddNote/AddNote";

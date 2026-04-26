@@ -1,5 +1,5 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
-import NoteContext from "../../context/notes/NoteContext";
+import NoteContext from "../../context/Notes/NoteContext";
 import FeaturedPosts from "../FeaturedPosts/FeaturedPosts";
 import NotesGrid from "../NotesGrid/NotesGrid";
 import Sidebar from "../Sidebar/Sidebar";

@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useCallback } from "react";
-import NoteContext from "../../context/notes/NoteContext";
+import NoteContext from "../../context/Notes/NoteContext";
 import BlogCard from "../BlogCard/BlogCard";
 
 const FeaturedPosts = () => {
