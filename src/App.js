@@ -16,6 +16,7 @@ import AddNote from "./components/AddNote/AddNote";
 import EditNote from "./components/EditNote/EditNote";
 import UserProfile from "./components/UserProfile/UserProfile";
 import EditProfile from "./components/EditProfile/EditProfile";
+import SearchResultsPage from "./components/SearchResultsPage/SearchResultsPage";
 
 /* useLocation must be called inside <Router>, so we extract the layout */
 function AppLayout() {
@@ -31,6 +32,7 @@ function AppLayout() {
           <Route path="/home" element={<HomeScreen />} />
           <Route path="/blogspace" element={<BlogSpace />} />
           <Route path="/blog/:id" element={<SingleBlogPage />} />
+          <Route path="/search" element={<SearchResultsPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route
