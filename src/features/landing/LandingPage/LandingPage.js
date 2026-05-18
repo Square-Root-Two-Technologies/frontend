@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ThemeContext } from "../../../context/ThemeProvider/ThemeProvider";
 import NoteContext from "../../../context/Notes/NoteContext";
 import "./LandingPage.css";
+import ParticleSimulation from "../../../components/ParticleSimulation/ParticleSimulation";
 
 const SunIcon = () => (
   <svg
@@ -90,7 +91,7 @@ const LandingPage = () => {
       <nav className="lp-nav" aria-label="Primary navigation">
         <div className="lp-nav-inner">
           <Link to="/" className="lp-nav-name">
-            Tanvir Raihan
+            Tanvir R I
           </Link>
           <div className="lp-nav-right">
             <Link to="/home" className="lp-nav-link">
@@ -129,7 +130,7 @@ const LandingPage = () => {
           <div className="lp-hero-grid">
             <div>
               <span className="lp-hero-tag">
-                Writer · Builder · Photographer
+                Writer · Engineer · Photographer
               </span>
               <h1 className="lp-hero-headline">
                 Ideas worth sitting
@@ -150,7 +151,9 @@ const LandingPage = () => {
                 </span>
               </div>
             </div>
-            <div className="lp-photo-placeholder" aria-label="Portrait" />
+            <div className="lp-photo-placeholder" aria-label="Particle simulation">
+              <ParticleSimulation />
+            </div>
           </div>
         </div>
       </section>

@@ -180,16 +180,9 @@
   width: 100%;
   aspect-ratio: 3 / 4;
   background: var(--bg3);
-  border-radius: 2px;
+  border-radius: 6px;
   overflow: hidden;
   position: relative;
-}
-.lp-photo-placeholder::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, var(--linen) 0%, transparent 60%);
-  opacity: 0.4;
 }
 
 /* ── Section ────────────────────────────────────────────────────── */
