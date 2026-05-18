@@ -416,3 +416,74 @@
   transition: color var(--transition);
 }
 .lp-footer-link:hover { color: var(--text); }
+
+/* ── Mobile overrides (< 640px) ─────────────────────────────────── */
+@media (max-width: 639px) {
+  /* Hero: cut top/bottom padding by ~half */
+  .lp-hero {
+    padding: 36px 0 28px;
+  }
+
+  /* Tighten gap between headline block and particle sim */
+  .lp-hero-grid {
+    gap: 24px;
+  }
+
+  /* Particle sim: cap height so it doesn't eat the whole screen */
+  .lp-photo-placeholder {
+    max-height: 220px;
+    aspect-ratio: auto;
+    height: 220px;
+  }
+
+  /* Headline: less bottom margin */
+  .lp-hero-headline {
+    margin: 0 0 16px;
+  }
+
+  /* Description: less bottom margin */
+  .lp-hero-desc {
+    margin: 0 0 20px;
+  }
+
+  /* Sections: less vertical breathing room */
+  .lp-section {
+    padding: 32px 0;
+  }
+
+  /* Section header: tighter bottom gap */
+  .lp-section-header {
+    margin-bottom: 20px;
+  }
+
+  /* Article rows: slightly tighter */
+  .lp-article-item {
+    padding: 14px 0;
+    grid-template-columns: 56px 1fr;
+    gap: 12px;
+  }
+
+  /* Article title: slightly smaller on narrow screens */
+  .lp-article-title {
+    font-size: 1.0625rem;
+  }
+
+  /* Now block: tighter padding, no wide side padding */
+  .lp-now {
+    padding: 20px 18px;
+  }
+
+  .lp-now-list {
+    gap: 12px;
+  }
+
+  .lp-now-item {
+    grid-template-columns: 72px 1fr;
+    gap: 10px;
+  }
+
+  /* Footer: less padding */
+  .lp-footer-inner {
+    padding: 24px 0 20px;
+  }
+}
