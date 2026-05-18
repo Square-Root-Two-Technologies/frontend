@@ -676,11 +676,18 @@ const NoteState = (props) => {
     }
   }, [fetchFeaturedNotesBatch, fetchNextBatchOfNotes, getRecentPosts]);
 
+  const blogTypes = useMemo(() => {
+    const types = new Set();
+    allNotes.forEach((n) => { if (n.type) types.add(n.type); });
+    return ["All", ...Array.from(types).sort()];
+  }, [allNotes]);
+
   const contextValue = useMemo(
     () => ({
       notes,
       allNotes,
       note,
+      blogTypes,
       featuredNotes,
       recentPosts,
       searchResults,
@@ -711,6 +718,7 @@ const NoteState = (props) => {
       notes,
       allNotes,
       note,
+      blogTypes,
       featuredNotes,
       recentPosts,
       searchResults,

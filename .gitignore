@@ -30,3 +30,10 @@ all_frontend_code_condensed.txt
 
 yarn.lock
 package-lock.json
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
