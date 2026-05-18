@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { ThemeContext } from "../../../context/ThemeProvider/ThemeProvider";
 import NoteContext from "../../../context/Notes/NoteContext";
@@ -44,6 +44,17 @@ const MoonIcon = () => (
   </svg>
 );
 
+const MenuIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+  </svg>
+);
+const CloseIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+  </svg>
+);
+
 const NOW_ITEMS = [
   {
     label: "Building",
@@ -76,6 +87,8 @@ function writeCache(key, value) {
 const LandingPage = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const { allNotes, recentPosts, initialLoadDone } = useContext(NoteContext);
+
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   /* Photos: seed from cache instantly, refresh in background */
   const [recentPhotos, setRecentPhotos] = useState(() => readCache("sq2_recent_photos") || []);
@@ -110,35 +123,58 @@ const LandingPage = () => {
           <Link to="/" className="lp-nav-name">
             Tanvir R I
           </Link>
+
+          {/* Desktop links — hidden on mobile */}
+          <div className="lp-nav-right lp-nav-desktop">
+            <Link to="/home" className="lp-nav-link">Read</Link>
+            <Link to="/categories" className="lp-nav-link">Topics</Link>
+            <a href="#photography" className="lp-nav-link">Photos</a>
+            <a href="#now" className="lp-nav-link">Now</a>
+            <Link to="/my-notes" className="lp-nav-link">Write</Link>
+          </div>
+
+          {/* Right cluster: theme + burger */}
           <div className="lp-nav-right">
-            <Link to="/home" className="lp-nav-link">
-              Read
-            </Link>
-            <Link to="/categories" className="lp-nav-link">
-              Topics
-            </Link>
-            <a href="#photography" className="lp-nav-link">
-              Photos
-            </a>
-            <a href="#now" className="lp-nav-link">
-              Now
-            </a>
-            <Link to="/my-notes" className="lp-nav-link">
-              Write
-            </Link>
             <button
               className="lp-theme-btn"
               onClick={toggleTheme}
-              aria-label={
-                theme === "dark"
-                  ? "Switch to light mode"
-                  : "Switch to dark mode"
-              }
+              aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
             >
               {theme === "dark" ? <SunIcon /> : <MoonIcon />}
             </button>
+            <button
+              className="lp-burger"
+              onClick={() => setMobileOpen((s) => !s)}
+              aria-label="Menu"
+              aria-expanded={mobileOpen}
+            >
+              {mobileOpen ? <CloseIcon /> : <MenuIcon />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile drawer */}
+        {mobileOpen && (
+          <div className="lp-mobile-menu">
+            {[
+              { to: "/home", label: "Read", isLink: true },
+              { to: "/categories", label: "Topics", isLink: true },
+              { href: "#photography", label: "Photos" },
+              { href: "#now", label: "Now" },
+              { to: "/my-notes", label: "Write", isLink: true },
+            ].map((item) =>
+              item.isLink ? (
+                <Link key={item.label} to={item.to} className="lp-mobile-link" onClick={() => setMobileOpen(false)}>
+                  {item.label}
+                </Link>
+              ) : (
+                <a key={item.label} href={item.href} className="lp-mobile-link" onClick={() => setMobileOpen(false)}>
+                  {item.label}
+                </a>
+              )
+            )}
+          </div>
+        )}
       </nav>
 
       {/* ── Hero ── */}
