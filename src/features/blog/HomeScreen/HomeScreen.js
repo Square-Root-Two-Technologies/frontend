@@ -34,7 +34,7 @@ const HomeScreen = () => {
     <div style={{ maxWidth: 1200, margin: "0 auto", padding: "2rem 1.5rem" }}>
       <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "2rem" }} className="lg:grid-cols-[1fr_220px]">
 
-        <main>
+        <main style={{ minWidth: 0 }}>
           <FeaturedPosts />
 
           <div ref={tabAnchorRef} style={{ scrollMarginTop: "4rem" }}>

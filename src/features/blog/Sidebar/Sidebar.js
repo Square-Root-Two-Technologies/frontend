@@ -1,7 +1,20 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
+const host = process.env.REACT_APP_BACKEND || "http://localhost:5000";
+
 const Sidebar = ({ recentPosts = [] }) => {
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    fetch(`${host}/api/categories`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.success) setCategories(data.categories.slice(0, 10));
+      })
+      .catch(() => {});
+  }, []);
+
   const formatDate = (d) => {
     if (!d) return null;
     try { return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric" }); }
@@ -28,6 +41,35 @@ const Sidebar = ({ recentPosts = [] }) => {
 
   return (
     <aside>
+      {/* Topics */}
+      {categories.length > 0 && (
+        <div style={block}>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: "1rem" }}>
+            <p style={{ ...blockTitle, margin: 0 }}>Topics</p>
+            <Link to="/categories" style={{ fontSize: "0.75rem", color: "var(--text3)", textDecoration: "none", letterSpacing: "0.03em" }}
+              onMouseEnter={(e) => e.currentTarget.style.color = "var(--accent)"}
+              onMouseLeave={(e) => e.currentTarget.style.color = "var(--text3)"}>
+              All →
+            </Link>
+          </div>
+          <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexWrap: "wrap", gap: "0.375rem" }}>
+            {categories.map((cat) => (
+              <li key={cat._id}>
+                <Link
+                  to={`/category/${cat._id}`}
+                  style={{ fontSize: "0.75rem", color: "var(--text2)", textDecoration: "none", padding: "0.1875rem 0.5rem", border: "1px solid var(--border)", borderRadius: "2px", display: "inline-block", lineHeight: 1.6, transition: "color 0.15s, border-color 0.15s" }}
+                  onMouseEnter={(e) => { e.currentTarget.style.color = "var(--accent)"; e.currentTarget.style.borderColor = "var(--accent)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = "var(--text2)"; e.currentTarget.style.borderColor = "var(--border)"; }}
+                >
+                  {cat.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Recent posts */}
       {recentPosts.length > 0 && (
         <div style={block}>
           <p style={blockTitle}>Recent</p>

@@ -20,7 +20,7 @@ const NotesGrid = ({ notes, isFetching, hasMore, initialLoadDone, fetchNextBatch
 
   return (
     <div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "1rem", marginBottom: "1.5rem" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "1.25rem", marginBottom: "1.5rem" }}>
         {isFetching && !initialLoadDone
           ? Array(6).fill(null).map((_, i) => <BlogCard key={`skel-${i}`} isLoading />)
           : notes.map((note, i) => (

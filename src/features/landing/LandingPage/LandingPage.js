@@ -96,12 +96,18 @@ const LandingPage = () => {
             <Link to="/home" className="lp-nav-link">
               Read
             </Link>
+            <Link to="/categories" className="lp-nav-link">
+              Topics
+            </Link>
             <a href="#photography" className="lp-nav-link">
               Photos
             </a>
             <a href="#now" className="lp-nav-link">
               Now
             </a>
+            <Link to="/my-notes" className="lp-nav-link">
+              Write
+            </Link>
             <button
               className="lp-theme-btn"
               onClick={toggleTheme}

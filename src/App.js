@@ -18,6 +18,8 @@ import UserProfile from "./features/profile/UserProfile/UserProfile";
 import EditProfile from "./features/profile/EditProfile/EditProfile";
 import SearchResultsPage from "./features/search/SearchResultsPage/SearchResultsPage";
 import PhotosPage from "./features/gallery/PhotosPage";
+import CategoriesPage from "./features/blog/CategoriesPage/CategoriesPage";
+import CategoryPage from "./features/blog/CategoryPage/CategoryPage";
 
 /* useLocation must be called inside <Router>, so we extract the layout */
 function AppLayout() {
@@ -35,6 +37,8 @@ function AppLayout() {
           <Route path="/blog/:id" element={<SingleBlogPage />} />
           <Route path="/search" element={<SearchResultsPage />} />
           <Route path="/photos" element={<PhotosPage />} />
+          <Route path="/categories" element={<CategoriesPage />} />
+          <Route path="/category/:id" element={<CategoryPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route

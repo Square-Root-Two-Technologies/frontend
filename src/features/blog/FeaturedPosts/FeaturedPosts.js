@@ -48,7 +48,9 @@ const FeaturedPosts = () => {
           overflowX: "auto",
           paddingBottom: "0.75rem",
           scrollSnapType: "x mandatory",
-          scrollbarWidth: "none",
+          scrollbarWidth: "thin",
+          scrollbarColor: "var(--border) transparent",
+          minWidth: 0,
         }}
       >
         <style>{`.no-scroll::-webkit-scrollbar{display:none}`}</style>
