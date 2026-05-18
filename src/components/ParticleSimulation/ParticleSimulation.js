@@ -142,98 +142,93 @@ function SimulationCore({ speed, isAnimating, particleCount }) {
 function Controls({ isAnimating, speed, particleCount, onToggle, onSpeed, onCount }) {
   const [open, setOpen] = useState(false);
 
-  const panelStyle = {
+  const base = {
     position: "absolute",
     bottom: 12,
     right: 12,
     zIndex: 20,
-    background: "rgba(30,26,20,0.82)",
+    background: "rgba(30,26,20,0.85)",
     backdropFilter: "blur(8px)",
-    borderRadius: open ? 10 : "50%",
-    width: open ? 210 : 42,
-    height: open ? "auto" : 42,
-    overflow: "hidden",
-    transition: "width 0.18s ease, border-radius 0.18s ease",
-    boxShadow: "0 4px 20px rgba(0,0,0,0.4)",
+    boxShadow: "0 4px 20px rgba(0,0,0,0.45)",
     color: "#E5E7EB",
     fontFamily: "var(--font-sans)",
     fontSize: "0.8125rem",
   };
 
-  const iconBtnStyle = {
-    position: "absolute",
-    top: 0, left: 0,
-    width: 42, height: 42,
+  const gearBtn = {
+    width: 38, height: 38,
+    borderRadius: "50%",
     display: "flex", alignItems: "center", justifyContent: "center",
     background: "none", border: "none", color: "#E5E7EB",
-    cursor: "pointer", borderRadius: "50%", zIndex: 21,
-    fontSize: 16,
+    cursor: "pointer", fontSize: 17,
   };
 
   const labelStyle = { display: "flex", alignItems: "center", gap: 6, marginBottom: 6, fontWeight: 500, color: "#D1D5DB" };
   const sliderStyle = { width: "100%", cursor: "pointer", accentColor: "#C4865C" };
-  const smallBtnStyle = {
+  const smallBtn = {
     padding: "4px 10px", background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)",
     color: "#E5E7EB", borderRadius: 4, cursor: "pointer", fontSize: "0.75rem",
-    transition: "background 0.12s",
   };
 
+  if (!open) {
+    return (
+      <div style={{ ...base, borderRadius: "50%" }}>
+        <button style={gearBtn} onClick={() => setOpen(true)} aria-label="Open controls">⚙</button>
+      </div>
+    );
+  }
+
   return (
-    <div style={panelStyle}>
-      <button
-        style={iconBtnStyle}
-        onClick={() => open ? onToggle() : setOpen(true)}
-        onMouseEnter={(e) => { if (!open) setOpen(true); }}
-        aria-label={isAnimating ? "Pause" : "Play"}
-      >
-        {open
-          ? (isAnimating ? "⏸" : "▶")
-          : "⚙"}
-      </button>
+    <div style={{ ...base, borderRadius: 10, width: 210, padding: "12px 14px 14px" }}>
+      {/* Header row */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+        <button
+          style={{ ...smallBtn, display: "flex", alignItems: "center", gap: 6, padding: "4px 12px" }}
+          onClick={onToggle}
+          aria-label={isAnimating ? "Pause" : "Play"}
+        >
+          {isAnimating ? "⏸ Pause" : "▶ Play"}
+        </button>
+        <button
+          style={{ ...smallBtn, padding: "4px 10px", lineHeight: 1 }}
+          onClick={() => setOpen(false)}
+          aria-label="Close controls"
+        >
+          ✕
+        </button>
+      </div>
 
-      {open && (
-        <div style={{ padding: "52px 14px 14px" }}>
-          {/* Speed */}
-          <div style={{ marginBottom: 12 }}>
-            <div style={labelStyle}>
-              <span>⚡</span>
-              <span>Speed: {speed.toFixed(3)}</span>
-            </div>
-            <input
-              type="range"
-              min={0.001} max={0.05} step={0.001}
-              value={speed}
-              onChange={(e) => onSpeed(parseFloat(e.target.value))}
-              style={sliderStyle}
-            />
-          </div>
-
-          {/* Particles */}
-          <div style={{ marginBottom: 12 }}>
-            <div style={labelStyle}>
-              <span>●</span>
-              <span>Particles: {particleCount} / {MAX_PARTICLES}</span>
-            </div>
-            <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-              <button style={smallBtnStyle} disabled={particleCount <= 2}
-                onClick={() => onCount(particleCount - 1)} aria-label="Remove particle">−</button>
-              <div style={{ flex: 1, height: 4, background: "rgba(255,255,255,0.1)", borderRadius: 2 }}>
-                <div style={{ width: `${(particleCount / MAX_PARTICLES) * 100}%`, height: "100%", background: "#C4865C", borderRadius: 2, transition: "width 0.15s" }} />
-              </div>
-              <button style={smallBtnStyle} disabled={particleCount >= MAX_PARTICLES}
-                onClick={() => onCount(particleCount + 1)} aria-label="Add particle">+</button>
-            </div>
-          </div>
-
-          {/* Close */}
-          <button
-            onClick={() => setOpen(false)}
-            style={{ ...smallBtnStyle, width: "100%", textAlign: "center", marginTop: 4 }}
-          >
-            Close
-          </button>
+      {/* Speed */}
+      <div style={{ marginBottom: 12 }}>
+        <div style={labelStyle}>
+          <span>⚡</span>
+          <span>Speed: {speed.toFixed(3)}</span>
         </div>
-      )}
+        <input
+          type="range"
+          min={0.001} max={0.05} step={0.001}
+          value={speed}
+          onChange={(e) => onSpeed(parseFloat(e.target.value))}
+          style={sliderStyle}
+        />
+      </div>
+
+      {/* Particles */}
+      <div>
+        <div style={labelStyle}>
+          <span>●</span>
+          <span>Particles: {particleCount} / {MAX_PARTICLES}</span>
+        </div>
+        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+          <button style={smallBtn} disabled={particleCount <= 2}
+            onClick={() => onCount(particleCount - 1)} aria-label="Remove particle">−</button>
+          <div style={{ flex: 1, height: 4, background: "rgba(255,255,255,0.1)", borderRadius: 2 }}>
+            <div style={{ width: `${(particleCount / MAX_PARTICLES) * 100}%`, height: "100%", background: "#C4865C", borderRadius: 2, transition: "width 0.15s" }} />
+          </div>
+          <button style={smallBtn} disabled={particleCount >= MAX_PARTICLES}
+            onClick={() => onCount(particleCount + 1)} aria-label="Add particle">+</button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -258,7 +253,7 @@ const ParticleSimulation = () => {
   return (
     <div style={{ width: "100%", height: "100%", position: "relative" }}>
       <Canvas
-        camera={{ position: [0, 0, 30], fov: 60 }}
+        camera={{ position: [0, 0, 38], fov: 50 }}
         style={{ width: "100%", height: "100%" }}
         gl={{ antialias: true, alpha: false }}
       >
