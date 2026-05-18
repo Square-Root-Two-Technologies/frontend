@@ -65,19 +65,36 @@ const formatDate = (d) => {
   });
 };
 
+/* ── helpers ── */
+function readCache(key) {
+  try { return JSON.parse(localStorage.getItem(key)) || null; } catch { return null; }
+}
+function writeCache(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
+}
+
 const LandingPage = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
-  const { allNotes, recentPosts, initialLoadDone, isFetching } =
-    useContext(NoteContext);
-  const [recentPhotos, setRecentPhotos] = useState([]);
+  const { allNotes, recentPosts, initialLoadDone } = useContext(NoteContext);
+
+  /* Photos: seed from cache instantly, refresh in background */
+  const [recentPhotos, setRecentPhotos] = useState(() => readCache("sq2_recent_photos") || []);
+  const [photosLoaded, setPhotosLoaded] = useState(() => !!readCache("sq2_recent_photos"));
 
   const host = process.env.REACT_APP_BACKEND || "http://localhost:5000";
 
+  /* Stale-while-revalidate for photos — cache makes it instant on return visits */
   useEffect(() => {
     fetch(`${host}/api/photos/recent?limit=6`)
       .then((r) => r.json())
-      .then((data) => { if (data.success) setRecentPhotos(data.photos); })
-      .catch(() => {});
+      .then((data) => {
+        if (data.success && data.photos?.length) {
+          setRecentPhotos(data.photos);
+          writeCache("sq2_recent_photos", data.photos);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setPhotosLoaded(true));
   }, [host]);
 
   /* pick the 4 most recent posts to show in the writing section */
@@ -170,44 +187,18 @@ const LandingPage = () => {
             </Link>
           </div>
           <ul className="lp-article-list">
-            {!initialLoadDone && isFetching
-              ? Array(4)
-                  .fill(null)
-                  .map((_, i) => (
-                    <li key={i}>
-                      <div className="lp-article-item" style={{ opacity: 0.4 }}>
-                        <span
-                          className="lp-article-tag"
-                          style={{
-                            background: "var(--bg3)",
-                            borderRadius: 2,
-                            height: 12,
-                            width: 48,
-                            display: "block",
-                          }}
-                        />
-                        <div>
-                          <div
-                            style={{
-                              background: "var(--bg3)",
-                              height: 18,
-                              borderRadius: 2,
-                              width: "70%",
-                              marginBottom: 8,
-                            }}
-                          />
-                          <div
-                            style={{
-                              background: "var(--bg3)",
-                              height: 12,
-                              borderRadius: 2,
-                              width: "30%",
-                            }}
-                          />
-                        </div>
+            {!initialLoadDone && recentPosts.length === 0
+              ? Array(4).fill(null).map((_, i) => (
+                  <li key={i}>
+                    <div className="lp-article-item lp-shimmer-row">
+                      <span className="lp-shimmer" style={{ height: 12, width: 48, display: "block", borderRadius: 2 }} />
+                      <div>
+                        <div className="lp-shimmer" style={{ height: 18, borderRadius: 2, width: "70%", marginBottom: 8 }} />
+                        <div className="lp-shimmer" style={{ height: 11, borderRadius: 2, width: "30%" }} />
                       </div>
-                    </li>
-                  ))
+                    </div>
+                  </li>
+                ))
               : writingItems.map((note) => (
                   <li key={note._id}>
                     <Link to={`/blog/${note._id}`} className="lp-article-item">
@@ -274,15 +265,11 @@ const LandingPage = () => {
                     />
                   </Link>
                 ))
-              : Array.from({ length: 6 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="lp-photo-cell"
-                    aria-label={`Photo placeholder ${i + 1}`}
-                  >
-                    <div className="lp-photo-cell-placeholder" />
-                  </div>
-                ))
+              : !photosLoaded
+                ? Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} className="lp-photo-cell lp-shimmer" aria-hidden="true" />
+                  ))
+                : null
             }
           </div>
         </div>

@@ -26,7 +26,12 @@ const NoteState = (props) => {
   const [isInitialFeaturedLoading, setIsInitialFeaturedLoading] =
     useState(false);
   const [isFetchingMoreFeatured, setIsFetchingMoreFeatured] = useState(false);
-  const [recentPosts, setRecentPosts] = useState([]);
+  const [recentPosts, setRecentPosts] = useState(() => {
+    try {
+      const cached = localStorage.getItem("sq2_recent_posts");
+      return cached ? JSON.parse(cached) : [];
+    } catch { return []; }
+  });
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState(null);
@@ -460,6 +465,7 @@ const NoteState = (props) => {
         const json = await response.json();
         if (json.success) {
           setRecentPosts(json.notes);
+          try { localStorage.setItem("sq2_recent_posts", JSON.stringify(json.notes)); } catch {}
           console.log("Recent posts fetched:", json.notes.length);
         } else console.error("Failed to fetch recent posts:", json.error);
       } catch (error) {
@@ -651,16 +657,19 @@ const NoteState = (props) => {
     [host],
   );
 
-  // Initial data fetch
+  // Initial data fetch — ping first so Render wakes up, then fire real requests
   useEffect(() => {
     if (!initialFetchInitiated.current) {
-      console.log("NoteState: Running initial data fetches...");
-      fetchFeaturedNotesBatch(true);
-      fetchNextBatchOfNotes();
-      getRecentPosts();
       initialFetchInitiated.current = true;
+      fetch(`${host}/ping`, { method: "GET" })
+        .catch(() => {}) // ignore ping errors — just warming the server
+        .finally(() => {
+          fetchFeaturedNotesBatch(true);
+          fetchNextBatchOfNotes();
+          getRecentPosts();
+        });
     }
-  }, [fetchFeaturedNotesBatch, fetchNextBatchOfNotes, getRecentPosts]);
+  }, [host, fetchFeaturedNotesBatch, fetchNextBatchOfNotes, getRecentPosts]);
 
   const blogTypes = useMemo(() => {
     const types = new Set();
