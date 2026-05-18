@@ -144,8 +144,8 @@ const Navbar = () => {
                     gap: 6,
                   }}
                 >
-                  {currentUser.avatarUrl
-                    ? <img src={currentUser.avatarUrl} alt={currentUser.name} style={{ width: 26, height: 26, borderRadius: "50%", objectFit: "cover" }} onError={(e) => e.target.style.display = "none"} />
+                  {currentUser.profilePictureUrl
+                    ? <img src={currentUser.profilePictureUrl} alt={currentUser.name} style={{ width: 26, height: 26, borderRadius: "50%", objectFit: "cover" }} onError={(e) => e.target.style.display = "none"} />
                     : (
                       <span style={{ width: 26, height: 26, borderRadius: "50%", background: "var(--linen)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.6875rem", fontWeight: 600, color: "var(--text2)" }}>
                         {currentUser.name?.[0]?.toUpperCase() || "?"}

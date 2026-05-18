@@ -10,8 +10,6 @@ import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import MenuBar from "../EditorToolbar/MenuBar";
 
-const NOTE_TYPES = ["JavaScript", "Salesforce", "Sociology", "Life", "Technology", "Creative", "Tutorial", "News"];
-
 const inputStyle = {
   width: "100%",
   padding: "0.75rem 0",
@@ -31,11 +29,25 @@ const AddNote = () => {
 
   const [noteTitle, setNoteTitle] = useState("");
   const [noteTag, setNoteTag] = useState("");
-  const [noteType, setNoteType] = useState("");
+  const [categoryId, setCategoryId] = useState("");
   const [noteIsFeatured, setNoteIsFeatured] = useState(false);
   const [editorContent, setEditorContent] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+
+  const host = process.env.REACT_APP_BACKEND || "http://localhost:5000";
+
+  useEffect(() => {
+    fetch(`${host}/api/categories`)
+      .then((r) => r.json())
+      .then((data) => {
+        setCategories(Array.isArray(data) ? data : []);
+        setCategoriesLoading(false);
+      })
+      .catch(() => setCategoriesLoading(false));
+  }, [host]);
 
   const editor = useEditor({
     extensions: [
@@ -60,12 +72,12 @@ const AddNote = () => {
     setError("");
     if (!noteTitle || noteTitle.length < 3) { setError("Title must be at least 3 characters."); return; }
     if (!editorContent || editorContent === "<p></p>" || editor?.getText().trim().length < 5) { setError("Content must be at least 5 characters."); return; }
-    if (!noteType) { setError("Please select a type."); return; }
+    if (!categoryId) { setError("Please select a category."); return; }
 
     setIsLoading(true);
     try {
-      const noteToAdd = { title: noteTitle, description: editorContent, tag: noteTag || "General", type: noteType };
-      if (currentUser?.role === "admin") noteToAdd.isFeatured = noteIsFeatured;
+      const noteToAdd = { title: noteTitle, description: editorContent, tag: noteTag || "General", categoryId };
+      if (currentUser?.role === "admin" || currentUser?.role === "SuperAdmin") noteToAdd.isFeatured = noteIsFeatured;
       const response = await addNote(noteToAdd);
       if (response.success) navigate("/my-notes");
       else setError(response.message || "Failed to add note.");
@@ -113,22 +125,22 @@ const AddNote = () => {
           <EditorContent editor={editor} />
         </div>
 
-        {/* Type + Tag row */}
+        {/* Category + Tag row */}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
           <div>
-            <label className="field-label" htmlFor="type">Type *</label>
+            <label className="field-label" htmlFor="category">Category *</label>
             <select
-              id="type"
-              value={noteType}
-              onChange={(e) => setNoteType(e.target.value)}
+              id="category"
+              value={categoryId}
+              onChange={(e) => setCategoryId(e.target.value)}
               required
-              disabled={isLoading}
+              disabled={isLoading || categoriesLoading}
               style={{ ...inputStyle, cursor: "pointer" }}
               onFocus={(e) => e.target.style.borderBottomColor = "var(--accent)"}
               onBlur={(e) => e.target.style.borderBottomColor = "var(--border)"}
             >
-              <option value="" disabled>Select…</option>
-              {NOTE_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+              <option value="" disabled>{categoriesLoading ? "Loading…" : "Select…"}</option>
+              {categories.map((c) => <option key={c._id} value={c._id}>{c.name}</option>)}
             </select>
           </div>
           <div>
@@ -148,7 +160,7 @@ const AddNote = () => {
         </div>
 
         {/* Admin: featured */}
-        {currentUser?.role === "admin" && (
+        {(currentUser?.role === "admin" || currentUser?.role === "SuperAdmin") && (
           <label style={{ display: "flex", alignItems: "center", gap: "0.625rem", cursor: "pointer", fontSize: "0.875rem", color: "var(--text2)" }}>
             <input
               type="checkbox"

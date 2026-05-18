@@ -83,8 +83,8 @@ const BlogCard = React.forwardRef(({ note, isFeatured = false, isLoading = false
 
       {/* Meta row */}
       <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginTop: "0.5rem", fontSize: "0.8rem", color: "var(--text3)" }}>
-        {user?.avatarUrl
-          ? <img src={user.avatarUrl} alt={authorName} style={{ width: 20, height: 20, borderRadius: "50%", objectFit: "cover" }} onError={(e) => e.target.style.display = "none"} />
+        {user?.profilePictureUrl
+          ? <img src={user.profilePictureUrl} alt={authorName} style={{ width: 20, height: 20, borderRadius: "50%", objectFit: "cover" }} onError={(e) => e.target.style.display = "none"} />
           : <span style={{ width: 20, height: 20, borderRadius: "50%", background: "var(--bg3)", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: "0.625rem", color: "var(--text3)", flexShrink: 0 }}>{authorName[0]?.toUpperCase()}</span>
         }
         <span>{authorName}</span>

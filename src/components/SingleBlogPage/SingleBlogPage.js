@@ -1,5 +1,6 @@
 import React, { useEffect, useContext } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
+import DOMPurify from "dompurify";
 import NoteContext from "../../context/Notes/NoteContext";
 import UserContext from "../../context/user/UserContext";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
@@ -9,17 +10,17 @@ const formatDate = (d) =>
 
 const SingleBlogPage = () => {
   const { id } = useParams();
-  const { note, fetchNoteById, isFetching, error } = useContext(NoteContext);
+  const { note, getNoteById, isFetchingNote, singleNoteError } = useContext(NoteContext);
   const { currentUser, isUserLoading } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if ((!note || note._id !== id) && !isFetching) {
-      fetchNoteById(id);
+    if ((!note || note._id !== id) && !isFetchingNote) {
+      getNoteById(id);
     }
-  }, [id, fetchNoteById]); // eslint-disable-line
+  }, [id, getNoteById]); // eslint-disable-line
 
-  if (isFetching || isUserLoading || (!note && !error)) {
+  if (isFetchingNote || isUserLoading || (!note && !singleNoteError)) {
     return (
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}>
         <LoadingSpinner size="lg" />
@@ -27,15 +28,15 @@ const SingleBlogPage = () => {
     );
   }
 
-  if (error) {
+  if (singleNoteError) {
     return (
       <div style={{ maxWidth: 540, margin: "4rem auto", padding: "0 1.5rem", textAlign: "center" }}>
         <p style={{ fontFamily: "var(--font-serif)", fontSize: "1.25rem", color: "var(--text2)", marginBottom: "1.5rem", fontStyle: "italic" }}>
           Couldn't load this post.
         </p>
-        <p style={{ fontSize: "0.875rem", color: "var(--text3)", marginBottom: "1.5rem" }}>{error}</p>
+        <p style={{ fontSize: "0.875rem", color: "var(--text3)", marginBottom: "1.5rem" }}>{singleNoteError}</p>
         <div style={{ display: "flex", gap: "0.75rem", justifyContent: "center" }}>
-          <button className="btn-primary" onClick={() => fetchNoteById(id)}>Try again</button>
+          <button className="btn-primary" onClick={() => getNoteById(id)}>Try again</button>
           <Link to="/home" className="btn-secondary">← All posts</Link>
         </div>
       </div>
@@ -76,8 +77,8 @@ const SingleBlogPage = () => {
 
       {/* Meta */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem 1rem", alignItems: "center", paddingBottom: "1.5rem", borderBottom: "1px solid var(--border)", marginBottom: "2.5rem", fontSize: "0.875rem", color: "var(--text3)" }}>
-        {user?.avatarUrl
-          ? <img src={user.avatarUrl} alt={authorName} style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover" }} onError={(e) => e.target.style.display = "none"} />
+        {user?.profilePictureUrl
+          ? <img src={user.profilePictureUrl} alt={authorName} style={{ width: 28, height: 28, borderRadius: "50%", objectFit: "cover" }} onError={(e) => e.target.style.display = "none"} />
           : <span style={{ width: 28, height: 28, borderRadius: "50%", background: "var(--linen)", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: "0.6875rem", fontWeight: 600, color: "var(--text2)", flexShrink: 0 }}>{authorName[0]?.toUpperCase()}</span>
         }
         <span style={{ color: "var(--text2)" }}>{authorName}</span>
@@ -99,7 +100,7 @@ const SingleBlogPage = () => {
       <div
         style={{ fontFamily: "var(--font-sans)", fontSize: "1.0625rem", lineHeight: 1.8, color: "var(--text)" }}
         className="blog-content"
-        dangerouslySetInnerHTML={{ __html: description || "<p>No content available.</p>" }}
+        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(description || "<p>No content available.</p>") }}
       />
 
       {/* Bottom nav */}

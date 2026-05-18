@@ -17,7 +17,7 @@ const inputStyle = {
 
 const EditProfile = () => {
   const { currentUser, isUserLoading, updateUserProfile, getUserDetails } = useContext(UserContext);
-  const [formData, setFormData] = useState({ name: "", email: "" });
+  const [formData, setFormData] = useState({ name: "", country: "", city: "", about: "" });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -25,7 +25,12 @@ const EditProfile = () => {
 
   useEffect(() => {
     if (!currentUser && !isUserLoading) getUserDetails();
-    else if (currentUser) setFormData({ name: currentUser.name, email: currentUser.email });
+    else if (currentUser) setFormData({
+      name: currentUser.name || "",
+      country: currentUser.country || "",
+      city: currentUser.city || "",
+      about: currentUser.about && currentUser.about !== "about is empty" ? currentUser.about : "",
+    });
   }, [currentUser, isUserLoading, getUserDetails]);
 
   const handleSubmit = async (e) => {
@@ -34,7 +39,12 @@ const EditProfile = () => {
     setError("");
     setSuccess("");
     try {
-      const result = await updateUserProfile({ name: formData.name, email: formData.email });
+      const result = await updateUserProfile({
+        name: formData.name,
+        country: formData.country,
+        city: formData.city,
+        about: formData.about,
+      });
       if (result) {
         setSuccess("Profile updated.");
         setTimeout(() => navigate("/profile"), 1200);
@@ -45,6 +55,8 @@ const EditProfile = () => {
       setIsSubmitting(false);
     }
   };
+
+  const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   if (isUserLoading) return (
     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}>
@@ -79,31 +91,46 @@ const EditProfile = () => {
         <div>
           <label className="field-label" htmlFor="name">Name</label>
           <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            style={inputStyle}
-            required
-            disabled={isSubmitting}
+            type="text" id="name" name="name"
+            value={formData.name} onChange={onChange}
+            style={inputStyle} required disabled={isSubmitting}
             onFocus={(e) => e.target.style.borderBottomColor = "var(--accent)"}
             onBlur={(e) => e.target.style.borderBottomColor = "var(--border)"}
           />
         </div>
         <div>
-          <label className="field-label" htmlFor="email">Email</label>
+          <label className="field-label" htmlFor="country">Country</label>
           <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            style={inputStyle}
-            required
-            disabled={isSubmitting}
+            type="text" id="country" name="country"
+            value={formData.country} onChange={onChange}
+            style={inputStyle} disabled={isSubmitting}
+            placeholder="e.g. India"
             onFocus={(e) => e.target.style.borderBottomColor = "var(--accent)"}
             onBlur={(e) => e.target.style.borderBottomColor = "var(--border)"}
+          />
+        </div>
+        <div>
+          <label className="field-label" htmlFor="city">City</label>
+          <input
+            type="text" id="city" name="city"
+            value={formData.city} onChange={onChange}
+            style={inputStyle} disabled={isSubmitting}
+            placeholder="e.g. Kolkata"
+            onFocus={(e) => e.target.style.borderBottomColor = "var(--accent)"}
+            onBlur={(e) => e.target.style.borderBottomColor = "var(--border)"}
+          />
+        </div>
+        <div>
+          <label className="field-label" htmlFor="about">About</label>
+          <textarea
+            id="about" name="about"
+            value={formData.about} onChange={onChange}
+            rows={4}
+            style={{ ...inputStyle, resize: "vertical", padding: "0.75rem", background: "var(--bg2)", border: "1px solid var(--border)", borderRadius: "var(--radius)", lineHeight: 1.65 }}
+            disabled={isSubmitting}
+            placeholder="A few words about yourself…"
+            onFocus={(e) => e.target.style.borderColor = "var(--accent)"}
+            onBlur={(e) => e.target.style.borderColor = "var(--border)"}
           />
         </div>
 

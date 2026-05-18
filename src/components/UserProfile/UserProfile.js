@@ -35,8 +35,8 @@ const UserProfile = () => {
     <div style={{ maxWidth: 560, margin: "0 auto", padding: "3rem 1.5rem" }}>
       {/* Avatar */}
       <div style={{ display: "flex", alignItems: "center", gap: "1.25rem", marginBottom: "2.5rem" }}>
-        {currentUser.avatarUrl
-          ? <img src={currentUser.avatarUrl} alt={currentUser.name} style={{ width: 64, height: 64, borderRadius: "50%", objectFit: "cover" }} onError={(e) => e.target.style.display = "none"} />
+        {currentUser.profilePictureUrl
+          ? <img src={currentUser.profilePictureUrl} alt={currentUser.name} style={{ width: 64, height: 64, borderRadius: "50%", objectFit: "cover" }} onError={(e) => e.target.style.display = "none"} />
           : (
             <span style={{ width: 64, height: 64, borderRadius: "50%", background: "var(--bg3)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-serif)", fontSize: "1.5rem", color: "var(--text2)", flexShrink: 0 }}>
               {initials}
