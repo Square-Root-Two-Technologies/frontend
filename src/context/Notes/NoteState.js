@@ -127,43 +127,29 @@ const NoteState = (props) => {
     }
   }, [host, lastId, hasMore, isFetching, initialLoadDone]);
 
-  // Fetch a single note by its ID (securely, for editing)
+  // Fetch a single note by ID — public route, token optional (adds edit controls if logged in)
   const getNoteById = useCallback(
     async (id) => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        console.error("getNoteById: No token found.");
-        setSingleNoteError("Authentication required.");
-        setNote(null);
-        return null;
-      }
       if (!id) {
-        // Basic validation
-        console.error("getNoteById: Invalid ID provided:", id);
         setSingleNoteError("Invalid Note ID format.");
         setNote(null);
         setIsFetchingNote(false);
         return null;
       }
 
-      console.log(`Attempting to fetch note by ID: ${id}`);
       setIsFetchingNote(true);
-      setSingleNoteError(null); // Clear previous single note errors
-      setNote(null); // Clear previous note state
+      setSingleNoteError(null);
+      setNote(null);
+
+      const token = localStorage.getItem("token");
 
       try {
-        // **ASSUMPTION:** Using the existing /fetchNotesIrrespective/:id and relying on fetchuser middleware
-        // Ideally, this endpoint should *explicitly* check ownership/admin rights.
-        // If you create a new dedicated endpoint like /api/notes/note/:id, update the URL below.
+        const headers = { "Content-Type": "application/json" };
+        if (token) headers["auth-token"] = token;
+
         const response = await fetch(
           `${host}/api/notes/fetchNotesIrrespective/${id}`,
-          {
-            method: "GET", // Changed to GET as per standard REST for fetching by ID
-            headers: {
-              "Content-Type": "application/json",
-              "auth-token": token, // Sending token for authentication
-            },
-          },
+          { method: "GET", headers },
         );
 
         const data = await response.json();
