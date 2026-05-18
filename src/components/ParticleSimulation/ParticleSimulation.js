@@ -43,7 +43,7 @@ function SceneBackground({ color }) {
 }
 
 /* Core physics + render loop */
-function SimulationCore({ speed, isAnimating, particleCount }) {
+function SimulationCore({ speed, isAnimating, particleCount, wireColor, labelColor }) {
   const particles = useRef(generateParticles(particleCount));
   const meshRefs = useRef([]);
   const [lines, setLines] = useState([]);
@@ -103,7 +103,7 @@ function SimulationCore({ speed, isAnimating, particleCount }) {
     <>
       <mesh>
         <boxGeometry args={[BOX_SIZE * 2, BOX_SIZE * 2, BOX_SIZE * 2]} />
-        <meshBasicMaterial color="#A8A29E" wireframe transparent opacity={0.2} />
+        <meshBasicMaterial color={wireColor} wireframe transparent opacity={0.2} />
       </mesh>
 
       {particles.current.map((p, idx) => p && (
@@ -113,11 +113,11 @@ function SimulationCore({ speed, isAnimating, particleCount }) {
           <Text
             position={[PARTICLE_RADIUS + 0.1, PARTICLE_RADIUS + 0.1, 0]}
             fontSize={0.2}
-            color="#E5E7EB"
+            color={labelColor}
             anchorX="left"
             anchorY="bottom"
             outlineWidth={0.01}
-            outlineColor="#000000"
+            outlineColor={wireColor}
           >
             {p.name}
           </Text>
@@ -128,7 +128,7 @@ function SimulationCore({ speed, isAnimating, particleCount }) {
         <Line
           key={i}
           points={[line.start, line.end]}
-          color="#A8A29E"
+          color={wireColor}
           lineWidth={Math.max(0.5, line.strength * 0.1)}
           opacity={0.5}
           transparent
@@ -240,10 +240,9 @@ const ParticleSimulation = () => {
   const [particleCount, setParticleCount] = useState(5);
   const { theme } = useContext(ThemeContext);
 
-  const bgColor = useMemo(
-    () => (theme === "dark" ? "#13110E" : "#F0EDE8"),
-    [theme],
-  );
+  const bgColor    = useMemo(() => theme === "dark" ? "#13110E" : "#F7F4EF", [theme]);
+  const wireColor  = useMemo(() => theme === "dark" ? "#57534E" : "#C4B89A", [theme]);
+  const labelColor = useMemo(() => theme === "dark" ? "#A8A29E" : "#6B6560", [theme]);
 
   const handleCount = useCallback(
     (n) => setParticleCount(Math.min(MAX_PARTICLES, Math.max(2, n))),
@@ -266,6 +265,8 @@ const ParticleSimulation = () => {
           isAnimating={isAnimating}
           speed={speed}
           particleCount={particleCount}
+          wireColor={wireColor}
+          labelColor={labelColor}
         />
         <OrbitControls enablePan enableZoom enableRotate />
       </Canvas>
