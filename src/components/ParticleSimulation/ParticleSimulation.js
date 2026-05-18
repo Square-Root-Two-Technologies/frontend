@@ -206,7 +206,7 @@ function Controls({ isAnimating, speed, particleCount, onToggle, onSpeed, onCoun
         </div>
         <input
           type="range"
-          min={0.001} max={0.05} step={0.001}
+          min={0.001} max={0.1} step={0.001}
           value={speed}
           onChange={(e) => onSpeed(parseFloat(e.target.value))}
           style={sliderStyle}
@@ -236,7 +236,7 @@ function Controls({ isAnimating, speed, particleCount, onToggle, onSpeed, onCoun
 /* ── Main export ── */
 const ParticleSimulation = () => {
   const [isAnimating, setIsAnimating] = useState(true);
-  const [speed, setSpeed] = useState(0.01);
+  const [speed, setSpeed] = useState(0.05);
   const [particleCount, setParticleCount] = useState(5);
   const { theme } = useContext(ThemeContext);
 
