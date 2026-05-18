@@ -62,7 +62,7 @@ const EditNote = () => {
     fetch(`${host}/api/categories`)
       .then((r) => r.json())
       .then((data) => {
-        setCategories(Array.isArray(data) ? data : []);
+        setCategories(Array.isArray(data) ? data : (data?.categories || []));
         setCategoriesLoading(false);
       })
       .catch(() => setCategoriesLoading(false));

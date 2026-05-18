@@ -162,18 +162,25 @@ test.describe('Auth (public)', () => {
   });
 
   test('/my-notes redirects to /login when logged out', async ({ page }) => {
+    // Must navigate to the app origin first so localStorage.removeItem works on localhost:3000
+    await page.goto('/');
+    await page.evaluate(() => localStorage.removeItem('token'));
     await page.goto('/my-notes');
-    await expect(page).toHaveURL(/\/login/);
+    await expect(page).toHaveURL(/\/login/, { timeout: 8000 });
   });
 
   test('/add-note redirects to /login when logged out', async ({ page }) => {
+    await page.goto('/');
+    await page.evaluate(() => localStorage.removeItem('token'));
     await page.goto('/add-note');
-    await expect(page).toHaveURL(/\/login/);
+    await expect(page).toHaveURL(/\/login/, { timeout: 8000 });
   });
 
   test('/profile redirects to /login when logged out', async ({ page }) => {
+    await page.goto('/');
+    await page.evaluate(() => localStorage.removeItem('token'));
     await page.goto('/profile');
-    await expect(page).toHaveURL(/\/login/);
+    await expect(page).toHaveURL(/\/login/, { timeout: 8000 });
   });
 
   test('wrong credentials shows error', async ({ page }) => {

@@ -106,8 +106,18 @@ test.describe('Add Note form', () => {
   test('category dropdown loads options from API', async ({ page }) => {
     await page.goto('/add-note');
     if (!(await requireAuth(page))) return;
-    const select = page.locator('select').first();
-    await expect(select).toBeVisible({ timeout: 10000 });
+    const select = page.locator('select#category');
+    await select.scrollIntoViewIfNeeded();
+    // Render free tier can be slow — wait up to 30s for at least one real option
+    await page.waitForFunction(
+      () => {
+        const sel = document.querySelector('select#category');
+        if (!sel) return false;
+        // More than 1 option means real data loaded (placeholder is 1 disabled option)
+        return (sel as HTMLSelectElement).options.length > 1;
+      },
+      { timeout: 30000 }
+    );
     const count = await select.locator('option').count();
     expect(count).toBeGreaterThan(1);
   });
@@ -124,7 +134,9 @@ test.describe('Add Note form', () => {
   test('empty title prevents submission (stays on /add-note)', async ({ page }) => {
     await page.goto('/add-note');
     if (!(await requireAuth(page))) return;
-    await page.getByRole('button', { name: /save|publish|add|create/i }).click();
+    const publishBtn = page.getByRole('button', { name: /^publish$/i });
+    await publishBtn.scrollIntoViewIfNeeded();
+    await publishBtn.click();
     await expect(page).toHaveURL(/\/add-note/);
   });
 });
@@ -140,15 +152,30 @@ test.describe('Note CRUD', () => {
     if (!(await requireAuth(page))) return;
 
     // Fill title
-    await page.getByPlaceholder(/title/i).fill(UNIQUE_TITLE);
+    await page.getByPlaceholder(/give your post a title/i).fill(UNIQUE_TITLE);
 
     // Fill editor
     const editor = page.locator('.ProseMirror').first();
     await editor.click();
     await editor.type('Created by Playwright automation test.');
 
-    // Submit
-    await page.getByRole('button', { name: /save|publish|add|create/i }).click();
+    // Select a category — scroll into view and wait for options to load from API
+    const select = page.locator('select#category');
+    await select.scrollIntoViewIfNeeded();
+    // Render free tier cold start can take up to 30s
+    await page.waitForFunction(
+      () => {
+        const sel = document.querySelector('select#category');
+        return sel ? (sel as HTMLSelectElement).options.length > 1 : false;
+      },
+      { timeout: 30000 }
+    );
+    await select.selectOption({ index: 1 }); // pick first real option
+
+    // Publish
+    const publishBtn = page.getByRole('button', { name: /^publish$/i });
+    await publishBtn.scrollIntoViewIfNeeded();
+    await publishBtn.click();
     await page.waitForURL((url) => !url.pathname.includes('/add-note'), { timeout: 15000 });
 
     // Navigate to My Notes and find the new post
@@ -156,11 +183,10 @@ test.describe('Note CRUD', () => {
     await page.waitForTimeout(3000);
     await expect(page.locator(`text=${UNIQUE_TITLE}`).first()).toBeVisible({ timeout: 10000 });
 
-    // Delete it — keep DB clean
+    // Delete it to keep DB clean
     const card = page.locator('div').filter({ hasText: UNIQUE_TITLE }).first();
-    const deleteBtn = card.getByRole('button', { name: /delete/i });
+    const deleteBtn = card.getByRole('button', { name: /^delete$/i });
     if (await deleteBtn.isVisible()) {
-      // Handle window.confirm
       page.on('dialog', (dialog) => dialog.accept());
       await deleteBtn.click();
       await page.waitForTimeout(2000);
