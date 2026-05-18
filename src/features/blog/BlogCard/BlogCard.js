@@ -18,14 +18,11 @@ const SkeletonCard = React.forwardRef(({ hero }, ref) => (
     padding: hero ? "2rem 2.5rem" : "1.375rem 1.5rem",
     display: "flex", flexDirection: "column", gap: "0.75rem",
   }}>
-    <div style={{ width: "18%", height: 10, background: "var(--bg3)", borderRadius: 2 }} />
-    <div style={{ width: hero ? "70%" : "88%", height: hero ? 28 : 20, background: "var(--bg3)", borderRadius: 2 }} />
-    {hero && <div style={{ width: "92%", height: 16, background: "var(--bg3)", borderRadius: 2 }} />}
-    <div style={{ width: "55%", height: 16, background: "var(--bg3)", borderRadius: 2 }} />
-    <div style={{ marginTop: "auto", display: "flex", gap: 8, alignItems: "center" }}>
-      <div style={{ width: 22, height: 22, borderRadius: "50%", background: "var(--bg3)" }} />
-      <div style={{ width: "30%", height: 10, background: "var(--bg3)", borderRadius: 2 }} />
-    </div>
+    <div className="shimmer" style={{ width: "18%", height: 10, borderRadius: 2 }} />
+    <div className="shimmer" style={{ width: hero ? "70%" : "88%", height: hero ? 28 : 20, borderRadius: 2 }} />
+    {hero && <div className="shimmer" style={{ width: "92%", height: 16, borderRadius: 2 }} />}
+    {hero && <div className="shimmer" style={{ width: "75%", height: 16, borderRadius: 2 }} />}
+    <div className="shimmer" style={{ width: "55%", height: 12, borderRadius: 2, marginTop: 4 }} />
   </article>
 ));
 
@@ -35,23 +32,32 @@ const HeroCard = React.forwardRef(({ note }, ref) => {
   const authorName = user?.name || "Unknown";
   const label = type || tag;
   const excerpt = stripHtml(description);
-  const truncated = excerpt.length > 220 ? excerpt.slice(0, 220) + "…" : excerpt;
+  const truncated = excerpt.length > 260 ? excerpt.slice(0, 260) + "…" : excerpt;
 
   return (
-    <article
+    <Link
       ref={ref}
+      to={`/blog/${_id}`}
       style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "0.625rem",
         background: "var(--bg2)",
         border: "1px solid var(--border)",
         borderRadius: "var(--radius)",
         padding: "2rem 2.5rem",
-        display: "flex",
-        flexDirection: "column",
-        gap: "0.625rem",
-        transition: "box-shadow 0.2s ease-out",
+        textDecoration: "none",
+        color: "inherit",
+        transition: "box-shadow 0.18s ease-out, border-color 0.18s ease-out",
       }}
-      onMouseEnter={(e) => e.currentTarget.style.boxShadow = "var(--shadow-md)"}
-      onMouseLeave={(e) => e.currentTarget.style.boxShadow = "none"}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.boxShadow = "var(--shadow-md)";
+        e.currentTarget.style.borderColor = "var(--linen)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.boxShadow = "none";
+        e.currentTarget.style.borderColor = "var(--border)";
+      }}
     >
       {label && (
         <span style={{ fontSize: "0.6875rem", fontWeight: 600, letterSpacing: "0.09em", textTransform: "uppercase", color: "var(--accent)" }}>
@@ -59,15 +65,16 @@ const HeroCard = React.forwardRef(({ note }, ref) => {
         </span>
       )}
 
-      <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "clamp(1.5rem, 3vw, 2.125rem)", fontWeight: 400, color: "var(--text)", lineHeight: 1.15, margin: 0, letterSpacing: "-0.01em" }}>
-        <Link
-          to={`/blog/${_id}`}
-          style={{ textDecoration: "none", color: "inherit" }}
-          onMouseEnter={(e) => e.currentTarget.style.textDecorationColor = "var(--accent)"}
-          onMouseLeave={(e) => e.currentTarget.style.textDecorationColor = "transparent"}
-        >
-          {title || "Untitled"}
-        </Link>
+      <h2 style={{
+        fontFamily: "var(--font-serif)",
+        fontSize: "clamp(1.5rem, 3vw, 2.125rem)",
+        fontWeight: 400,
+        color: "var(--text)",
+        lineHeight: 1.15,
+        margin: 0,
+        letterSpacing: "-0.01em",
+      }}>
+        {title || "Untitled"}
       </h2>
 
       {truncated && (
@@ -88,16 +95,8 @@ const HeroCard = React.forwardRef(({ note }, ref) => {
         {readTimeMinutes && (
           <><span style={{ opacity: 0.35 }}>·</span><span>{readTimeMinutes} min read</span></>
         )}
-        <Link
-          to={`/blog/${_id}`}
-          style={{ marginLeft: "auto", color: "var(--accent)", textDecoration: "none", fontSize: "0.875rem", fontWeight: 500, letterSpacing: "0.01em" }}
-          onMouseEnter={(e) => e.currentTarget.style.opacity = "0.7"}
-          onMouseLeave={(e) => e.currentTarget.style.opacity = "1"}
-        >
-          Read →
-        </Link>
       </div>
-    </article>
+    </Link>
   );
 });
 
@@ -114,20 +113,29 @@ const BlogCard = React.forwardRef(({ note, hero = false, isLoading = false }, re
   const truncated = excerpt.length > 130 ? excerpt.slice(0, 130) + "…" : excerpt;
 
   return (
-    <article
+    <Link
       ref={ref}
+      to={`/blog/${_id}`}
       style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "0.375rem",
         background: "var(--bg2)",
         border: "1px solid var(--border)",
         borderRadius: "var(--radius)",
         padding: "1.375rem 1.5rem",
-        display: "flex",
-        flexDirection: "column",
-        gap: "0.375rem",
-        transition: "box-shadow 0.2s ease-out",
+        textDecoration: "none",
+        color: "inherit",
+        transition: "box-shadow 0.18s ease-out, border-color 0.18s ease-out",
       }}
-      onMouseEnter={(e) => e.currentTarget.style.boxShadow = "var(--shadow-md)"}
-      onMouseLeave={(e) => e.currentTarget.style.boxShadow = "none"}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.boxShadow = "var(--shadow-md)";
+        e.currentTarget.style.borderColor = "var(--linen)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.boxShadow = "none";
+        e.currentTarget.style.borderColor = "var(--border)";
+      }}
     >
       {label && (
         <span style={{ fontSize: "0.6875rem", fontWeight: 600, letterSpacing: "0.09em", textTransform: "uppercase", color: "var(--accent)", marginBottom: "0.125rem" }}>
@@ -135,15 +143,15 @@ const BlogCard = React.forwardRef(({ note, hero = false, isLoading = false }, re
         </span>
       )}
 
-      <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "1.1875rem", fontWeight: 400, color: "var(--text)", lineHeight: 1.25, margin: 0 }}>
-        <Link
-          to={`/blog/${_id}`}
-          style={{ textDecoration: "none", color: "inherit", borderBottom: "1px solid transparent", transition: "border-color 0.2s" }}
-          onMouseEnter={(e) => e.currentTarget.style.borderBottomColor = "var(--accent)"}
-          onMouseLeave={(e) => e.currentTarget.style.borderBottomColor = "transparent"}
-        >
-          {title || "Untitled"}
-        </Link>
+      <h2 style={{
+        fontFamily: "var(--font-serif)",
+        fontSize: "1.1875rem",
+        fontWeight: 400,
+        color: "var(--text)",
+        lineHeight: 1.25,
+        margin: 0,
+      }}>
+        {title || "Untitled"}
       </h2>
 
       {truncated && (
@@ -160,11 +168,8 @@ const BlogCard = React.forwardRef(({ note, hero = false, isLoading = false }, re
         <span>{authorName}</span>
         {formatDate(date) && <><span style={{ opacity: 0.35 }}>·</span><time>{formatDate(date)}</time></>}
         {readTimeMinutes && <><span style={{ opacity: 0.35 }}>·</span><span>{readTimeMinutes} min</span></>}
-        <Link to={`/blog/${_id}`} style={{ marginLeft: "auto", color: "var(--accent)", textDecoration: "none", fontSize: "0.8rem", fontWeight: 500 }}>
-          Read →
-        </Link>
       </div>
-    </article>
+    </Link>
   );
 });
 

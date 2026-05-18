@@ -112,7 +112,7 @@ const SingleBlogPage = () => {
       <ReadingProgress />
 
       {/* ── Outer shell: constrain to readable measure ── */}
-      <div style={{ maxWidth: 720, margin: "0 auto", padding: "2.5rem 1.5rem 5rem" }}>
+      <div style={{ maxWidth: 720, margin: "0 auto", padding: "clamp(1.25rem, 4vw, 2.5rem) 1.25rem 5rem" }}>
 
         {/* ── Breadcrumb ── */}
         <nav style={{ fontSize: "0.8125rem", color: "var(--text3)", display: "flex", alignItems: "center", flexWrap: "wrap", gap: "0.25rem", marginBottom: "2rem" }}>

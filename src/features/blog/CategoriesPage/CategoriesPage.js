@@ -99,7 +99,7 @@ const CategoriesPage = () => {
       )}
 
       {!loading && !error && tree.length > 0 && (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "1.25rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(260px, 100%), 1fr))", gap: "1.25rem" }}>
           {tree.map((cat) => (
             <CategoryCard key={cat._id} cat={cat} />
           ))}

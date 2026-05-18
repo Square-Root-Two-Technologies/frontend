@@ -152,7 +152,7 @@ const CategoryPage = () => {
       )}
 
       {isLoading ? (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "1.25rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(260px, 100%), 1fr))", gap: "1.25rem" }}>
           {Array(6).fill(null).map((_, i) => <BlogCard key={i} isLoading />)}
         </div>
       ) : notes.length === 0 && initialDone ? (
@@ -160,7 +160,7 @@ const CategoryPage = () => {
           No posts in this topic yet.
         </p>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "1.25rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(260px, 100%), 1fr))", gap: "1.25rem" }}>
           {notes.map((note, i) => (
             <BlogCard
               key={note._id}

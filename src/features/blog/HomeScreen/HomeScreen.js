@@ -31,7 +31,7 @@ const HomeScreen = () => {
   }, [activeTab]);
 
   return (
-    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "2.5rem 1.5rem 4rem" }}>
+    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "clamp(1.25rem, 4vw, 2.5rem) 1.25rem 4rem" }}>
       {/* Page header */}
       <div style={{ marginBottom: "2.5rem", borderBottom: "1px solid var(--border)", paddingBottom: "1.5rem" }}>
         <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "2rem", fontWeight: 400, color: "var(--text)", margin: 0, letterSpacing: "-0.01em" }}>
