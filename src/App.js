@@ -1,22 +1,22 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
-import HomeScreen from "./components/HomeScreen/HomeScreen";
-import LandingPage from "./components/LandingPage/LandingPage";
-import BlogSpace from "./components/BlogSpace/BlogSpace";
-import SingleBlogPage from "./components/SingleBlogPage/SingleBlogPage";
-import Login from "./components/Login/Login";
-import Signup from "./components/Signup/Signup";
-import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
-import MyNotesPage from "./components/MyNotesPage/MyNotesPage";
+import HomeScreen from "./features/blog/HomeScreen/HomeScreen";
+import LandingPage from "./features/landing/LandingPage/LandingPage";
+import BlogSpace from "./features/blog/BlogSpace/BlogSpace";
+import SingleBlogPage from "./features/blog/SingleBlogPage/SingleBlogPage";
+import Login from "./features/auth/Login/Login";
+import Signup from "./features/auth/Signup/Signup";
+import ProtectedRoute from "./features/auth/ProtectedRoute/ProtectedRoute";
+import MyNotesPage from "./features/blog/MyNotesPage/MyNotesPage";
 import NoteState from "./context/Notes/NoteState";
 import UserState from "./context/user/UserState";
 import ThemeProvider from "./context/ThemeProvider/ThemeProvider";
-import AddNote from "./components/AddNote/AddNote";
-import EditNote from "./components/EditNote/EditNote";
-import UserProfile from "./components/UserProfile/UserProfile";
-import EditProfile from "./components/EditProfile/EditProfile";
-import SearchResultsPage from "./components/SearchResultsPage/SearchResultsPage";
+import AddNote from "./features/blog/AddNote/AddNote";
+import EditNote from "./features/blog/EditNote/EditNote";
+import UserProfile from "./features/profile/UserProfile/UserProfile";
+import EditProfile from "./features/profile/EditProfile/EditProfile";
+import SearchResultsPage from "./features/search/SearchResultsPage/SearchResultsPage";
 
 /* useLocation must be called inside <Router>, so we extract the layout */
 function AppLayout() {
