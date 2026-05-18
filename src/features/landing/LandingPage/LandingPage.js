@@ -65,7 +65,7 @@ const NOW_ITEMS = [
     value: "The Timeless Way of Building · Christopher Alexander",
   },
   { label: "Listening", value: "Four Tet, Burial, Jamie xx" },
-  { label: "Location", value: "Dhaka → somewhere warmer" },
+  { label: "Location", value: "Hyderabad, India" },
 ];
 
 const formatDate = (d) => {
@@ -192,7 +192,7 @@ const LandingPage = () => {
               </h1>
               <p className="lp-hero-desc">
                 Writing about building software, the texture of ideas, and what
-                it feels like to make things carefully. Based in Kolkata, India,
+                it feels like to make things carefully. Based in Hyderabad, India,
                 shipping slowly on purpose.
               </p>
               <div className="lp-hero-meta">
