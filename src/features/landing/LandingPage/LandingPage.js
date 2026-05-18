@@ -68,6 +68,16 @@ const LandingPage = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const { allNotes, recentPosts, initialLoadDone, isFetching } =
     useContext(NoteContext);
+  const [recentPhotos, setRecentPhotos] = useState([]);
+
+  const host = process.env.REACT_APP_BACKEND || "http://localhost:5000";
+
+  useEffect(() => {
+    fetch(`${host}/api/photos/recent?limit=6`)
+      .then((r) => r.json())
+      .then((data) => { if (data.success) setRecentPhotos(data.photos); })
+      .catch(() => {});
+  }, [host]);
 
   /* pick the 4 most recent posts to show in the writing section */
   const writingItems = (
@@ -234,17 +244,37 @@ const LandingPage = () => {
             <h2 className="lp-section-title" id="photos-heading">
               Photography
             </h2>
+            <Link to="/photos" className="lp-section-all">
+              All photos →
+            </Link>
           </div>
           <div className="lp-photo-grid">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div
-                key={i}
-                className="lp-photo-cell"
-                aria-label={`Photo ${i + 1}`}
-              >
-                <div className="lp-photo-cell-placeholder" />
-              </div>
-            ))}
+            {recentPhotos.length > 0
+              ? recentPhotos.map((photo) => (
+                  <Link
+                    key={photo._id}
+                    to="/photos"
+                    className="lp-photo-cell"
+                    aria-label={photo.title || "Photo"}
+                  >
+                    <img
+                      src={photo.url}
+                      alt={photo.title || photo.caption || "Photo"}
+                      loading="lazy"
+                      style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", borderRadius: "var(--radius)" }}
+                    />
+                  </Link>
+                ))
+              : Array.from({ length: 6 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="lp-photo-cell"
+                    aria-label={`Photo placeholder ${i + 1}`}
+                  >
+                    <div className="lp-photo-cell-placeholder" />
+                  </div>
+                ))
+            }
           </div>
         </div>
       </section>
@@ -280,6 +310,9 @@ const LandingPage = () => {
           <nav className="lp-footer-links" aria-label="Footer">
             <Link to="/home" className="lp-footer-link">
               Writing
+            </Link>
+            <Link to="/photos" className="lp-footer-link">
+              Photos
             </Link>
             <Link to="/login" className="lp-footer-link">
               Sign in

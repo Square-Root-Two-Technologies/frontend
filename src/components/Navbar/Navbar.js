@@ -91,6 +91,7 @@ const Navbar = () => {
         {/* Desktop center links */}
         <div className="hidden sm:flex items-center gap-7">
           <NavLink to="/home" className={navLinkClass}>Read</NavLink>
+          <NavLink to="/photos" className={navLinkClass}>Photos</NavLink>
           <NavLink to="/my-notes" className={navLinkClass}>Write</NavLink>
         </div>
 
@@ -226,6 +227,7 @@ const Navbar = () => {
           <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             {[
               { to: "/home", label: "Read" },
+              { to: "/photos", label: "Photos" },
               { to: "/my-notes", label: "Write" },
             ].map(({ to, label }) => (
               <NavLink key={to} to={to} className={navLinkClass} onClick={() => setIsMobileOpen(false)}
