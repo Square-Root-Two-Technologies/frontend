@@ -6,10 +6,10 @@ const Tabs = ({ activeTab, setActiveTab, types = [] }) => {
 
   return (
     <nav
-      style={{ marginBottom: "1.5rem", overflowX: "auto", whiteSpace: "nowrap", borderBottom: "1px solid var(--border)" }}
-      aria-label="Filter by type"
+      style={{ marginBottom: "1.75rem", overflowX: "auto", whiteSpace: "nowrap", borderBottom: "1px solid var(--border)" }}
+      aria-label="Filter posts by type"
     >
-      <ul style={{ display: "flex", gap: "0", margin: 0, padding: 0, listStyle: "none" }}>
+      <ul style={{ display: "flex", gap: 0, margin: 0, padding: 0, listStyle: "none" }}>
         {tabOrder.map((type) => {
           const active = activeTab === type;
           return (
@@ -18,19 +18,21 @@ const Tabs = ({ activeTab, setActiveTab, types = [] }) => {
                 onClick={() => setActiveTab(type)}
                 aria-current={active ? "page" : undefined}
                 style={{
-                  padding: "0.75rem 1rem",
+                  padding: "0.625rem 1.125rem",
                   fontSize: "0.8125rem",
                   fontFamily: "var(--font-sans)",
-                  fontWeight: active ? 500 : 400,
-                  color: active ? "var(--accent)" : "var(--text3)",
+                  fontWeight: active ? 600 : 400,
+                  color: active ? "var(--text)" : "var(--text3)",
                   background: "none",
                   border: "none",
-                  borderBottom: active ? "2px solid var(--accent)" : "2px solid transparent",
+                  borderBottom: `2px solid ${active ? "var(--accent)" : "transparent"}`,
                   cursor: "pointer",
-                  transition: "color var(--transition), border-color var(--transition)",
+                  transition: "color 0.15s, border-color 0.15s",
                   marginBottom: -1,
                   letterSpacing: active ? 0 : "0.01em",
                 }}
+                onMouseEnter={(e) => { if (!active) e.currentTarget.style.color = "var(--text2)"; }}
+                onMouseLeave={(e) => { if (!active) e.currentTarget.style.color = "var(--text3)"; }}
               >
                 {type}
               </button>

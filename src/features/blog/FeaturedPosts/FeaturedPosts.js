@@ -12,15 +12,12 @@ const FeaturedPosts = () => {
   } = useContext(NoteContext);
 
   const observer = useRef();
-
   const lastRef = useCallback(
     (node) => {
       if (isInitialFeaturedLoading || isFetchingMoreFeatured || !hasMoreFeatured) return;
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting && hasMoreFeatured) fetchFeaturedNotesBatch();
-        },
+        (entries) => { if (entries[0].isIntersecting) fetchFeaturedNotesBatch(); },
         { threshold: 0.8 },
       );
       if (node) observer.current.observe(node);
@@ -30,52 +27,51 @@ const FeaturedPosts = () => {
 
   if (!isInitialFeaturedLoading && featuredNotes.length === 0) return null;
 
+  const [hero, ...rest] = featuredNotes;
+  const secondary = rest.slice(0, 2);
+
   return (
     <section style={{ marginBottom: "3rem" }}>
-      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: "1.25rem" }}>
-        <h2 style={{ fontFamily: "var(--font-serif)", fontSize: "1.5rem", fontWeight: 400, color: "var(--text)", margin: 0 }}>
+      {/* Section label */}
+      <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1.25rem" }}>
+        <span style={{ fontSize: "0.6875rem", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--text3)" }}>
           Featured
-        </h2>
-        <span style={{ fontSize: "0.75rem", color: "var(--text3)", letterSpacing: "0.04em" }}>
-          {featuredNotes.length} post{featuredNotes.length !== 1 ? "s" : ""}
         </span>
+        <div style={{ flex: 1, height: 1, background: "var(--border)" }} />
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          gap: "1rem",
-          overflowX: "auto",
-          paddingBottom: "0.75rem",
-          scrollSnapType: "x mandatory",
-          scrollbarWidth: "thin",
-          scrollbarColor: "var(--border) transparent",
-          minWidth: 0,
-        }}
-      >
-        <style>{`.no-scroll::-webkit-scrollbar{display:none}`}</style>
-        {isInitialFeaturedLoading
-          ? Array(3).fill(null).map((_, i) => (
-              <div key={i} style={{ width: 280, flexShrink: 0, scrollSnapAlign: "start" }}>
-                <BlogCard isLoading />
-              </div>
-            ))
-          : featuredNotes.map((note, i) => (
-              <div
-                key={note._id}
-                ref={i === featuredNotes.length - 1 ? lastRef : null}
-                style={{ width: 280, flexShrink: 0, scrollSnapAlign: "start" }}
-              >
-                <BlogCard note={note} isFeatured />
-              </div>
-            ))
-        }
-        {isFetchingMoreFeatured && (
-          <div style={{ width: 280, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <span className="ep-spinner" />
-          </div>
-        )}
-      </div>
+      {/* Hero — full-width first featured post */}
+      {isInitialFeaturedLoading ? (
+        <BlogCard isLoading hero />
+      ) : hero ? (
+        <BlogCard
+          note={hero}
+          hero
+          ref={featuredNotes.length === 1 ? lastRef : null}
+        />
+      ) : null}
+
+      {/* Secondary row — up to 2 more featured posts */}
+      {(secondary.length > 0 || (isInitialFeaturedLoading)) && (
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+          gap: "1.25rem",
+          marginTop: "1.25rem",
+        }}>
+          {isInitialFeaturedLoading
+            ? Array(2).fill(null).map((_, i) => <BlogCard key={i} isLoading />)
+            : secondary.map((note, i) => (
+                <BlogCard
+                  key={note._id}
+                  note={note}
+                  ref={i === secondary.length - 1 && !hasMoreFeatured ? lastRef : null}
+                />
+              ))
+          }
+          {isFetchingMoreFeatured && <BlogCard isLoading />}
+        </div>
+      )}
     </section>
   );
 };

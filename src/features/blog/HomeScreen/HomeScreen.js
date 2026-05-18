@@ -31,8 +31,18 @@ const HomeScreen = () => {
   }, [activeTab]);
 
   return (
-    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "2rem 1.5rem" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "2rem" }} className="lg:grid-cols-[1fr_220px]">
+    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "2.5rem 1.5rem 4rem" }}>
+      {/* Page header */}
+      <div style={{ marginBottom: "2.5rem", borderBottom: "1px solid var(--border)", paddingBottom: "1.5rem" }}>
+        <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "2rem", fontWeight: 400, color: "var(--text)", margin: 0, letterSpacing: "-0.01em" }}>
+          Reading
+        </h1>
+        <p style={{ fontSize: "0.9375rem", color: "var(--text2)", marginTop: "0.375rem", marginBottom: 0 }}>
+          Essays, notes, and ideas on software, technology, and building things well.
+        </p>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "2rem" }} className="lg:grid-cols-[1fr_224px]">
 
         <main style={{ minWidth: 0 }}>
           <FeaturedPosts />
