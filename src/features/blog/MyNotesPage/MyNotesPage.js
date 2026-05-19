@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NoteContext from "../../../context/Notes/NoteContext";
 import UserContext from "../../../context/user/UserContext";
@@ -16,19 +16,10 @@ const NoteCard = ({ note, onDelete, onEdit, isAdminView }) => {
   const label = type || tag;
   const excerpt = stripHtml(description);
   const preview = excerpt.length > 100 ? excerpt.slice(0, 100) + "…" : excerpt;
+  const [confirming, setConfirming] = useState(false);
 
   return (
-    <div
-      style={{
-        padding: "1.25rem",
-        background: "var(--bg2)",
-        border: "1px solid var(--border)",
-        borderRadius: "var(--radius)",
-        display: "flex",
-        flexDirection: "column",
-        gap: "0.5rem",
-      }}
-    >
+    <div style={{ padding: "1.25rem", background: "var(--bg2)", border: "1px solid var(--border)", borderRadius: "var(--radius)", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
       {isAdminView && user?.name && (
         <p style={{ fontSize: "0.75rem", color: "var(--text3)", margin: 0, fontStyle: "italic" }}>
           by <span style={{ color: "var(--text2)", fontStyle: "normal" }}>{user.name}</span>
@@ -46,22 +37,39 @@ const NoteCard = ({ note, onDelete, onEdit, isAdminView }) => {
       {preview && (
         <p style={{ fontSize: "0.875rem", color: "var(--text2)", lineHeight: 1.6, margin: 0, flexGrow: 1 }}>{preview}</p>
       )}
-      <div style={{ marginTop: "0.75rem", paddingTop: "0.75rem", borderTop: "1px solid var(--border)", display: "flex", gap: "0.5rem", justifyContent: "flex-end" }}>
-        <button
-          onClick={() => onEdit(_id)}
-          className="btn-secondary"
-          style={{ padding: "0.375rem 0.875rem", fontSize: "0.8125rem" }}
-        >
-          Edit
-        </button>
-        <button
-          onClick={() => onDelete(_id)}
-          style={{ padding: "0.375rem 0.875rem", fontSize: "0.8125rem", fontFamily: "var(--font-sans)", color: "var(--accent)", background: "transparent", border: "1px solid var(--accent)", borderRadius: "var(--radius)", cursor: "pointer", opacity: 0.8, transition: "opacity var(--transition)" }}
-          onMouseEnter={(e) => e.currentTarget.style.opacity = 1}
-          onMouseLeave={(e) => e.currentTarget.style.opacity = 0.8}
-        >
-          Delete
-        </button>
+      <div style={{ marginTop: "0.75rem", paddingTop: "0.75rem", borderTop: "1px solid var(--border)" }}>
+        {confirming ? (
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+            <span style={{ fontSize: "0.8125rem", color: "var(--text2)", flexGrow: 1 }}>Delete this post?</span>
+            <button
+              onClick={() => { setConfirming(false); onDelete(_id); }}
+              style={{ padding: "0.3125rem 0.75rem", fontSize: "0.8125rem", fontFamily: "var(--font-sans)", color: "#fff", background: "var(--accent)", border: "none", borderRadius: "var(--radius)", cursor: "pointer" }}
+            >
+              Yes, delete
+            </button>
+            <button
+              onClick={() => setConfirming(false)}
+              className="btn-secondary"
+              style={{ padding: "0.3125rem 0.75rem", fontSize: "0.8125rem" }}
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end" }}>
+            <button onClick={() => onEdit(_id)} className="btn-secondary" style={{ padding: "0.375rem 0.875rem", fontSize: "0.8125rem" }}>
+              Edit
+            </button>
+            <button
+              onClick={() => setConfirming(true)}
+              style={{ padding: "0.375rem 0.875rem", fontSize: "0.8125rem", fontFamily: "var(--font-sans)", color: "var(--accent)", background: "transparent", border: "1px solid color-mix(in srgb, var(--accent) 40%, transparent)", borderRadius: "var(--radius)", cursor: "pointer", transition: "border-color var(--transition)" }}
+              onMouseEnter={(e) => e.currentTarget.style.borderColor = "var(--accent)"}
+              onMouseLeave={(e) => e.currentTarget.style.borderColor = "color-mix(in srgb, var(--accent) 40%, transparent)"}
+            >
+              Delete
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -80,9 +88,7 @@ const MyNotesPage = () => {
   const isLoading = isUserLoading || isNotesLoading;
 
   const handleDelete = (id) => {
-    if (window.confirm("Delete this post? This can't be undone.")) {
-      deleteNote(id).catch(console.error);
-    }
+    deleteNote(id).catch(console.error);
   };
 
   return (
@@ -106,7 +112,7 @@ const MyNotesPage = () => {
       {isLoading ? (
         <LoadingSpinner />
       ) : notes.length > 0 ? (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "1rem" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))", gap: "1rem" }}>
           {notes.map((note) => (
             <NoteCard
               key={note._id}

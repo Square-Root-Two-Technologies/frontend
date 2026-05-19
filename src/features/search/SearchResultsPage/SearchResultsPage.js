@@ -1,79 +1,75 @@
-// src/components/SearchResultsPage/SearchResultsPage.js
 import React, { useContext, useEffect } from "react";
-import { useSearchParams, Link } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import NoteContext from "../../../context/Notes/NoteContext";
-import LoadingSpinner from "../../../components/LoadingSpinner/LoadingSpinner";
-import NotesGrid from "../../blog/NotesGrid/NotesGrid"; // Reusing the grid
-import EmptyState from "../../../components/EmptySpace/EmptySpace"; // Reusing the empty state
+import NotesGrid from "../../blog/NotesGrid/NotesGrid";
 
 const SearchResultsPage = () => {
   const [searchParams] = useSearchParams();
-  const query = searchParams.get("q");
-  const { searchResults, isSearching, searchError, fetchSearchResults } =
-    useContext(NoteContext);
+  const query = searchParams.get("q") || "";
+  const { searchResults, isSearching, searchError, fetchSearchResults } = useContext(NoteContext);
 
   useEffect(() => {
-    // Fetch results when the query parameter changes
-    if (query) {
-      fetchSearchResults(query);
-    }
-    // Optional: Clear results if query is removed? Decide based on desired UX.
-    // else {
-    //   fetchSearchResults(""); // Or manage state differently
-    // }
-    window.scrollTo(0, 0); // Scroll to top on new search
+    if (query) fetchSearchResults(query);
   }, [query, fetchSearchResults]);
 
-  const renderContent = () => {
-    if (isSearching) {
-      return (
-        <div className="flex justify-center items-center py-20">
-          <LoadingSpinner />
-        </div>
-      );
-    }
-
-    if (searchError) {
-      return (
-        <div className="card text-center max-w-md mx-auto mt-10">
-          <h2 className="text-xl font-semibold text-error mb-4">
-            Search Error
-          </h2>
-          <p className="text-error mb-6">{searchError}</p>
-          <Link to="/" className="btn-secondary">
-            Back to Home
-          </Link>
-        </div>
-      );
-    }
-
-    if (!isSearching && searchResults.length === 0) {
-      return (
-        <EmptyState
-          message={`No results found for "${query}". Try a different search term.`}
-        />
-      );
-    }
-
-    // Use NotesGrid for consistency, passing only the results
-    // Disable its internal pagination/loading logic for search results
-    return (
-      <NotesGrid
-        notes={searchResults}
-        isFetching={false} // NotesGrid's own fetching is disabled here
-        hasMore={false} // No pagination for search results in this setup
-        initialLoadDone={true} // Assume load is "done" for rendering purposes
-        fetchNextBatchOfNotes={() => {}} // Provide empty function
-      />
-    );
-  };
-
   return (
-    <div className="container mx-auto px-4 py-8 min-h-[calc(100vh-160px)]">
-      <h1 className="text-heading mb-6">
-        Search Results {query ? `for "${query}"` : ""}
-      </h1>
-      {renderContent()}
+    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "clamp(1.25rem, 4vw, 2.5rem) 1.25rem 4rem" }}>
+
+      {/* Header */}
+      <div style={{ marginBottom: "2.5rem", borderBottom: "1px solid var(--border)", paddingBottom: "1.5rem" }}>
+        <h1 style={{ fontFamily: "var(--font-serif)", fontSize: "2rem", fontWeight: 400, color: "var(--text)", margin: 0, letterSpacing: "-0.01em" }}>
+          {query ? <>Results for <em style={{ color: "var(--accent)", fontStyle: "italic" }}>"{query}"</em></> : "Search"}
+        </h1>
+        {!isSearching && searchResults.length > 0 && (
+          <p style={{ fontSize: "0.875rem", color: "var(--text3)", marginTop: "0.375rem", marginBottom: 0 }}>
+            {searchResults.length} post{searchResults.length !== 1 ? "s" : ""} found
+          </p>
+        )}
+      </div>
+
+      {/* Loading */}
+      {isSearching && (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))", gap: "1.25rem" }}>
+          {Array(6).fill(null).map((_, i) => (
+            <div key={i} style={{ background: "var(--bg2)", border: "1px solid var(--border)", borderRadius: "var(--radius)", padding: "1.375rem 1.5rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+              <div className="shimmer" style={{ width: "18%", height: 10, borderRadius: 2 }} />
+              <div className="shimmer" style={{ width: "88%", height: 20, borderRadius: 2 }} />
+              <div className="shimmer" style={{ width: "60%", height: 14, borderRadius: 2 }} />
+              <div className="shimmer" style={{ width: "40%", height: 10, borderRadius: 2, marginTop: 4 }} />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Error */}
+      {searchError && !isSearching && (
+        <p style={{ fontSize: "0.9375rem", color: "var(--accent)", padding: "2rem 0" }}>
+          {searchError}
+        </p>
+      )}
+
+      {/* Empty state */}
+      {!isSearching && !searchError && query && searchResults.length === 0 && (
+        <div style={{ padding: "4rem 0", textAlign: "center" }}>
+          <p style={{ fontFamily: "var(--font-serif)", fontSize: "1.375rem", fontWeight: 400, color: "var(--text2)", fontStyle: "italic", margin: "0 0 0.5rem" }}>
+            Nothing found for "{query}".
+          </p>
+          <p style={{ fontSize: "0.875rem", color: "var(--text3)", margin: 0 }}>
+            Try different keywords or browse all topics.
+          </p>
+        </div>
+      )}
+
+      {/* Results */}
+      {!isSearching && searchResults.length > 0 && (
+        <NotesGrid
+          notes={searchResults}
+          isFetching={false}
+          hasMore={false}
+          initialLoadDone={true}
+          fetchNextBatchOfNotes={() => {}}
+        />
+      )}
     </div>
   );
 };

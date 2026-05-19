@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
 import HomeScreen from "./features/blog/HomeScreen/HomeScreen";
@@ -21,6 +21,13 @@ import PhotosPage from "./features/gallery/PhotosPage";
 import CategoriesPage from "./features/blog/CategoriesPage/CategoriesPage";
 import CategoryPage from "./features/blog/CategoryPage/CategoryPage";
 
+/* Scroll to top on every route change */
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
+
 /* useLocation must be called inside <Router>, so we extract the layout */
 function AppLayout() {
   const location = useLocation();
@@ -28,6 +35,7 @@ function AppLayout() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", background: "var(--bg)" }}>
+      <ScrollToTop />
       {!isLanding && <Navbar />}
       <main style={isLanding ? { flex: 1 } : { flex: 1 }}>
         <Routes>
