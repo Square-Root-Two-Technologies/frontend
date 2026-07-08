@@ -7,6 +7,8 @@ import BlogSpace from "./features/blog/BlogSpace/BlogSpace";
 import SingleBlogPage from "./features/blog/SingleBlogPage/SingleBlogPage";
 import Login from "./features/auth/Login/Login";
 import Signup from "./features/auth/Signup/Signup";
+import ForgotPassword from "./features/auth/ForgotPassword/ForgotPassword";
+import ResetPassword from "./features/auth/ResetPassword/ResetPassword";
 import ProtectedRoute from "./features/auth/ProtectedRoute/ProtectedRoute";
 import MyNotesPage from "./features/blog/MyNotesPage/MyNotesPage";
 import NoteState from "./context/Notes/NoteState";
@@ -45,6 +47,8 @@ function AppLayout() {
           <Route path="/category/:id" element={<CategoryPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route
             path="/my-notes"
             element={
