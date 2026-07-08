@@ -1,16 +1,29 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
 import UserContext from "../../../context/user/UserContext";
+import { ThemeContext } from "../../../context/ThemeProvider/ThemeProvider";
 import LoadingSpinner from "../../../components/LoadingSpinner/LoadingSpinner";
 
 const Login = () => {
-  const { login, isUserLoading } = useContext(UserContext);
+  const { login, googleLogin, isUserLoading } = useContext(UserContext);
+  const { theme } = useContext(ThemeContext);
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [info, setInfo] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setError("");
+    const result = await googleLogin(credentialResponse.credential);
+    if (result.success) {
+      navigate(location.state?.from?.pathname || "/", { replace: true });
+    } else {
+      setError(result.message || "Google sign-in failed.");
+    }
+  };
 
   useEffect(() => {
     if (location.state?.from?.pathname === "/my-notes") setInfo("Please log in to manage your notes.");
@@ -120,6 +133,22 @@ const Login = () => {
             {(isLoading || isUserLoading) ? <LoadingSpinner size="sm" inline /> : "Sign in"}
           </button>
         </form>
+
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem", margin: "1.75rem 0" }}>
+          <div style={{ flex: 1, height: 1, background: "var(--border)" }} />
+          <span style={{ fontSize: "0.75rem", color: "var(--text3)", textTransform: "uppercase", letterSpacing: "0.05em" }}>or</span>
+          <div style={{ flex: 1, height: 1, background: "var(--border)" }} />
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => setError("Google sign-in failed.")}
+            theme={theme === "dark" ? "filled_black" : "outline"}
+            shape="rectangular"
+            width="336"
+          />
+        </div>
       </div>
     </div>
   );
