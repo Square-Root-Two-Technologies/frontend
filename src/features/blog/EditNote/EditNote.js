@@ -32,6 +32,7 @@ const EditNote = () => {
   const [noteTag, setNoteTag] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [noteIsFeatured, setNoteIsFeatured] = useState(false);
+  const [noteIsActive, setNoteIsActive] = useState(true);
   const [error, setError] = useState("");
   const [isComponentLoading, setIsComponentLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -86,6 +87,7 @@ const EditNote = () => {
       setNoteTag(found.tag || "");
       setCategoryId(found.category?._id || found.category || "");
       setNoteIsFeatured(found.isFeatured || false);
+      setNoteIsActive(found.isActive !== undefined ? found.isActive : true);
       if (editor && !editorReady) {
         editor.commands.setContent(found.description || "");
         setEditorReady(true);
@@ -118,7 +120,8 @@ const EditNote = () => {
         content,
         noteTag,
         categoryId,
-        (currentUser?.role === "admin" || currentUser?.role === "SuperAdmin") ? noteIsFeatured : undefined
+        (currentUser?.role === "admin" || currentUser?.role === "SuperAdmin") ? noteIsFeatured : undefined,
+        noteIsActive
       );
       navigate("/my-notes");
     } catch (err) {
@@ -225,6 +228,17 @@ const EditNote = () => {
             Mark as featured
           </label>
         )}
+
+        <label style={{ display: "flex", alignItems: "center", gap: "0.625rem", cursor: "pointer", fontSize: "0.875rem", color: "var(--text2)" }}>
+          <input
+            type="checkbox"
+            checked={noteIsActive}
+            onChange={(e) => setNoteIsActive(e.target.checked)}
+            disabled={isSubmitting}
+            style={{ accentColor: "var(--accent)", width: 16, height: 16 }}
+          />
+          Active (visible on the site)
+        </label>
 
         <div style={{ display: "flex", gap: "0.75rem" }}>
           <button

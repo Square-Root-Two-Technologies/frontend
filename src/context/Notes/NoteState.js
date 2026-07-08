@@ -280,6 +280,7 @@ const NoteState = (props) => {
           tag: noteData.tag || "General",
           category: noteData.categoryId,
           isFeatured: noteData.isFeatured || false,
+          isActive: noteData.isActive !== undefined ? noteData.isActive : true,
         };
         const response = await fetch(`${host}/api/notes/addnote`, {
           method: "POST",
@@ -362,7 +363,7 @@ const NoteState = (props) => {
 
   // Edit Note
   const editNote = useCallback(
-    async (id, title, description, tag, categoryId, isFeatured) => {
+    async (id, title, description, tag, categoryId, isFeatured, isActive) => {
       // ... (keep existing implementation, ensure error state is cleared)
       const token = localStorage.getItem("token");
       if (!token) {
@@ -374,6 +375,7 @@ const NoteState = (props) => {
         tag,
         categoryId,
         isFeatured,
+        isActive,
         // description omitted for brevity
       });
       setError(null); // Clear error before edit attempt
@@ -384,6 +386,7 @@ const NoteState = (props) => {
           tag: tag || "",
           category: categoryId,
           isFeatured,
+          isActive,
         };
         // Remove undefined fields (important if admin status changes isFeatured)
         Object.keys(payload).forEach(

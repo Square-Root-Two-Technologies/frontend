@@ -12,7 +12,7 @@ const stripHtml = (html) =>
   html ? html.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim() : "";
 
 const NoteCard = ({ note, onDelete, onEdit, isAdminView }) => {
-  const { title, description, date, _id, tag, type, user } = note;
+  const { title, description, date, _id, tag, type, user, isActive } = note;
   const label = type || tag;
   const excerpt = stripHtml(description);
   const preview = excerpt.length > 100 ? excerpt.slice(0, 100) + "…" : excerpt;
@@ -25,11 +25,18 @@ const NoteCard = ({ note, onDelete, onEdit, isAdminView }) => {
           by <span style={{ color: "var(--text2)", fontStyle: "normal" }}>{user.name}</span>
         </p>
       )}
-      {label && (
-        <span style={{ fontSize: "0.6875rem", fontWeight: 500, letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--accent)" }}>
-          {label}
-        </span>
-      )}
+      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        {label && (
+          <span style={{ fontSize: "0.6875rem", fontWeight: 500, letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--accent)" }}>
+            {label}
+          </span>
+        )}
+        {isActive === false && (
+          <span style={{ fontSize: "0.6875rem", fontWeight: 500, letterSpacing: "0.07em", textTransform: "uppercase", color: "var(--text3)", border: "1px solid var(--border)", borderRadius: "2px", padding: "0.0625rem 0.375rem" }}>
+            Inactive
+          </span>
+        )}
+      </div>
       <h3 style={{ fontFamily: "var(--font-serif)", fontSize: "1.125rem", fontWeight: 400, color: "var(--text)", margin: 0, lineHeight: 1.3 }}>
         {title}
       </h3>
