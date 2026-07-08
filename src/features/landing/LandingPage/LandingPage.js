@@ -11,9 +11,9 @@ const NOW_ITEMS = [
   },
   {
     label: "Reading",
-    value: "The Timeless Way of Building · Christopher Alexander",
+    value: "The Emperor of All Maladies · Siddhartha Mukherjee",
   },
-  { label: "Listening", value: "Four Tet, Burial, Jamie xx" },
+  { label: "Listening", value: "Hey Now — London Grammar (2013)" },
   { label: "Location", value: "Hyderabad, India" },
 ];
 
@@ -86,7 +86,7 @@ const LandingPage = () => {
                   Read all posts →
                 </Link>
                 <span className="lp-hero-reading">
-                  Reading: <span>The Timeless Way of Building</span>
+                  Reading: <span>The Emperor of All Maladies</span>
                 </span>
               </div>
             </div>
