@@ -28,16 +28,12 @@ function ScrollToTop() {
   return null;
 }
 
-/* useLocation must be called inside <Router>, so we extract the layout */
 function AppLayout() {
-  const location = useLocation();
-  const isLanding = location.pathname === "/";
-
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", background: "var(--bg)" }}>
       <ScrollToTop />
-      {!isLanding && <Navbar />}
-      <main style={isLanding ? { flex: 1 } : { flex: 1 }}>
+      <Navbar />
+      <main style={{ flex: 1 }}>
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/home" element={<HomeScreen />} />

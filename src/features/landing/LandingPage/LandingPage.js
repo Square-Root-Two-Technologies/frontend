@@ -1,59 +1,8 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { ThemeContext } from "../../../context/ThemeProvider/ThemeProvider";
 import NoteContext from "../../../context/Notes/NoteContext";
 import "./LandingPage.css";
 import ParticleSimulation from "../../../components/ParticleSimulation/ParticleSimulation";
-
-const SunIcon = () => (
-  <svg
-    width="17"
-    height="17"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.75"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden="true"
-  >
-    <circle cx="12" cy="12" r="5" />
-    <line x1="12" y1="1" x2="12" y2="3" />
-    <line x1="12" y1="21" x2="12" y2="23" />
-    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-    <line x1="1" y1="12" x2="3" y2="12" />
-    <line x1="21" y1="12" x2="23" y2="12" />
-    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-  </svg>
-);
-const MoonIcon = () => (
-  <svg
-    width="17"
-    height="17"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.75"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden="true"
-  >
-    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-  </svg>
-);
-
-const MenuIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
-  </svg>
-);
-const CloseIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-  </svg>
-);
 
 const NOW_ITEMS = [
   {
@@ -85,10 +34,7 @@ function writeCache(key, value) {
 }
 
 const LandingPage = () => {
-  const { theme, toggleTheme } = useContext(ThemeContext);
   const { allNotes, recentPosts, initialLoadDone } = useContext(NoteContext);
-
-  const [mobileOpen, setMobileOpen] = useState(false);
 
   /* Photos: seed from cache instantly, refresh in background */
   const [recentPhotos, setRecentPhotos] = useState(() => readCache("sq2_recent_photos") || []);
@@ -117,73 +63,13 @@ const LandingPage = () => {
 
   return (
     <div className="lp-root">
-      {/* ── Nav ── */}
-      <nav className="lp-nav" aria-label="Primary navigation">
-        <div className="lp-nav-inner">
-          <Link to="/" className="lp-nav-name">
-            Tanvir R I
-          </Link>
-
-          {/* Desktop links — hidden on mobile */}
-          <div className="lp-nav-right lp-nav-desktop">
-            <Link to="/home" className="lp-nav-link">Read</Link>
-            <Link to="/categories" className="lp-nav-link">Topics</Link>
-            <a href="#photography" className="lp-nav-link">Photos</a>
-            <a href="#now" className="lp-nav-link">Now</a>
-            <Link to="/my-notes" className="lp-nav-link">Write</Link>
-          </div>
-
-          {/* Right cluster: theme + burger */}
-          <div className="lp-nav-right">
-            <button
-              className="lp-theme-btn"
-              onClick={toggleTheme}
-              aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            >
-              {theme === "dark" ? <SunIcon /> : <MoonIcon />}
-            </button>
-            <button
-              className="lp-burger"
-              onClick={() => setMobileOpen((s) => !s)}
-              aria-label="Menu"
-              aria-expanded={mobileOpen}
-            >
-              {mobileOpen ? <CloseIcon /> : <MenuIcon />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile drawer */}
-        {mobileOpen && (
-          <div className="lp-mobile-menu">
-            {[
-              { to: "/home", label: "Read", isLink: true },
-              { to: "/categories", label: "Topics", isLink: true },
-              { href: "#photography", label: "Photos" },
-              { href: "#now", label: "Now" },
-              { to: "/my-notes", label: "Write", isLink: true },
-            ].map((item) =>
-              item.isLink ? (
-                <Link key={item.label} to={item.to} className="lp-mobile-link" onClick={() => setMobileOpen(false)}>
-                  {item.label}
-                </Link>
-              ) : (
-                <a key={item.label} href={item.href} className="lp-mobile-link" onClick={() => setMobileOpen(false)}>
-                  {item.label}
-                </a>
-              )
-            )}
-          </div>
-        )}
-      </nav>
-
       {/* ── Hero ── */}
       <section className="lp-hero">
         <div className="lp-wrap">
           <div className="lp-hero-grid">
             <div>
               <span className="lp-hero-tag">
-                Writer · Engineer · Photographer
+                WRITEs | talks code | PHOTOGRAPHs
               </span>
               <h1 className="lp-hero-headline">
                 Ideas worth sitting

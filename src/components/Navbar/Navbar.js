@@ -205,10 +205,12 @@ const Navbar = () => {
                             {cat.name}
                           </Link>
                         ))
-                      : /* fallback pills while loading */
+                      : /* fallback pills while loading (or if categories fail to load) — still real links */
                         ["Salesforce", "JavaScript", "AI"].map((name) => (
-                          <span
+                          <Link
                             key={name}
+                            to="/categories"
+                            onClick={() => setShowReadMenu(false)}
                             style={{
                               fontSize: "0.75rem",
                               color: "var(--text3)",
@@ -216,10 +218,15 @@ const Navbar = () => {
                               border: "1px solid var(--border)",
                               borderRadius: "2px",
                               padding: "0.2rem 0.5rem",
+                              textDecoration: "none",
+                              transition: "color var(--transition), border-color var(--transition)",
+                              whiteSpace: "nowrap",
                             }}
+                            onMouseEnter={(e) => { e.currentTarget.style.color = "var(--accent)"; e.currentTarget.style.borderColor = "var(--accent)"; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.color = "var(--text3)"; e.currentTarget.style.borderColor = "var(--border)"; }}
                           >
                             {name}
-                          </span>
+                          </Link>
                         ))
                     }
                   </div>
