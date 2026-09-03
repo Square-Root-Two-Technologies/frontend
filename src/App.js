@@ -22,6 +22,9 @@ import SearchResultsPage from "./features/search/SearchResultsPage/SearchResults
 import PhotosPage from "./features/gallery/PhotosPage";
 import CategoriesPage from "./features/blog/CategoriesPage/CategoriesPage";
 import CategoryPage from "./features/blog/CategoryPage/CategoryPage";
+import ProblemList from "./features/apex/ProblemList/ProblemList";
+import ProblemPage from "./features/apex/ProblemPage/ProblemPage";
+import ConnectCallback from "./features/apex/ConnectCallback/ConnectCallback";
 
 /* Scroll to top on every route change */
 function ScrollToTop() {
@@ -45,6 +48,9 @@ function AppLayout() {
           <Route path="/photos" element={<PhotosPage />} />
           <Route path="/categories" element={<CategoriesPage />} />
           <Route path="/category/:id" element={<CategoryPage />} />
+          <Route path="/apexjudge" element={<ProblemList />} />
+          <Route path="/apexjudge/connect" element={<ConnectCallback />} />
+          <Route path="/apexjudge/:slug" element={<ProblemPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />

@@ -236,6 +236,7 @@ const Navbar = () => {
           </div>
 
           <NavLink to="/photos" className={navLinkClass}>Photos</NavLink>
+          <NavLink to="/apexjudge" className={navLinkClass}>ApexJudge</NavLink>
           <NavLink to="/my-notes" className={navLinkClass}>Write</NavLink>
         </div>
 
@@ -379,6 +380,7 @@ const Navbar = () => {
 
             {[
               { to: "/photos", label: "Photos" },
+              { to: "/apexjudge", label: "ApexJudge" },
               { to: "/my-notes", label: "Write" },
             ].map(({ to, label }) => (
               <NavLink key={to} to={to} className={navLinkClass} onClick={() => setIsMobileOpen(false)}
